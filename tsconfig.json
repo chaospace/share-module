@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "jsx": "preserve",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "isolatedModules": true, //모든 파일 모듈 정의필요.
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true
+    },
+    "references": [
+        {
+            "path": "./front"
+        },
+        {
+            "path": "./share"
+        }
+    ],
+    "exclude": ["node_modules", "dist"]
+}
