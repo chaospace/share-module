@@ -1,3 +1,4 @@
+
 const config = {
   verbose: true,
   rootDir: ".",
@@ -21,4 +22,4 @@ const config = {
   },
 };
 
-module.exports = config;
+export default config;
