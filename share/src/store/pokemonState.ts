@@ -1,5 +1,10 @@
-import { StateCreator, StoreApi, createStore, useStore } from "zustand";
-import { PropsSelector, State, StateHookCreator, StateHooks, StateSetSelector } from "./types";
+import { useStore } from "zustand";
+import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from "./types";
+
+const ACTION = {
+    SET_SELECT: 'SET_SELECT',
+    SET_POKEMONS: 'SET_POKEMONS'
+}
 
 interface IPokemon {
     id: number;
@@ -16,25 +21,14 @@ interface PokemonProps {
 
 type PokemonState = State<PokemonProps>;
 type PokemonSelector = PropsSelector<PokemonState>;
-type PokemonHooks = StateHooks<PokemonState>;
 
-// store
-const pokemonStore = createStore<PokemonState>((set) => ({
+const createPokemonState: StateCreatorEnhancer<PokemonState> = set => ({
     pokemons: [],
     select: undefined,
-    setPokemons: (pokemons) => set({ pokemons }),
-    setSelect: (select) => set({ select })
-}));
-
-
-const createPokemonState: StateCreator<PokemonState> = set => ({
-    pokemons: [],
-    select: undefined,
-    setPokemons: (pokemons) => set({ pokemons }),
-    setSelect: (select) => set({ select })
+    setPokemons: (pokemons) => set({ pokemons }, undefined, { type: ACTION.SET_POKEMONS }),
+    setSelect: (select) => set({ select }, undefined, { type: ACTION.SET_SELECT })
 });
 
-// store를 받아서 하고 코드에는 slice를 넣어둔다.
 
 // selector
 const pokemonSelector: PokemonSelector = {
@@ -44,50 +38,23 @@ const pokemonSelector: PokemonSelector = {
     setSelectSelector: (state) => state.setSelect,
 }
 
-// hooks
-const pokemonHooks: PokemonHooks = {
-    usePokemons() {
-        return useStore(pokemonStore, pokemonSelector.pokemonsSelector);
-    },
-    useSetPokemons() {
-        return useStore(pokemonStore, pokemonSelector.setPokemonsSelector);
-    },
-    useSelect() {
-        return useStore(pokemonStore, pokemonSelector.selectSelector);
-    },
-    useSetSelect() {
-        return useStore(pokemonStore, pokemonSelector.setSelectSelector);
-    }
-}
-
 // curring을 이용한 훅 사용.
-const createHooks: StateHookCreator<StoreApi<PokemonState>, PokemonState> = (store: StoreApi<PokemonState>) => {
+const createPokemonHooks: StateHookCreator<PokemonState> = (store) => {
     return {
-        usePokemons() {
-            return useStore(store, pokemonSelector.pokemonsSelector);
-        },
-        useSetPokemons() {
-            return useStore(store, pokemonSelector.setPokemonsSelector);
-        },
-        useSelect() {
-            return useStore(store, pokemonSelector.selectSelector);
-        },
-        useSetSelect() {
-            return useStore(store, pokemonSelector.setSelectSelector);
-        }
+        usePokemons: () => useStore(store, pokemonSelector.pokemonsSelector),
+        useSetPokemons: () => useStore(store, pokemonSelector.setPokemonsSelector),
+        useSelect: () => useStore(store, pokemonSelector.selectSelector),
+        useSetSelect: () => useStore(store, pokemonSelector.setSelectSelector)
     }
 }
-
 
 export type {
     IPokemon,
+    PokemonProps,
     PokemonState
 }
 
 export {
     createPokemonState,
-    pokemonStore,
-    pokemonSelector,
-    pokemonHooks,
-    createHooks
+    createPokemonHooks
 }

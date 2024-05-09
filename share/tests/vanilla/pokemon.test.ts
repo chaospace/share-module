@@ -1,7 +1,7 @@
 // 스토어 사용 테스트
 
 import { StoreApi, createStore } from "zustand";
-import type { IPokemon, PokemonState } from "@/store/pokemonState";
+import type { PokemonState } from "@/store/pokemonState";
 import { createPokemonState } from "@/store/pokemonState";
 
 
@@ -15,7 +15,7 @@ let store: StoreApi<PokemonState>;
 // 스토어 초기화
 beforeEach(() => {
     store = createStore<PokemonState>(createPokemonState);
-})
+});
 
 describe.skip("pokemonState 기본 테스트", () => {
     it("select 초기값은 undefined", () => {
@@ -44,15 +44,17 @@ describe.skip("pokemonState 기본 테스트", () => {
     })
 });
 
-it("example.com/pokemons post요청으로 pokemon을 추가할 수 있다.", async () => {
-    const appendPokemon = {
-        name: "my-append-pokemons",
-        sprite: "append-sprite"
-    }
-    const response = await fetch("http://api.example.com/pokemons", {
-        method: "POST",
-        body: JSON.stringify(appendPokemon)
+describe("pokemon 등록 테스트(example.com/pokemons)", () => {
+    it("등록 후 응답은 요청 pokemon과 동일하다.", async () => {
+        const reqPokemon = {
+            name: "my-append-pokemons",
+            sprite: "append-sprite"
+        }
+        const response = await fetch("http://api.example.com/pokemons", {
+            method: "POST",
+            body: JSON.stringify(reqPokemon)
+        });
+        const resPokemon = await response.json();
+        expect(resPokemon.name).toEqual(reqPokemon.name);
     });
-    const pokemon = await response.json();
-    expect(pokemon.name).toEqual(appendPokemon.name);
-});
+})

@@ -8,6 +8,7 @@ const handlers = [
 
     http.post("http://api.example.com/pokemons", async ({ request }) => {
         const newPokemons = await request.json();
+
         //201상태를 응답해 자원생성을 알림.
         return HttpResponse.json(newPokemons, { status: 201 });
     })
