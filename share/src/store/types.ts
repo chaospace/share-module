@@ -4,8 +4,10 @@ type PropsSelector<State> = {
     [Property in keyof State as `${Property & string}Selector`]: (state: State) => State[Property];
 }
 
+type StateUpdater<S> = ((prev: S) => S);
+
 type Setter<State> = {
-    [Property in keyof State as `set${Capitalize<Lowercase<Property & string>>}`]: (nValue: State[Property]) => void;
+    [Property in keyof State as `set${Capitalize<Lowercase<Property & string>>}`]: (next: State[Property] | StateUpdater<State[Property]>) => void;
 }
 
 type SetterSelector<T, K extends keyof T = keyof T> = {

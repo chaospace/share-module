@@ -1,5 +1,6 @@
 import { useStore } from "zustand";
 import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from "./types";
+import { curriedSetter } from "./common";
 
 const ACTION = {
     SET_SELECT: 'SET_SELECT',
@@ -22,11 +23,12 @@ interface PokemonProps {
 type PokemonState = State<PokemonProps>;
 type PokemonSelector = PropsSelector<PokemonState>;
 
-const createPokemonState: StateCreatorEnhancer<PokemonState> = set => ({
+// set은 타입에 따른 처리가 필요하다..
+const createPokemonState: StateCreatorEnhancer<PokemonState> = (set, get) => ({
     pokemons: [],
     select: undefined,
-    setPokemons: (pokemons) => set({ pokemons }, undefined, { type: ACTION.SET_POKEMONS }),
-    setSelect: (select) => set({ select }, undefined, { type: ACTION.SET_SELECT })
+    setPokemons: (pokemons) => set(curriedSetter("pokemons", pokemons, get().pokemons), undefined, { type: ACTION.SET_POKEMONS }),
+    setSelect: (select) => set(curriedSetter("select", select, get().select), undefined, { type: ACTION.SET_SELECT })
 });
 
 
