@@ -10,7 +10,7 @@ const config = {
   // },
   transformIgnorePatterns: ["/node_modules/", "/dist/", "\\.pnp\\.[^\\/]+$"],
   coveragePathIgnorePatterns: ["src/index.ts"],
-  setupFiles: ["./tests/jest.pollyfill.ts",],
+  setupFiles: ["./tests/jest.pollyfill.js",],
   setupFilesAfterEnv: ["./tests/jest.setup.ts"],
   testMatch: [
     "<rootDir>/src/**/*.(test|spec).(ts|tsx)",
