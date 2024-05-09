@@ -9,6 +9,33 @@
     //msw mocking-service-worker 설치 
     pnpm add -D msw
 ```
+## TS zustand 내용정리
+ - 상태별 코드 분리를 좋아해 상태를 정의한 타입에서 selector와 setter를 생성하는 타입을 만들었다.
+    ```typescript
+      //  상태 구성타입
+      type State<T> = T & Setter<T>
+
+      //setter구성 타입
+      type Setter<State> = {
+          [Property in keyof State as `set${Capitalize<Lowercase<Property & string>>}`]: (next: State[Property] | StateUpdater<State[Property]>) => void;
+      }
+
+      // selector구성 타입
+      type PropsSelector<State> = {
+          [Property in keyof State as `${Property & string}Selector`]: (state: State) => State[Property];
+      }
+
+      // 상태 속성정의
+      interface UserProps {
+          name:string;
+          hobby:string;
+          id:number;
+      }
+      // 상태정의
+      type UserState = State<UserProps>;
+      // 상태selector 정의
+      type UserSelector = PropsSelector<UserState>
+    ```
 
 ## TS zustand 사용 시 고려할 사항
  - 상태를 redux와 같이 그룹화 해서 코드를 작성하는게 쉽지 않다.(전역 스토어 사용 시)
