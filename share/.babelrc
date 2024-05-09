@@ -6,6 +6,8 @@
             "node":"current"
         }
      }],
+     //jest동작 runtime을 자동으로 설정
+     ["@babel/preset-react", {"runtime":"automatic"}],
      "@babel/preset-typescript"
     ]
 }
