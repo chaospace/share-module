@@ -1,10 +1,11 @@
 import { StateCreator, StoreApi } from "zustand";
 
+
+type StateUpdater<S> = ((prev: S) => S);
+
 type PropsSelector<State> = {
     [Property in keyof State as `${Property & string}Selector`]: (state: State) => State[Property];
 }
-
-type StateUpdater<S> = ((prev: S) => S);
 
 type Setter<State> = {
     [Property in keyof State as `set${Capitalize<Lowercase<Property & string>>}`]: (next: State[Property] | StateUpdater<State[Property]>) => void;
@@ -20,7 +21,7 @@ type SetterKeys<State, Key extends keyof State = keyof State> = Key extends `set
 
 
 type State<T> = T & Setter<T>
-type StateSetSelector<S> = SetterSelector<S>;
+//type StateSetSelector<S> = SetterSelector<S>;
 
 type StateHooks<S, K extends keyof S = keyof S> = {
     [P in K as `use${Capitalize<P & string>}`]: () => S[P]
@@ -35,7 +36,7 @@ export type {
     SetterKeys,
     PropsSelector,
     Setter,
-    StateSetSelector,
+    // StateSetSelector,
     StateHooks,
     StateHookCreator,
     StateCreatorEnhancer
