@@ -1,1 +1,1 @@
-declare module "shareModule/ShareModule";
+// declare module "share/Store";

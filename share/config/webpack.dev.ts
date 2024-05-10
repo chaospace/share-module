@@ -8,7 +8,7 @@ import { outDir, publicDir } from "./webpack.path";
 const devConfig: webpack.Configuration = {
     watch: true,
     devServer: {
-        static: outDir,
+        static: { directory: outDir },
         historyApiFallback: true,
         hot: true,
         port: 5001

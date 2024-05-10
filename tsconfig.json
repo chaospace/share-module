@@ -10,7 +10,7 @@
         // "isolatedModules": true, //모든 파일 모듈 정의필요.
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
-        "strict": true
+        "strict": true,
     },
     "references": [
         {

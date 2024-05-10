@@ -1,10 +1,10 @@
 import path from "path";
-import { outDir, srcDir } from "./webpack.path";
+import { outDir, publicDir, srcDir } from "./webpack.path";
 import webpack from "webpack";
 import "webpack-dev-server";
-import { dependencies } from "../../package.json";
-const { ModuleFederationPlugin } = webpack.container;
-console.log("dependencies", dependencies);
+
+import { ModuleFederationPlugin } from "@module-federation/enhanced";
+
 const commonConfig: webpack.Configuration = {
 
     entry: path.resolve(srcDir, "index.ts"),
@@ -42,10 +42,10 @@ const commonConfig: webpack.Configuration = {
     },
     plugins: [
         new ModuleFederationPlugin({
-            name: "shareModule",
+            name: "share",
             filename: "shareModuleEntry.js",
             exposes: {
-                "./ShareModule": "./src/index"
+                "./Store": "./src/store"
             },
             shared: {
                 zustand: { singleton: true },
