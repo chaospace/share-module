@@ -10,8 +10,8 @@ const config = {
   // },
   transformIgnorePatterns: ["/node_modules/", "/dist/", "\\.pnp\\.[^\\/]+$"],
   coveragePathIgnorePatterns: ["src/index.ts"],
-  setupFiles: ["./tests/jest.pollyfill.js",],
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
+  setupFiles: ["./tests/config/jest.pollyfill.js",],
+  setupFilesAfterEnv: ["./tests/config/jest.setup.ts"],
   testMatch: [
     "<rootDir>/src/**/*.(test|spec).(ts|tsx)",
     "<rootDir>/tests/**/*.(test|spec).(ts|tsx)",
@@ -19,7 +19,7 @@ const config = {
   transform: {
     "^.+\\.tsx?$": "babel-jest",
   },
-  resolver: "<rootDir>/tests/jest.resolver.js",
+  resolver: "<rootDir>/tests/config/jest.resolver.js",
   moduleNameMapper: {
     "^@/(.+)$": "<rootDir>/src/$1",
     "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
