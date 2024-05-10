@@ -3,6 +3,7 @@
     "compilerOptions": {
         "composite": true,
         "paths": {
+            "*":["./@mf-types/*"],
             "@/*":["./src/*"]
         }
     },

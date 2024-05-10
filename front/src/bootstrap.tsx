@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Store } from "shareModule/ShareModule";
-const { countHooks, pokemonHooks } = Store;
+import { countHooks } from "share/Store";
+
 const App = () => {
     const count = countHooks.useCount();
     const setCount = countHooks.useSetCount();

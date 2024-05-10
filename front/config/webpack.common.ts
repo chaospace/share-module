@@ -3,7 +3,7 @@ import { publicDir, srcDir } from "./webpack.path";
 import webpack from "webpack";
 import "webpack-dev-server";
 import HTMLWebpackPlugin from "html-webpack-plugin";
-const { ModuleFederationPlugin } = webpack.container;
+import { ModuleFederationPlugin } from "@module-federation/enhanced";
 
 
 const commonConfig: webpack.Configuration = {
@@ -59,7 +59,7 @@ const commonConfig: webpack.Configuration = {
         new ModuleFederationPlugin({
             name: "Host",
             remotes: {
-                shareModule: "shareModule@http://localhost:5001/shareModuleEntry.js"
+                share: "share@http://localhost:5001/shareModuleEntry.js"
             },
             shared: {
                 react: { singleton: true },
