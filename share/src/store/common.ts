@@ -3,11 +3,13 @@
 const isFunc = (value: unknown): value is Function => typeof value === "function";
 
 
-const curriedSetter = (key: string, next: unknown, prev: unknown) => {
+const curriedSetter = <U>(key: string, next: U, prev: U) => {
     const answer = { [key]: isFunc(next) ? next(prev) : next };
-    console.log('answer', answer);
     return answer
 }
 
+const getNextState = <T>(next: T, prev: T) => {
+    return isFunc(next) ? next(prev) : next;
+}
 
-export { curriedSetter }
+export { curriedSetter, getNextState }

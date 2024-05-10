@@ -1,17 +1,10 @@
 import { useStore } from "zustand";
 import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from "./types";
-import { curriedSetter } from "./common";
+import { curriedSetter, getNextState } from "./common";
 
-const ACTION = {
-    SET_SELECT: 'SET_SELECT',
-    SET_POKEMONS: 'SET_POKEMONS'
-}
+const ACTION = { SET_SELECT: 'SET_SELECT', SET_POKEMONS: 'SET_POKEMONS' }
 
-interface IPokemon {
-    id: number;
-    name: string;
-    sprite: string;
-}
+interface IPokemon { id: number; name: string; sprite: string; }
 
 type SelectPokemon = IPokemon | undefined;
 
@@ -27,8 +20,8 @@ type PokemonSelector = PropsSelector<PokemonState>;
 const createPokemonState: StateCreatorEnhancer<PokemonState> = (set, get) => ({
     pokemons: [],
     select: undefined,
-    setPokemons: (pokemons) => set(curriedSetter("pokemons", pokemons, get().pokemons), undefined, { type: ACTION.SET_POKEMONS }),
-    setSelect: (select) => set(curriedSetter("select", select, get().select), undefined, { type: ACTION.SET_SELECT })
+    setPokemons: (nextState) => set({ pokemons: getNextState(nextState, get().pokemons) }, undefined, { type: ACTION.SET_POKEMONS }),
+    setSelect: (nextState) => set({ select: getNextState(nextState, get().select) }, undefined, { type: ACTION.SET_SELECT })
 });
 
 

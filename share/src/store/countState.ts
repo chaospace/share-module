@@ -1,10 +1,6 @@
 import { useStore } from "zustand";
 import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from "./types";
-import { curriedSetter } from "./common";
-
-
-//타입 단언
-// const isFunc = (value: unknown): value is Function => typeof value === "function";
+import { getNextState } from "./common";
 
 
 interface CountProps {
@@ -17,20 +13,16 @@ const ACTION = {
 
 type CountState = State<CountProps>;
 type CountSelector = PropsSelector<CountState>;
-// type CountHooks = StateHooks<CountState>;
 
 const createCountState: StateCreatorEnhancer<CountState> = (set, get) => ({
     count: 0,
-    setCount: (next) => set(curriedSetter("count", next, get().count), undefined, { type: ACTION.SET_COUNT })
+    setCount: (nextState) => set({ count: getNextState(nextState, get().count) }, undefined, { type: ACTION.SET_COUNT })
 });
 
 const countSelector: CountSelector = {
     countSelector: (state) => state.count,
     setCountSelector: (state) => state.setCount
 }
-
-//이전값을 이용한 함수가 호출되는 원리는?
-
 
 const createCountHooks: StateHookCreator<CountState> = (store) => {
     return {

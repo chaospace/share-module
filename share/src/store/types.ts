@@ -8,12 +8,12 @@ type PropsSelector<State> = {
 }
 
 type Setter<State> = {
-    [Property in keyof State as `set${Capitalize<Lowercase<Property & string>>}`]: (next: State[Property] | StateUpdater<State[Property]>) => void;
+    [Property in keyof State as `set${Capitalize<Lowercase<Property & string>>}`]: (nextState: State[Property] | StateUpdater<State[Property]>) => void;
 }
 
-type SetterSelector<T, K extends keyof T = keyof T> = {
-    [P in K as P extends `set${infer U}` ? `set${U}Selector` : never]: (state: T) => T[P]
-}
+// type SetterSelector<T, K extends keyof T = keyof T> = {
+//     [P in K as P extends `set${infer U}` ? `set${U}Selector` : never]: (state: T) => T[P]
+// }
 
 type SetterKeys<State, Key extends keyof State = keyof State> = Key extends `set${infer U}`
     ? `set${U}`
