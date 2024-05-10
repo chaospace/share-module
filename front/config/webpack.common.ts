@@ -1,9 +1,9 @@
 import path from "path";
-import { publicDir, srcDir, outDir } from "./webpack.path";
+import { publicDir, srcDir } from "./webpack.path";
 import webpack from "webpack";
 import "webpack-dev-server";
 import HTMLWebpackPlugin from "html-webpack-plugin";
-
+const { ModuleFederationPlugin } = webpack.container;
 
 
 const commonConfig: webpack.Configuration = {
@@ -55,6 +55,17 @@ const commonConfig: webpack.Configuration = {
     plugins: [
         new HTMLWebpackPlugin({
             template: path.resolve(publicDir, "index.html")
+        }),
+        new ModuleFederationPlugin({
+            name: "Host",
+            remotes: {
+                shareModule: "shareModule@http://localhost:5001/shareModuleEntry.js"
+            },
+            shared: {
+                react: { singleton: true },
+                "react-dom": { singleton: true },
+                zustand: { singleton: true }
+            }
         })
     ],
 }

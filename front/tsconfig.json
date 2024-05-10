@@ -1,6 +1,7 @@
 {
     "extends":"../tsconfig.json",
     "compilerOptions": {
+        "composite": true,
         "paths": {
             "@/*":["./src/*"]
         }
@@ -9,12 +10,6 @@
         "./config/*.ts",
         "./src/**/*.ts",
         "./src/**/*.tsx"
-    ],
-    "exclude": [
-       "src/**/*.igonre.tsx" ,
-       "src/**/*.igonre.ts",
-       "node_modules",
-       "dist"
     ],
     "ts-node": {
         "compilerOptions": {

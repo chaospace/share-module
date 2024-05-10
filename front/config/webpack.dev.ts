@@ -10,7 +10,7 @@ const devConfig: webpack.Configuration = {
         static: outDir,
         historyApiFallback: true,
         hot: true,
-        port: 5001
+        port: 9090
     },
     devtool: "cheap-module-source-map"
 };

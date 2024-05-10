@@ -5,8 +5,9 @@
         "jsx": "preserve",
         "module": "ESNext",
         "moduleResolution": "node",
+        "resolveJsonModule":true,
         "esModuleInterop": true,
-        "isolatedModules": true, //모든 파일 모듈 정의필요.
+        // "isolatedModules": true, //모든 파일 모듈 정의필요.
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true
@@ -19,5 +20,11 @@
             "path": "./share"
         }
     ],
-    "exclude": ["node_modules", "dist"]
+    "exclude": [
+        "src/**/*.ignore.tsx" ,
+        "src/**/*.ignore.ts",
+        "*.html",
+        "node_modules",
+        "dist"
+     ],
 }
