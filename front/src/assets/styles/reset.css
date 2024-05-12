@@ -87,10 +87,6 @@ section {
   display: block;
 }
 
-// sass-lint:disable no-misspelled-properties
-// scss-lint:disable no-misspelled-properties
-// sass-lint:disable property-sort-order
-// scss-lint:disable property-sort-order
 abbr {
   &[title],
   &[data-original-title] {

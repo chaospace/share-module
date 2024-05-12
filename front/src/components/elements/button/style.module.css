@@ -1,0 +1,15 @@
+button {
+  appearance: none;
+
+  background-color: gainsboro;
+  padding: 8px 18px;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #666;
+  &:hover,
+  &:focus {
+    color: #ff00cc;
+    background-color: ghostwhite;
+  }
+}

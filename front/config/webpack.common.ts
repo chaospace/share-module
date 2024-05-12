@@ -7,7 +7,7 @@ import { ModuleFederationPlugin } from "@module-federation/enhanced";
 
 
 const commonConfig: webpack.Configuration = {
-    entry: path.resolve(srcDir, "index.tsx"),
+    entry: path.resolve(srcDir, "index.ts"),
     resolve: {
         modules: ["node_modules"],
         extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".css"],

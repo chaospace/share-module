@@ -1,17 +1,18 @@
 import React from "react";
 import { countHooks } from "share/Store";
-import "@/assets/styles/index.css";
+import "@/index.css";
+import Button from "./components/elements/button/Button";
 
 const App = () => {
     const count = countHooks.useCount();
     const setCount = countHooks.useSetCount();
 
     return (
-        <div className="container-vertical">
-            <label style={ { fontSize: "20px" } }>
+        <div className="app-container">
+            <label>
                 current : <span>{ count }</span>
             </label>
-            <button onClick={ () => setCount(prev => prev + 1) }>카운트+1</button>
+            <Button onClick={ () => setCount(prev => prev + 1) }>카운트+1</Button>
         </div >
 
     )
