@@ -13,6 +13,7 @@
     // mocking-service-worker
     pnpm add -D msw
   ```
+
  - jest.config 설정
     ```javascript
      {
@@ -53,3 +54,59 @@
     // webpack plugin
     pnpm add -D webpack-merge html-webpack-plugin
     ```
+- babel 설정
+  ```json
+    "presets":[
+      ["@babel/preset-env", {
+        "targets":{
+          "browsers":"> 0.2% and not dead", //브라우저 타깃
+          "node":"current" //노드 타깃 테스트 시 사용
+        }
+      }],
+      "@babel/preset-react",
+      "@babel/preset-typescript"
+    ]
+  ```
+
+- federation 구성
+  - @module-federation/enhanced 추가
+  - 공유 프로젝트에 모듈 구성
+  ```javascript
+    //공유 webpack 설정
+    new ModuleFederationPlugin({
+      name:"share",
+      filename:"shareEntry.js",
+      exposes:{ //내보낼 모듈 맵핑
+        "./Store":"./src/store"
+      },
+      shared:{ // 공유 모듈 설정
+        react:{singleton:true},
+        "react-dom":{singleton:true},
+      }
+    })
+
+    // 호스트 프로젝트 설정
+    new ModuleFederationPlugin({
+      name:"Host",
+      remotes:{ 
+        //사용할 공유 프로젝트 적용 (name@url/filename.js )
+        share:"share@{location}/shareEntry.js" 
+      },
+      shared:{
+        react:{singleton:true},
+        "react-dom":{singleton:true},
+      }
+    })
+  ```
+  - 호스트 프로젝트는 tsconfig.json에 생성되는 types폴더 경로 추가
+    ```javascript
+      // types폴더는 module-federation/enhancer에서 자동생성
+      {
+        "paths":{
+          "*":["./@mf-types/*"],
+        }
+      }
+    ```
+  - 호스트 프로젝트는 import("경로")를 통해 비동기로 모듈 참조
+  - 동기식으로 가져오려면 eager옵션 적용
+  
