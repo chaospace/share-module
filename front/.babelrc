@@ -6,7 +6,7 @@
             "node":"current"
         }
      }],   
-     "@babel/preset-react",
+     ["@babel/preset-react", {"runtime":"automatic"}], // 기본 rect 임포트 작동적용
      "@babel/preset-typescript"
     ]
 }
