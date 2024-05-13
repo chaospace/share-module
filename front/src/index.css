@@ -1,5 +1,12 @@
 @import url("@/assets/styles/reset.css");
 
+:root {
+  --gray-300: gainsboro;
+  --gray-100: ghostwhite;
+  --gray-600: #666;
+  --gray-900: #333;
+}
+
 html,
 body {
   font-size: 16px;
