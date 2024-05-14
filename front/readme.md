@@ -1,0 +1,12 @@
+# front 주요 Todo
+- [x] pnpm을 이용한 workspace구성 경험하기
+  - [x] 공유 모듈은 루트에 추가하기.
+  - [x] 루트에 하위 프로젝트 접근을 위한 scripts를 추가하기.
+- [ ] styled-component를 이용한 스타일 노하우 경험하기
+  - [ ] variant를 이용한 ui스타일 관리하기
+  - [ ] theme를 이용한 스타일 관리하기
+- [x] store는 공유모듈을 사용해 module-federation경험하기  
+  - [x] 가능한 index파일을 만들어 관련 모듈 참조를 단순하게 하기.(exposes도 편함)
+- [x] forwardRef를 polymorphicForwardRef로 변경하기
+  - [x] as속성을 위한 편의 타입정의하기(PolymorphicProps)
+  - [x] forwardRef함수를 필요에 맞게 리맵핑 타입정의하기(ForwardRefRenderFunction)
