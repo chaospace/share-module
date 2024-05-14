@@ -1,4 +1,4 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 
 /**
  * as를 이용한 polymorphic컴포넌트 타입 내용정리
@@ -41,20 +41,10 @@ type ForwardRefRenderFunction = <
     >;
 
 const polymorphicForwardRef = React.forwardRef as ForwardRefRenderFunction;
-/*
-// 손쉽게 as를 통한 다양성을 추가할 수 있지만 
-// 기본값을 안 넘길경우 경우의 수가 많아지는 문제가 있음.
-type AsProps<E extends React.ElementType> = {
-    as?: E
-};
 
-type PolymorphicProps<E extends React.ElementType, Props = {}> = React.ComponentPropsWithoutRef<E> & AsProps<E> & React.PropsWithChildren<Props>;
+// ui element기본 속성에 추가 속성지정
+type PropsWithElementType<E extends HTMLElement, Props extends object = {}> = React.PropsWithChildren<HTMLAttributes<E> & Props>;
 
-type PolymorphicRef<E extends React.ElementType> = React.ComponentPropsWithRef<E>["ref"];
 
-// forwardRef에 사용할 속성 타입 정의 props안에 ref가 존재하지 않으면 타입체킹이 안됨.
-type PolymorphicComponentProps<E extends React.ElementType, Props = {}> = PolymorphicProps<E, Props> & { ref?: PolymorphicRef<E> };
-*/
-
-export type { PolymorphicProps }
+export type { PolymorphicProps, PropsWithElementType }
 export { polymorphicForwardRef }
