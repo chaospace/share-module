@@ -43,9 +43,9 @@ const commonConfig: webpack.Configuration = {
                         loader: "css-loader",
                         options: {
                             modules: {
-                                namedExport: true,
+                                namedExport: false,
                                 auto: true
-                            }
+                            },
                         }
                     }
                 ]
