@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import resetStyle from "./reset";
+import resetStyle from "./__partial/reset";
 const GlobalStyle = createGlobalStyle`
     ${resetStyle}
     html, body {
