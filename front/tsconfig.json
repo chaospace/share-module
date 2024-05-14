@@ -2,6 +2,7 @@
     "extends":"../tsconfig.json",
     "compilerOptions": {
         "composite": true,
+        "typeRoots":["node_modules/@types", "./@types"],
         "paths": {
             "*":["./@mf-types/*"],
             "@/*":["./src/*"]
