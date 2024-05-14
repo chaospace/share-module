@@ -1,14 +1,4 @@
 
-## jest환경구성  
-- 필요 모듈 설치
-```javascript
-    //jest
-    pnpm add -D jest @types/jest
-    //@testing-library/react, @testing-library/dom
-    pnpm add -D @testing-library/react @testing-library/dom
-    //msw mocking-service-worker 설치 
-    pnpm add -D msw
-```
 ## TS zustand 내용정리
  - 상태별 코드 분리를 좋아해 상태를 정의한 타입에서 selector와 setter를 생성하는 타입을 만들었다.
     ```typescript

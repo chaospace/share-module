@@ -99,14 +99,14 @@
     })
   ```
   - 호스트 프로젝트는 tsconfig.json에 생성되는 types폴더 경로 추가
-    ```javascript
-      // types폴더는 module-federation/enhancer에서 자동생성
-      {
-        "paths":{
-          "*":["./@mf-types/*"],
-        }
+  ```javascript
+    // types폴더는 module-federation/enhancer에서 자동생성
+    {
+      "paths":{
+        "*":["./@mf-types/*"],
       }
-    ```
+    }
+  ```
   - 호스트 프로젝트는 import("경로")를 통해 비동기로 모듈 참조
   - 동기식으로 가져오려면 eager옵션 적용
   
