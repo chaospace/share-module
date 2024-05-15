@@ -2,16 +2,18 @@
     "extends":"../tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "typeRoots":["node_modules/@types", "./@types"],
+        // "typeRoots":["node_modules/@types", "@types"],
         "paths": {
-            "*":["./@mf-types/*"],
+            "*":["./@mf-types/*", "./@types"],
             "@/*":["./src/*"]
         }
     },
     "include": [
-        "./config/*.ts",
-        "./src/**/*.ts",
-        "./src/**/*.tsx"
+        "config/*.ts",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "tests/**/*.ts", 
+        "tests/**/*.tsx"
     ],
     "ts-node": {
         "compilerOptions": {

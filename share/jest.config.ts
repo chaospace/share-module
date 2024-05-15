@@ -1,3 +1,5 @@
+import path from "path";
+import { workspaceDir } from "./config/webpack.path";
 
 const config = {
   verbose: true,
@@ -17,7 +19,7 @@ const config = {
     "<rootDir>/tests/**/*.(test|spec).(ts|tsx)",
   ],
   transform: {
-    "^.+\\.tsx?$": "babel-jest",
+    "^.+\\.tsx?$": path.resolve(workspaceDir, "jestBabelTransform.ts"),
   },
   resolver: "<rootDir>/tests/config/jest.resolver.js",
   moduleNameMapper: {
