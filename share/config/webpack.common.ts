@@ -1,5 +1,5 @@
 import path from "path";
-import { outDir, publicDir, srcDir } from "./webpack.path";
+import { outDir, publicDir, srcDir, workspaceDir } from "./webpack.path";
 import webpack from "webpack";
 import "webpack-dev-server";
 
@@ -34,6 +34,7 @@ const commonConfig: webpack.Configuration = {
                 use: {
                     loader: "babel-loader",
                     options: {
+                        configFile: path.resolve(workspaceDir, "babel.config.json"),
                         exclude: ["/node_modules/"]
                     }
                 }
