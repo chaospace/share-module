@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`styled-component스타일 파싱 테스트 render후 스타일은 저절로 케밥케이스로 변경된다. 1`] = `
+.c0 {
+  border-radius: 10px;
+  font-size: 19px;
+}
+
+<div
+  className="c0"
+/>
+`;
