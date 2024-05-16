@@ -14,10 +14,5 @@
         "src/**/*.tsx",
         "tests/**/*.ts", 
         "tests/**/*.tsx"
-    ],
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
-    }
+    ]
 }
