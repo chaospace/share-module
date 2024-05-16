@@ -14,5 +14,5 @@ const grey = {
     A200: '#eeeeee',
     A400: '#bdbdbd',
     A700: '#616161',
-};
+} as const;
 export default grey;
