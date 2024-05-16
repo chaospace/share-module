@@ -2,9 +2,15 @@
   "name": "styled-composer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/main.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "webpack-cli --mode production --config ./config/webpack.prod.ts",
+    "build:type": "tsc --emitDeclarationOnly"
+  },
+  "devDependencies": {
+    "bundle-declarations-webpack-plugin": "^5.1.1"
   },
   "keywords": [],
   "author": "",

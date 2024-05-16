@@ -107,7 +107,7 @@ type StyleProcessorConfig = Partial<{
 
 type PropsKeyType = string | number;
 type StyleComposeKeyProperties = keyof typeof styleProperties;
-type StyleComposerState = Record<StyleComposeKeyProperties, StyleProcessorConfig | boolean>;
+type StyleComposerState = Record<StyleComposeKeyProperties[number], StyleProcessorConfig | boolean>;
 type StyleObject = {
     [P in keyof CSSProperties]?: string | number
 }

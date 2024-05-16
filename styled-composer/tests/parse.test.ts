@@ -1,9 +1,21 @@
 import { createStyleComposer, styleProperties } from "@/core";
 
 
+type ListKey = "a" | "b" | "c" | "d";
+
+type StyleComposerState = Record<ListKey[number], { name?: string, age?: number } | boolean>;
+
+const pp: StyleComposerState = {
+    a: {}
+}
 
 describe("동작테스트", () => {
-    const composer = createStyleComposer(styleProperties);
+    const composer = createStyleComposer({
+        mx: {
+            property: ["marginLeft", "marginRight"],
+            alias: "space"
+        }
+    });
     it("composer구성", () => {
         // const composer = createStyleComposer(styleProperties);
         expect(composer).toHaveProperty("processors");

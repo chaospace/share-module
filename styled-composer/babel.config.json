@@ -1,0 +1,11 @@
+{
+    "presets": [
+     ["@babel/preset-env", {
+        "targets":{
+            "node":"current"
+        }
+     }],   
+     ["@babel/preset-react", {"runtime":"automatic"}], // 기본 rect 임포트 작동적용
+     "@babel/preset-typescript"
+    ]
+}

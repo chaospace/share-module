@@ -8,10 +8,4 @@ const srcDir = path.resolve(appDir, "src");
 const publicDir = path.resolve(appDir, "public");
 const outDir = path.resolve(appDir, "dist");
 
-export {
-    appDir,
-    srcDir,
-    publicDir,
-    outDir,
-    workspaceDir
-}
+export { appDir, srcDir, publicDir, outDir, workspaceDir };
