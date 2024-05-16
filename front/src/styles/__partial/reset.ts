@@ -1,4 +1,5 @@
-const resetStyle = `
+import { css } from "styled-components";
+const resetStyle = css`
 *,
 *::before,
 *::after {

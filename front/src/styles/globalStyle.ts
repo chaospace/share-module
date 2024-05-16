@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import resetStyle from "./__partial/reset";
+import baseStyles from "./__partial/base";
 const GlobalStyle = createGlobalStyle`
     ${resetStyle}
     html, body {
@@ -8,6 +9,7 @@ const GlobalStyle = createGlobalStyle`
         line-height: 100%;
         font-size: 16px;
     }
+    ${baseStyles}
 `;
 
 
