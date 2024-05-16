@@ -3,6 +3,11 @@
   react를 root에 공통 모듈로 추가하면 하위 프로젝트에서는 설치없이 모듈 import가 가능.  
   명확한 표현이 좋다면 peerDependency로 해두면 좋을듯.
 
+## workspace 공유 모듈 설치 주요내용.
+ - workspace에 설치한 모듈은 내부 프로젝트서 임포트 가능.
+ - workspace 루트에 babel설정을 두고 사용할 경 포맷은<mark>babel.config.json</mark>을 사용 후 tsconfig처럼 extends후 사용가능.
+ - babel-jest를 공유할 경우는 <mark>jest.setup</mark> 파일에 <mark>transform</mark>에 path를 지정해 준다.
+
 ## 주요 모듈 설치 정리 
 - 테스트 환경구축 
   ```javascript
