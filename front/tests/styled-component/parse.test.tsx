@@ -41,15 +41,6 @@ const props = {
 }
 
 type AA = GenerateRecordType<typeof props>
-const aa: AA = {
-    name: "de",
-    profile: [],
-    user: {
-        id: 3,
-        url: ""
-    },
-    callback() { return 'ca' }
-}
 /**
  * get함수에 역할은 provider에서 key를 찾아 리턴하는 역할.
  * @param key 
@@ -57,7 +48,7 @@ const aa: AA = {
  * @param replaceValue 
  * @returns 
  */
-const get = <T extends StyleKeyType>(key: T, provider?: StyleProviderType, replaceValue?: T) => {
+const getOrReplaceValue = <T extends StyleKeyType>(key: T, provider?: StyleProviderType, replaceValue?: T) => {
     const keys = typeof key === "string" ? key.split(".") : [key];
     for (let i = 0; i < keys.length; i++) {
         if (provider !== undefined && provider[keys[i]]) {
@@ -74,39 +65,41 @@ const get = <T extends StyleKeyType>(key: T, provider?: StyleProviderType, repla
  * style을 속성 별로 처리하기 위해 사용하는 함수 선언.  
  * mx, m 과 space를 연결하기 위해 필요한게 parse처리. 
  */
-interface StyleFunctionProps {
+interface StyleProcessorProps {
     property: (string | number) | (string | number)[];
     alias: string;
     interpreter?: Function;
     defaultAlias?: string;
+
 }
 
-interface StyleParseFunction {
-    (key: StyleKeyType, provider: StyleProviderType, prelaceValue?: StyleKeyType): any;
+interface StyleProcessorFactory {
+    (props: StyleProcessorProps): StyleProcessor;
+}
+
+interface StyleProcessor {
+    (key: StyleKeyType, provider: StyleProviderType, prelaceValue?: StyleKeyType): StyledObject;
     alias: string;
     defaultAlias?: string;
 }
 
-interface CPStyleFunction {
-    (props: StyleFunctionProps): StyleParseFunction;
-}
 
-const getValue = (key: StyleKeyType, provider: StyleProviderType) => get(key, provider, key);
+const getKeyValue = (key: StyleKeyType, provider?: StyleProviderType) => getOrReplaceValue(key, provider, key);
 
 /**
  * 스타일 파싱을 위한 정보를 curring으로 기억하고 호출 시 해당 속성 값을 찾아서 리턴한다.
  * @param param0 : StyledObject타입을 리턴 -> css포맷 키를 가진 객체가 리턴된다.
  * @returns 
  */
-const styleFunction: CPStyleFunction = ({ property, alias, interpreter = getValue, defaultAlias }: StyleFunctionProps) => {
+const createStyleProcessor: StyleProcessorFactory = ({ property, alias, interpreter = getKeyValue, defaultAlias }: StyleProcessorProps) => {
 
     const nProperties = Array.isArray(property) ? property : [property];
 
-    const sx = (key: any, provider: any, replaceValue: any) => {
+    const sx = (key: any, provider?: any, replaceValue?: any) => {
         // style값을 설정 후 리턴한다.
         const style: StyledObject = {};
         const n = interpreter(key, provider, replaceValue);
-        if (n === null) return;
+        if (n === null) return style;
         for (let i = 0; i < nProperties.length; i++) {
             style[nProperties[i]] = n;
         }
@@ -119,52 +112,52 @@ const styleFunction: CPStyleFunction = ({ property, alias, interpreter = getValu
     return sx;
 }
 
-type StyleConfig = Record<string, StyleFunctionProps | boolean>;
-type StyleParseConfig = Record<string, StyleParseFunction>;
-type StyleInterpreter = StyleFunction<any & {
-    propName: string[],
-    config: StyleParseConfig
-}>;
+type StyleProcessorState = Record<string, StyleProcessorProps | boolean>;
+type StyleProcessorStore = Record<string, StyleProcessor>;
+type StyleComposer = StyleFunction<any> & {
+    propNames: string[],
+    processors: StyleProcessorStore
+};
 
-const isStyleFunctionProps = (target: StyleFunctionProps | boolean): target is StyleFunctionProps => typeof target !== "boolean";
+const isStyleProcessorProps = (target: StyleProcessorProps | boolean): target is StyleProcessorProps => typeof target !== "boolean";
 // styleFunction을 설정으로 만드는 함수.
-const composeStyleFunctions = (config: StyleConfig) => {
-    const interpreter: any = {};
+const composeStyleProcessorStore = (config: StyleProcessorState) => {
+    const store: StyleProcessorStore = {};
     for (let key in config) {
         const styleConfig = config[key];
-        const styleFn = isStyleFunctionProps(styleConfig) ? styleFunction(styleConfig) : styleFunction({ property: key, alias: key });
-        interpreter[key] = styleFn;
+        const processor = isStyleProcessorProps(styleConfig) ? createStyleProcessor(styleConfig) : createStyleProcessor({ property: key, alias: key });
+        store[key] = processor;
     }
-    return interpreter;
+    return store;
 }
 
-const composeInterpreter = (config: StyleParseConfig): StyleInterpreter => {
-    const interpreter = (props: ExecutionContext & any) => {
+const composeInterpreter = (config: StyleProcessorStore): StyleComposer => {
+    const composer = (props: ExecutionContext & any) => {
         let style: StyledObject = {};
         for (let key in props) {
             //파싱 정보가 없는 키 제외
             if (!config[key]) continue;
             //해당 키에 파싱 함수 참조
-            const styleFn = config[key];
+            const processor = config[key];
             //현재 넘어온 컴포넌트에 값 참조
             const rawValue = props[key];
             //테마에 설정한 provider값 참조
-            const provider = get(styleFn.alias, props.theme, styleFn.defaultAlias);
+            const provider = getOrReplaceValue(processor.alias, props.theme, processor.defaultAlias);
 
             if (rawValue !== null) {
-                style = Object.assign(style, styleFn(rawValue, provider as any, props));
+                style = Object.assign(style, processor(rawValue, provider as any, props));
             }
         }
         return style;
     };
-    interpreter.config = config;
-    interpreter.propNames = Object.keys(config);
-    return interpreter
+    composer.processors = config;
+    composer.propNames = Object.keys(config);
+    return composer
 }
 
-const composeInterpreterSystem = (sytemConfig: StyleConfig) => {
-    const interpreterConfig = composeStyleFunctions(sytemConfig);
-    return composeInterpreter(interpreterConfig);
+const createStyleComposer = (state: StyleProcessorState) => {
+    const store = composeStyleProcessorStore(state);
+    return composeInterpreter(store);
 }
 
 
@@ -183,7 +176,7 @@ describe.skip("styled-component스타일 파싱 테스트", () => {
 });
 
 
-describe.skip("style-get함수 테스트", () => {
+describe.skip("getOrReplaceValue 함수 테스트", () => {
     const userProvider = {
         age: 30,
         name: "chaospace",
@@ -194,44 +187,44 @@ describe.skip("style-get함수 테스트", () => {
     }
     it("key에 해당하는 값을 provider에서 찾아서 리턴한다", () => {
 
-        const value = get("name", userProvider);
+        const value = getOrReplaceValue("name", userProvider);
         expect(value).toEqual(userProvider.name);
 
     });
 
     it("중첩된 속성은 key에 .으로 구분해 지정하면 provider에서 찾아서 리턴한다.", () => {
-        const value = get("profile.url", userProvider);
+        const value = getOrReplaceValue("profile.url", userProvider);
         expect(value).toEqual(userProvider.profile.url);
     });
 
     it("key에 없는 속성은 undefined를 반환", () => {
-        const value = get("profile.job", userProvider);
+        const value = getOrReplaceValue("profile.job", userProvider);
         expect(value).toEqual(undefined);
     })
 
     it("replaceValue속성을 이용하면 key를 찾지 못한 경우 replaceValue값을 리턴한다.", () => {
         const replaceValue = "ddd";
-        const value = get("description", userProvider, replaceValue);
+        const value = getOrReplaceValue("description", userProvider, replaceValue);
         expect(value).toEqual(replaceValue);
     })
 
     it("provider는 배열형식도 찾아서 리턴한다.", () => {
-        const value = get(1, [29, "chaospace", 230]);
+        const value = getOrReplaceValue(1, [29, "chaospace", 230]);
         expect(value).toEqual("chaospace");
     });
 
     it("provider 배열일 경우 key가 length를 넘어서면 undefiend를 리턴", () => {
-        const value = get(7, [29, "chaospace", 230]);
+        const value = getOrReplaceValue(7, [29, "chaospace", 230]);
         expect(value).toEqual(undefined);
     });
 });
 
 
 describe.skip("styleFunction 테스트", () => {
-    let mxStyleFn: StyleParseFunction;
+    let mxStyleFn: StyleProcessor;
     const spaces = [1, 2, 4, 8, 12, 16, 20];
     beforeAll(() => {
-        mxStyleFn = styleFunction({
+        mxStyleFn = createStyleProcessor({
             property: ["marginLeft", "marginRight"],
             alias: "space"
         });
@@ -261,7 +254,7 @@ describe.skip("styleFunction 테스트", () => {
 });
 
 describe("composeStyleFunctions 테스트", () => {
-    const propConfig = {
+    const state = {
         mx: {
             property: ["marginLeft", "marginRight"],
             alias: "space"
@@ -285,17 +278,16 @@ describe("composeStyleFunctions 테스트", () => {
         width: true,
         height: true
     }
-    it.skip("config정보를 넘기면 styleFunction을 만들어 리턴한다.", () => {
-        const interpreters = composeStyleFunctions(propConfig);
-        // console.log(interpreters, "mx.alias", interpreters.mx.alias)
-        expect(interpreters.mx.alias).toEqual("space");
-        const keys = Object.keys(interpreters);
+    it.skip("state 정보를 넘기면 styleProcessor을 만들어 리턴한다.", () => {
+        const processorStore = composeStyleProcessorStore(state);
+        expect(processorStore.mx.alias).toEqual("space");
+        const keys = Object.keys(processorStore);
         expect(keys).toEqual(["mx", "my", "px", "width", "height"]);
     });
 
-    it("composeInterpreterSystem테스트", () => {
-        const interpreter = composeInterpreterSystem(propConfig);
-        const style = interpreter({
+    it("creaetStyleComposer 테스트", () => {
+        const composer = createStyleComposer(state);
+        const style = composer({
             theme: appTheme,
             width: 20,
             mx: 2,
