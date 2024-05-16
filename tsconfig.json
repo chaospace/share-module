@@ -5,6 +5,7 @@
         "jsx": "preserve",
         "module": "ESNext",
         "moduleResolution": "node",
+        "typeRoots":["node_modules/@types"],
         "resolveJsonModule":true,
         "esModuleInterop": true,
         // "isolatedModules": true, //모든 파일 모듈 정의필요.
