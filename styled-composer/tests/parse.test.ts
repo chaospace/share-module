@@ -5,9 +5,15 @@ type ListKey = "a" | "b" | "c" | "d";
 
 type StyleComposerState = Record<ListKey[number], { name?: string, age?: number } | boolean>;
 
-const pp: StyleComposerState = {
-    a: {}
-}
+type ArrayType<T extends any[]> = T[number] extends infer R ? R : T[number];
+
+const arr = [1, "a", "d", {
+    name: "cha",
+    age: 320
+}];
+
+type e = ArrayType<typeof arr>;
+
 
 describe("동작테스트", () => {
     const composer = createStyleComposer({
