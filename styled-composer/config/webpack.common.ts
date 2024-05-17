@@ -1,11 +1,12 @@
 import path from "path";
 import { outDir, srcDir } from "./webpack.path";
 import webpack from "webpack";
+import BundleDeclarationsWebpackPlugin from "bundle-declarations-webpack-plugin";
 const commonConfig: webpack.Configuration = {
   entry: path.resolve(srcDir, "index.ts"),
   resolve: {
     modules: ["node_modules"],
-    extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".css"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
     alias: {
       "@": srcDir,
     },
@@ -14,6 +15,12 @@ const commonConfig: webpack.Configuration = {
     clean: true,
     path: outDir,
     filename: "main.js",
+    library: {
+      type: "umd",
+      umdNamedDefine: true,
+      name: "styledComposer",
+    },
+    globalObject: "this"
   },
   module: {
     rules: [
@@ -33,7 +40,12 @@ const commonConfig: webpack.Configuration = {
       },
     ],
   },
-  plugins: [],
+  plugins: [
+    new BundleDeclarationsWebpackPlugin({
+      outFile: "index.d.ts"
+    })
+
+  ],
 };
 
 export default commonConfig;
