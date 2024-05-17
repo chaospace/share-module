@@ -44,7 +44,7 @@ const polymorphicForwardRef = React.forwardRef as ForwardRefRenderFunction;
 
 // ui element기본 속성에 추가 속성지정
 //type PropsWithElementType<E extends HTMLElement, Props extends object = {}> = React.PropsWithChildren<HTMLAttributes<E> & Props>;
-type ProspWithHTMLAttributes<T extends keyof JSX.IntrinsicElements, Props extends {}> = React.PropsWithChildren<JSX.IntrinsicElements[T] & Props>;
+type PropsWithHTMLAttributes<T extends keyof JSX.IntrinsicElements, Props extends {}> = React.PropsWithChildren<JSX.IntrinsicElements[T] & Props>;
 
-export type { PolymorphicProps, ProspWithHTMLAttributes }
+export type { PolymorphicProps, PropsWithHTMLAttributes }
 export { polymorphicForwardRef }

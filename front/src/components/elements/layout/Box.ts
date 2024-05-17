@@ -1,31 +1,49 @@
-//import { HTMLAttributes } from "react";
-import { curriedShouldForwardProp } from "@/styles/utils";
+import type { PropsWithHTMLAttributes } from "@/components/types";
 import styled from "styled-components";
+import { composer, shouldForwardAllProps } from "styled-composer";
 
 // default style
 interface BoxProps {
-    direction?: "column" | "row";
-    gap?: number;
-    padding?: string;
+    position?: string;
+    display?: string;
+    flexDirection?: string;
+    gap?: string;
+    p?: string;
+    pl?: string;
+    pr?: string;
+    pt?: string;
+    pb?: string;
+    px?: string;
+    py?: string;
+    m?: string;
+    ml?: string;
+    mt?: string;
+    mb?: string;
+    mr?: string;
+    mx?: string;
+    my?: string;
 }
 
-const Box = styled.div.withConfig({
-    shouldForwardProp: curriedShouldForwardProp(['gap', 'direction', 'padding'])
-}) <BoxProps>`
-    position: relative;
-    display: flex;
-    flex-direction: ${props => props.direction};
-    gap:${props => props?.gap || "0.5rem"};
-    padding:${props => props?.padding};
-`;
+const Box = styled("div").withConfig({
+    shouldForwardProp: shouldForwardAllProps
+})<PropsWithHTMLAttributes<"div", BoxProps>>(composer)
 
-const VBox = styled(Box)`
-    flex-direction: column;
-`
+Box.defaultProps = {
+    position: "relative",
+    display: "flex",
+    gap: "0.5rem"
+}
 
-const HBox = styled(Box)`
-    flex-direction: row;
-`
+
+const VBox = styled(Box)(composer);
+VBox.defaultProps = {
+    flexDirection: "column"
+}
+
+const HBox = styled(Box)(composer);
+HBox.defaultProps = {
+    flexDirection: "row"
+}
 
 
 export {

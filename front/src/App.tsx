@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { countHooks } from "share/Store";
 import { ThemeProvider } from "styled-components";
 import appTheme from "@/styles/theme"
-import Button from "./components/elements/button/Button";
 import Text from "./components/elements/paragraph/Text";
-import StyledButton from "./components/elements/sample/StyledButton";
-import { HBox, VBox } from "./components/layout/Box";
+import StyledButton from "@/components/elements/button/StyledButton";
+import { HBox, VBox } from "@/components/elements/layout/Box";
 
 
 const FooRef = React.forwardRef<HTMLDivElement, React.PropsWithChildren<{ color?: string }>>(({ color, children }, ref) => {
@@ -22,7 +21,7 @@ const App = () => {
 
     return (
         <ThemeProvider theme={ appTheme }>
-            <VBox as="main" padding="8px">
+            <VBox as="main" p="5">
                 <label>
                     current : <Text as="span" ref={ pRef }>{ count }</Text>
                 </label>
