@@ -1,13 +1,13 @@
+
 import { StyleComposer, createStyleComposer } from "@/core";
 import flex from "@/properties/flex";
-
 
 
 
 describe("flex 스타일 동작 확인", () => {
     let composer: StyleComposer;
     beforeAll(() => {
-        composer = createStyleComposer(flex);
+        composer = createStyleComposer(flex) as StyleComposer;
     })
     it("composer구성", () => {
         // console.log(composer.propNames);

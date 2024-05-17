@@ -5,7 +5,11 @@ import flex from "@/properties/flex";
 import position from "@/properties/position";
 import size from "@/properties/size";
 import space from "@/properties/space";
+import typography from "@/properties/typography";
 import { CSSProperties } from "react"
+
+const isArray = (o: unknown): o is [] => Array.isArray(o);
+
 
 const keyword = {
     ...position,
@@ -14,7 +18,8 @@ const keyword = {
     ...border,
     ...size,
     ...bg,
-    ...flex
+    ...flex,
+    ...typography
 } as const;
 
 const allKeywordName = Object.keys(keyword);
@@ -34,14 +39,24 @@ type StyleObject = {
     [P in keyof CSSProperties]?: string | number
 }
 
-type StyleProcessor = <T>(key: T, provider: any, replaceValue: T) => T & {
-    alias: string,
-    defalutAlias: string | number
+type CSSComposerObject = {
+    [P in StyleStateKeyWord]?: number | string | (number | string)[];
 }
 
-type ProcessorStore = Record<StyleStateKeyWord[number], StyleProcessor>;
+interface StyleProcessor {
+    (key: any, provider: any, replaceValue: any): any;
+    alias?: string;
+    defaultAlias?: string | number | (number | string)[];
+}
 
-type StyleComposer = (...args: any[]) => any & { propNames: StyleStateKeyWord[number][], processors: ProcessorStore }
+
+type ProcessorStore = Record<StyleStateKeyWord[number], StyleProcessor>;
+type ComposerContext<Props extends object = {}> = { theme?: any } & CSSComposerObject & Props;
+interface StyleComposer {
+    <Props extends object = {}>(props: ComposerContext<Props>): any;
+    propNames: StyleStateKeyWord[number][],
+    processors: ProcessorStore;
+}
 
 const getOrReplaceValue = <T extends PropsKeyType>(key: T, provider?: any, replaceValue?: T) => {
     const keys = typeof key === "string" ? key.split(".") : [key];
@@ -61,13 +76,13 @@ const getKeyValue = (key: string | number, provider: StyleValueType) => getOrRep
 const isStyleProcessorConfig = (b: StyleProcessorParameter | boolean): b is StyleProcessorParameter => typeof b !== "boolean";
 
 const createStyleProcessor = ({ property, alias, interpreter = getKeyValue, defaultAlias }: StyleProcessorParameter): StyleProcessor => {
-    const properties = Array.isArray(property) ? property : [property];
+    const properties = isArray(property) ? property : [property as string];
     const processor = (key: any, provider: any, replaceValue: any) => {
         const style: any = {};
         const n = interpreter(key, provider, replaceValue);
         if (n === null) return style;
         for (let i = 0; i < properties.length; i++) {
-            style[properties[i]!] = n;
+            style[properties[i]] = n;
         }
         return style;
     }
@@ -91,12 +106,12 @@ const createStyleProcessorStore = (state: StyleComposerState) => {
 
 const createStyleComposer = (state: StyleComposerState = keyword): StyleComposer => {
     const processorStore = createStyleProcessorStore(state);
-    const composer = (context: any) => {
+    const composer = <Props extends object = {}>(context: ComposerContext<Props>) => {
         const style: StyleObject = {};
         for (let key in context) {
             const processor = processorStore[key];
             if (!processor) continue;
-            const rawValue = context[key];
+            const rawValue = context[key as StyleStateKeyWord];
             const provider = getOrReplaceValue(processor.alias, context.theme, processor.defaultAlias);
             if (rawValue !== null) {
                 Object.assign(style, processor(rawValue, provider, context));
@@ -112,7 +127,8 @@ const createStyleComposer = (state: StyleComposerState = keyword): StyleComposer
 
 export type {
     StyleComposer,
-    StyleStateKeyWord
+    StyleStateKeyWord,
+    CSSComposerObject
 }
 export {
     createStyleProcessor,

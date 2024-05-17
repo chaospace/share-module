@@ -1,19 +1,19 @@
 
 const size = {
     width: {
-        proerty: "width",
+        property: "width",
         alias: "size"
     },
     height: {
-        proerty: "height",
+        property: "height",
         alias: "size"
     },
     maxWidth: {
-        proerty: "maxWidth",
+        property: "maxWidth",
         alias: "size"
     },
     maxHeight: {
-        proerty: "maxHeight",
+        property: "maxHeight",
         alias: "size"
     }
 }

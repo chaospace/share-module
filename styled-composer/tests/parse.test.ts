@@ -1,4 +1,4 @@
-import { createStyleComposer, styleProperties } from "@/core";
+import { createStyleComposer } from "@/core";
 
 
 type ListKey = "a" | "b" | "c" | "d";
@@ -43,6 +43,6 @@ describe("동작테스트", () => {
             borderColor: 'blue.2'
         });
         console.log('style', style);
-        // expect(style.width).toEqual(100);
     });
+
 })
