@@ -1,4 +1,4 @@
-import { curriedShouldForwardProp, getVariantColor } from "@/styles/utils";
+import { getVariantColor } from "@/styles/utils";
 import { VariantCategory } from "styled";
 import styled from "styled-components";
 import { variant } from "@/colors";
@@ -15,7 +15,7 @@ const textColor = getVariantColor("variant", "light", variant);
 const borderColor = getVariantColor("variant", "dark", variant);
 
 const StyledButton = styled.button.withConfig({
-    shouldForwardProp: curriedShouldForwardProp(['color', "borderRadius", "padding"])
+    shouldForwardProp: prop => !['color', "borderRadius", "padding"].includes(prop)
 }) <StyledButtonProps>`
     font:inherit;
     padding:0.5rem 1rem;

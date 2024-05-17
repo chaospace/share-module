@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from "react";
+import React from "react";
 
 /**
  * as를 이용한 polymorphic컴포넌트 타입 내용정리
@@ -43,8 +43,10 @@ type ForwardRefRenderFunction = <
 const polymorphicForwardRef = React.forwardRef as ForwardRefRenderFunction;
 
 // ui element기본 속성에 추가 속성지정
-//type PropsWithElementType<E extends HTMLElement, Props extends object = {}> = React.PropsWithChildren<HTMLAttributes<E> & Props>;
 type PropsWithHTMLAttributes<T extends keyof JSX.IntrinsicElements, Props extends {}> = React.PropsWithChildren<JSX.IntrinsicElements[T] & Props>;
+type PropsWithCSSAttributes<T> = T & {
+    css?: any;
+}
 
-export type { PolymorphicProps, PropsWithHTMLAttributes }
+export type { PolymorphicProps, PropsWithHTMLAttributes, PropsWithCSSAttributes }
 export { polymorphicForwardRef }

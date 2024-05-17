@@ -1,27 +1,46 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { countHooks } from "share/Store";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import appTheme from "@/styles/theme"
 import Text from "./components/elements/paragraph/Text";
 import StyledButton from "@/components/elements/button/StyledButton";
 import { HBox, VBox } from "@/components/elements/layout/Box";
+import Button from "./components/elements/button/Button";
 
 
-const FooRef = React.forwardRef<HTMLDivElement, React.PropsWithChildren<{ color?: string }>>(({ color, children }, ref) => {
-    return (
-        <span ref={ ref }>{ children }</span>
-    )
-})
+const Foo = styled.div.withConfig({
+    shouldForwardProp: prop => !["backgroundColor"].includes(prop)
+}) <{ backgroundColor?: string }>`
+    position: relative;
+    padding: 8px;
+    border: 1px solid black;
+`;
+
+const Foo2 = styled("div").withConfig({
+    shouldForwardProp: prop => !["backgroundColor"].includes(prop)
+})<{ backgroundColor?: string }>((props) => ({
+    backgroundColor: props.backgroundColor,
+    padding: "8px",
+    "&:hover": {
+        backgroundColor: "#ff0000"
+    }
+}));
+Foo2.defaultProps = {
+    backgroundColor: "#ffcc00"
+}
 
 const App = () => {
     const count = countHooks.useCount();
     const setCount = countHooks.useSetCount();
     const pRef = useRef<HTMLSpanElement>(null);
 
-
+    const [boxPadding, setBoxPadding] = useState(5);
+    const onChangeBoxPadding = () => {
+        setBoxPadding(~~(Math.random() * 10))
+    }
     return (
         <ThemeProvider theme={ appTheme }>
-            <VBox as="main" p="5">
+            <VBox as="main" p={ boxPadding }>
                 <label>
                     current : <Text as="span" ref={ pRef }>{ count }</Text>
                 </label>
@@ -40,7 +59,7 @@ const App = () => {
                     Next, we wrap our definition using the utility types that React provides to complete the props for a specified element. Typically, we statically write the tag, for example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass the E type.
                 </Text>
                 <HBox>
-                    <StyledButton variant="success">
+                    <StyledButton variant="success" onClick={ onChangeBoxPadding }>
                         success
                     </StyledButton>
                     <StyledButton>
@@ -59,9 +78,15 @@ const App = () => {
                         primary
                     </StyledButton>
                 </HBox>
-
+                <Foo>
+                    일반스타일드 컴포넌트
+                </Foo>
+                <Foo2>
+                    배경있는 스타일드 컴포넌트
+                </Foo2>
+                <Button>이건 어떻게 보이나요<br />줄바꿈 텍스트</Button>
             </VBox >
-        </ThemeProvider>
+        </ThemeProvider >
     )
 }
 

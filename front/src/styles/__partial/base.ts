@@ -7,6 +7,7 @@ const baseStyles = css`
         outline: none;
         border-style: solid;
         border-width: 1px;
+        line-height: 1.6;
     }
 
     input[type='text'],
