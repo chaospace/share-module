@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "webpack-cli --mode production --config ./config/webpack.prod.ts",
+    "serve": "webpack serve --config ./config/webpack.dev.ts",
+    "build": "webpack --mode production --config ./config/webpack.prod.ts",
     "build:type": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {

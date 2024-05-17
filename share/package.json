@@ -16,7 +16,6 @@
   },
   "devDependencies": {
     "msw": "^2.2.14",
-    "undici": "^6.16.0",
-    "webpack-dev-server": "^5.0.4"
+    "undici": "^6.16.0"
   }
 }
