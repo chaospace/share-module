@@ -6,7 +6,10 @@ import Typography from "./components/elements/Typography";
 import { HBox, VBox } from "@/components/elements/Box";
 import Button from "./components/elements/Button";
 import Input from "@/components/elements/Input";
+import Select from "./components/elements/Select";
 
+
+const options = ["딸기", "참외", "수박"];
 
 const App = () => {
     const count = countHooks.useCount();
@@ -63,17 +66,13 @@ const App = () => {
                     <Typography>As a CSS utility component, the Typography component supports all system properties. You can use them as prop directly on the component. For example, here's how you'd add a margin-top</Typography>
                     <Typography>아크시스템웍스 아시아지점은 qureate사의 연애 어드벤처 게임 Nintendo Switch™ 『버니 가든』의 정식 한국어화 제작이 결정되었다고 발표하며, 게임 정보를 공개했다</Typography>
                 </VBox>
-                <Typography>Form element</Typography>
+                <Typography variant="title">Form element</Typography>
                 <VBox>
                     <Input type="text" />
                     <Input type="text" className="inValid" />
 
                     <Input type="number" />
-                    <select>
-                        <option value="">수박</option>
-                        <option value="">딸기</option>
-                        <option value="">참외</option>
-                    </select>
+                    <Select<string> options={ options } />
                 </VBox>
             </VBox >
         </ThemeProvider >
