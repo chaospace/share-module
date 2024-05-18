@@ -15,36 +15,38 @@ const common = {
     white: '#fff',
 }
 
+
+
 const variant: VariantType = {
     default: {
         main: grey[500],
         light: grey[200],
-        dark: grey[800]
+        dark: grey[700]
     },
     primary: {
         main: indigo[500],
-        light: indigo[200],
-        dark: indigo[800]
+        light: indigo[100],
+        dark: indigo[700]
     },
     success: {
         main: teal[500],
-        light: teal[200],
+        light: teal[100],
         dark: teal[800]
     },
     warning: {
         main: amber[500],
-        light: amber[200],
-        dark: amber[800]
+        light: amber[100],
+        dark: amber[700]
     },
     info: {
         main: deepPurple[500],
-        light: deepPurple[200],
-        dark: deepPurple[800]
+        light: deepPurple[100],
+        dark: deepPurple[900]
     },
     danger: {
         main: red[500],
-        light: red[200],
-        dark: red[800]
+        light: red[100],
+        dark: red[900]
     }
 }
 
