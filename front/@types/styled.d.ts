@@ -10,18 +10,18 @@ import 'styled-components';
 // 타입을 통해 모두 같은 값을 넣고 싶다면?
 // 여러 타입을 재귀로 해결하고 싶을 때는 그럼 튜블로 받아서 처리해야 할까/
 
-type ThemeMode = "light" | "dark";
-type Hex = `#${string}`;
-type ColorCategory = "main" | "dark" | "light";
-type VariantCategory = "default" | "primary" | "success" | "info" | "warning" | "danger";
+declare type ThemeMode = "light" | "dark";
+declare type Hex = `#${string}`;
+declare type ColorCategory = "main" | "dark" | "light";
+declare type VariantCategory = "default" | "primary" | "success" | "info" | "warning" | "danger";
 
-type SetKeyValueType<Keys extends keyof any, Type> = {
+declare type SetKeyValueType<Keys extends keyof any, Type> = {
     [K in Keys]: Type
 }
-type VariantColorType = SetKeyValueType<ColorCategory, string>;
+declare type VariantColorType = SetKeyValueType<ColorCategory, string>;
 // 모드 적용 시 적용타입
-type VariantColorThemeType = SetKeyValueType<ThemeMode, VariantColorType>;
-type VariantType = SetKeyValueType<VariantCategory, VariantColorType>;
+declare type VariantColorThemeType = SetKeyValueType<ThemeMode, VariantColorType>;
+declare type VariantType = SetKeyValueType<VariantCategory, VariantColorType>;
 /**
     default:{dark:{main:"", light:"", dark:""}, light:{}};
     일반 js로는 어떻게 구성할까?
@@ -36,11 +36,11 @@ declare module 'styled-components' {
     }
 }
 
-export type {
-    VariantCategory,
-    VariantType,
-    VariantColorType,
-    VariantColorThemeType,
-    ColorCategory,
-    Hex
-}
+// export type {
+//     VariantCategory,
+//     VariantType,
+//     VariantColorType,
+//     VariantColorThemeType,
+//     ColorCategory,
+//     Hex
+// }
