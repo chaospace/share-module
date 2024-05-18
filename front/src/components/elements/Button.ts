@@ -2,17 +2,22 @@ import { PropsWithHTMLAttributes } from "@/components/types";
 import styled, { ExecutionContext, css } from "styled-components";
 import { CSSComposerObject, composer, shouldForwardAllProps } from "styled-composer";
 import { VariantCategory, VariantColorType } from "styled";
+import { variant } from "@/colors";
 
 type ButtonProps = PropsWithHTMLAttributes<"button", { variant?: VariantCategory } & CSSComposerObject>;
+
+const buttonVariant = {
+    ...variant
+}
+
 const vriantHoverComposer = (props: ExecutionContext & ButtonProps) => {
-    const variant: VariantColorType = props.theme.variant[props.variant!];
+    const variantColor: VariantColorType = buttonVariant[props.variant!];
     return {
-        color: variant.light,
-        backgroundColor: variant.main,
-        borderColor: variant.dark,
+        color: variantColor.light,
+        backgroundColor: variantColor.main,
+        borderColor: variantColor.dark,
         "&:hover": {
-            // color: variant.main,
-            backgroundColor: variant.dark
+            backgroundColor: variantColor.dark
         }
     }
 }
