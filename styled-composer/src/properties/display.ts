@@ -3,6 +3,8 @@ const display = {
     overflow: true,
     overflowX: true,
     overflowY: true,
+    opacity: true,
+    visibility: true
 }
 
 
