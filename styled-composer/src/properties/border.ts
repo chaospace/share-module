@@ -8,7 +8,14 @@ const border = {
     borderColor: {
         property: "borderColor",
         alias: "colors"
-    }
+    },
+    outline: true,
+    outlineColor: {
+        property: "outlineColor",
+        alias: "colors"
+    },
+    outlineWidth: true,
+    outlineStyle: true
 }
 
 

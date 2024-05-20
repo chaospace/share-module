@@ -2,7 +2,7 @@ import styled, { ExecutionContext } from "styled-components";
 import { PropsWithHTMLAttributes } from "../types";
 import { CSSComposerObject, composer as defaultComposr, shouldForwardAllProps } from "styled-composer";
 import { variant } from "@/colors";
-import { shouldForwardCSSProps } from "@/styles/utils";
+
 
 
 interface InputProps extends CSSComposerObject { };
@@ -11,11 +11,13 @@ const inputVariant = {
     light: {
         borderColor: variant.default.main,
         focus: {
-            borderColor: variant.primary.main
+            outlineColor: variant.primary.dark,
+            borderColor: variant.primary.main,
         },
         invalid: {
             borderColor: variant.danger.main,
-            backgroundColor: variant.danger.light
+            backgroundColor: variant.danger.light,
+            outlineColor: variant.danger.dark,
         }
     },
     dark: {
@@ -46,6 +48,12 @@ const Input = styled("input").withConfig({
     ${composer}
 `;
 
-Input.defaultProps = {}
+const SearchInput = styled(Input).attrs({ type: "search" })`
+    &::-webkit-search-cancel-button{
+        appearance: none;
+    }
+`;
+
+export { SearchInput };
 
 export default Input;
