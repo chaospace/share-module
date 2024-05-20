@@ -1,5 +1,5 @@
 import { PropsWithHTMLAttributes } from "@/components/types";
-import styled, { ExecutionContext, css } from "styled-components";
+import styled, { ExecutionContext } from "styled-components";
 import { CSSComposerObject, composer, shouldForwardAllProps } from "styled-composer";
 import { VariantCategory, VariantColorType } from "styled";
 import { variant } from "@/colors";
@@ -28,7 +28,5 @@ const Button = styled.button.withConfig({ shouldForwardProp: shouldForwardAllPro
 `
 Button.defaultProps = {
     variant: "default",
-    borderRadius: "0.25rem",
-    fontWeight: "bold"
 }
 export default Button;

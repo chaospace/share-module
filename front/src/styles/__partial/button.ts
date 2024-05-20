@@ -13,6 +13,8 @@ const baseStyles = css`
         white-space: nowrap;
         padding:0.5rem 1rem;
         align-items: center;
+        font-weight: bold;
+        border-radius: 0.25rem;
     }
 `;
 
