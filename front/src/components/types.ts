@@ -16,6 +16,7 @@ type Merge<A, B> = Omit<A, keyof B> & B;
 type DistributiveOmit<A, K extends keyof any> = A extends any ? Omit<A, K> : never;
 type DistributiveMerge<A, B> = DistributiveOmit<A, keyof B> & B;
 
+
 type PolymorphicProps<E extends React.ElementType, OverrideProps extends object, ComponentProps extends object> = DistributiveMerge<ComponentProps, OverrideProps & { as?: E }>
 
 type PolymorphicWithRef<
