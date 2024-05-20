@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "lint": "eslint -c ../eslint.config.js --debug",
     "serve": "webpack serve --mode=development --config=./config/webpack.dev.ts",
     "node": "ts-node"
   },
