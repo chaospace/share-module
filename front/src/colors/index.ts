@@ -11,8 +11,8 @@ import deepPurple from "./deepPurple";
 import { VariantType } from "../../@types/styled";
 
 const common = {
-    black: '#000',
-    white: '#fff',
+    black: "#000",
+    white: "#fff",
 }
 
 

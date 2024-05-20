@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { countHooks } from "share/Store";
-import styled, { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components";
 import appTheme from "@/styles/theme"
 import Typography from "./components/elements/Typography";
 import { HBox, VBox } from "@/components/elements/Box";
@@ -34,16 +34,16 @@ const App = () => {
     }
 
     const onChangeSelect = (o: string) => {
-        console.log('change-select', o);
+        console.log("change-select", o);
     }
     const onChangeSelect2 = (o: typeof options2[0]) => {
-        console.log('select2-o', o.label);
+        console.log("select2-o", o.label);
     }
 
     return (
         <ThemeProvider theme={ appTheme }>
             <VBox as="main" p={ boxPadding }>
-                <label>
+                <label aaa="ee">
                     current : <Typography as="span" ref={ pRef as any }>{ count }</Typography>
                 </label>
                 <HBox>
@@ -92,7 +92,7 @@ const App = () => {
                     <Input type="text" className="inValid" />
 
                     <Input type="number" />
-                    <Select defaultValue="참외" options={ options } onChange={ onChangeSelect } />
+                    <Select defaultValue='참외' options={ options } onChange={ onChangeSelect } />
                     <Select defaultValue="옵션3" options={ options2 } onChange={ onChangeSelect2 } />
                 </VBox>
                 <VBox>

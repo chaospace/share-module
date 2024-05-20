@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { ExecutionContext } from "styled-components";
-import { CSSComposerObject, composer, composer as defaultComposr, shouldForwardAllProps } from "styled-composer";
+import { CSSComposerObject, composer as defaultComposr, } from "styled-composer";
 import { PropsWithHTMLAttributes, polymorphicForwardRef } from "../types";
 import { shouldForwardCSSProps } from "@/styles/utils";
 
@@ -22,7 +22,7 @@ const typoVariant = {
     }
 }
 
-interface TypographyProps extends PropsWithHTMLAttributes<'p', CSSComposerObject> {
+interface TypographyProps extends PropsWithHTMLAttributes<"p", CSSComposerObject> {
     variant?: keyof typeof typoVariant;
 };
 
@@ -36,7 +36,7 @@ const comopser = (props: ExecutionContext & TypographyProps) => {
 
 // 이 방식에 문제점. as속성이 없으면 기본속성을 추론 못함.
 const Typo = styled("p").withConfig({
-    shouldForwardProp: shouldForwardCSSProps(['variant'])
+    shouldForwardProp: shouldForwardCSSProps(["variant"])
 }) <TypographyProps>`
     ${defaultComposr}
     ${comopser}
