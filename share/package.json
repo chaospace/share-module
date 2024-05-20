@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint -c ../eslint.config.js",
     "test": "jest",
     "serve": "webpack serve --mode=development --config=./config/webpack.dev.ts",
     "build": "webpack --mode=development --config=./config/webpack.dev.ts"

@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
+    "lint": "eslint -c ../eslint.config.js",
     "serve___": "webpack serve --config ./config/webpack.dev.ts",
     "build": "webpack --mode production --config ./config/webpack.prod.ts",
     "build:type": "tsc --emitDeclarationOnly"

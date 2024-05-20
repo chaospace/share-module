@@ -4,8 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "pnpm -r lint",
     "front": "pnpm -F front",
     "composer": "pnpm -F styled-composer",
     "share": "pnpm -F share",
@@ -51,6 +49,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-styled-components": "^7.2.0",
+    "lint-staged": "^15.2.2",
     "react-test-renderer": "^18.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
