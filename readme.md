@@ -120,3 +120,56 @@
   - 호스트 프로젝트는 import("경로")를 통해 비동기로 모듈 참조
   - 동기식으로 가져오려면 eager옵션 적용
   
+  ## eslint v9 내용정리
+   - 설정 파일 방식이 flat방식으로 변경되어 기존 plugins, extends 키워드를 더이상 사용하지 않음.
+   - 커맨드라인에서 --ext 옵션도 더이상 사용하지 않음. 
+  <pre>eslint --c 설정파일 위치(eslint.config.(m?js))</pre>
+   - float한 형식으로 개별 설정을 배열로 넘기는 방식.
+   - 장점 - plugin마다 설정을 다르게 할 수 있어 선택적인 옵션을 적용할 수 있다.
+   - 단점 - 아직 초기단계라 이전 설정처럼 적용하려면 삽질을 꽤 해야된다. 
+  ```javascript
+    // eslint.config.js
+    
+    // 각 설정은 크게 {files, plugins, rules, languageOptions} 으로 구성된다.
+    const tseslint = require("typescript-eslint"); // @typescript-eslint/eslint-plugin, @typescript-eslint/parser을 포함
+    const reactRecommended = require("eslint-plugin-react"); 
+    const {fixupPluginRules} = require("@eslint/compat"); // 이전 사용하던 모듈 flat형식 변경에 사용되는 플러그인
+    const defaultConfig = tseslint.config({
+      files:["**/src/*.{ts,tsx}"] // src폴더에 모든 ts,tsx파일을 대상으로 함.
+      plugins:{                   // 기존 배열방식에서 객체방식으로 변경
+        "@typescript-eslint":tseslint.plugin // namespace alias설정  
+      },
+      languageOptions:{
+        parser:tseslint.parser,
+        parserOptions:{
+          project:[]  // 프로젝트 tsconfig파일 위치 workspace형식이라면 여러개 지정.
+          tsConfigRootDir: __dirname 
+        }
+      },
+      rules:{       // rule정보는 기존과 동일하게 설정
+        "@typescript-eslint/quotes":[],
+        "@typescript-eslint/no-unused-vars":[]
+      }
+    });
+
+    const reactEsList = {
+      files:[], 
+      plugins:{
+        react:fixupPluginRules(reactRecommended)
+      },
+      languageOptoins:{
+        ...reactRecommended.configs.recommeded.languageOptions 
+      },
+      rules:{
+        ...reactRecommended.configs.recommeded.rules 
+      }
+    }
+
+    const config = [
+      defaultConfig[0], // typescript-eslint   설정
+      reactEsLint,      // eslint-plugin-react 설정
+      {}  //설정
+    ];
+    module.exports = config;
+  ```
+   - <mark>eslint/compat</mark>을 쓰는 이유 : 일부 plugin이 eslint에서 요구하는 스펙을 제공하지 않아 발생하는 에러를 해결해주기 때문.
