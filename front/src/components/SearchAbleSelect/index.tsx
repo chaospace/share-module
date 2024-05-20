@@ -1,11 +1,11 @@
+import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useId, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { VBox } from "@/components/elements/Box";
 import { SearchInput } from "@/components/elements/Input";
 import { Close } from "@styled-icons/material-rounded";
 import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from "../elements/Select";
-import { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent, act, useCallback, useId, useMemo, useRef, useState } from "react";
 import { variant } from "@/colors";
-import { debounce } from "@/components/util";
+
 //https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-none
 
 const ClearIcon = styled(Close)`
@@ -27,7 +27,7 @@ const InputContainer = styled.div`
 `;
 
 const OptionContainer = styled.ul<{ open?: boolean }>`
-    display: ${({ open }) => open ? 'block' : "none"};
+    display: ${({ open }) => open ? "block" : "none"};
     border-radius: 0.5rem;
     box-shadow: 4px 4px 4px rgb(0 0 0 / 10%);
     overflow: hidden;
@@ -66,12 +66,12 @@ const allowKeys = ["ArrowDown", "ArrowUp", "Enter", " "];
 
 function SearchAbleSelect({
     options = [],
-    value = '',
-    defaultValue = '',
+    value = "",
+    defaultValue = "",
     getLabel = labelGetter,
     getValue = valueGetter }: SearchAbleSelectProps) {
 
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState("");
     const [select, setSelect] = useState(getValue(defaultValue || value));
     const [activeIndex, setActiveIndex] = useState(options.findIndex(o => o.label === select));
     const [openList, setOpenList] = useState(false);
