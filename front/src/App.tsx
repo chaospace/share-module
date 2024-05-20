@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { countHooks } from "share/Store";
 import { ThemeProvider } from "styled-components";
 import appTheme from "@/styles/theme"
@@ -36,14 +36,11 @@ const App = () => {
     const onChangeSelect = (o: string) => {
         console.log("change-select", o);
     }
-
     const onChangeSelect2 = (o: typeof options2[0]) => {
-        console.log('select2-o', o.label);
+        console.log("select2-o", o.label);
     }
 
-    const _doublePadding = useMemo(() => {
-        return boxPadding * 2;
-    }, []);
+
 
 
 
