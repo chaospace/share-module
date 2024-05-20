@@ -7,9 +7,21 @@ import { HBox, VBox } from "@/components/elements/Box";
 import Button from "./components/elements/Button";
 import Input from "@/components/elements/Input";
 import Select from "./components/elements/Select";
+import SearchAbleSelect from "./components/SearchAbleSelect";
 
 
 const options = ["딸기", "참외", "수박"];
+const options2 = [
+    {
+        label: "옵션2",
+    },
+    {
+        label: "옵션1",
+    },
+    {
+        label: "옵션3"
+    }
+]
 
 const App = () => {
     const count = countHooks.useCount();
@@ -20,6 +32,14 @@ const App = () => {
     const onChangeBoxPadding = () => {
         setBoxPadding(~~(Math.random() * 10))
     }
+
+    const onChangeSelect = (o: string) => {
+        console.log('change-select', o);
+    }
+    const onChangeSelect2 = (o: typeof options2[0]) => {
+        console.log('select2-o', o.label);
+    }
+
     return (
         <ThemeProvider theme={ appTheme }>
             <VBox as="main" p={ boxPadding }>
@@ -72,8 +92,14 @@ const App = () => {
                     <Input type="text" className="inValid" />
 
                     <Input type="number" />
-                    <Select<string> options={ options } />
+                    <Select defaultValue="참외" options={ options } onChange={ onChangeSelect } />
+                    <Select defaultValue="옵션3" options={ options2 } onChange={ onChangeSelect2 } />
                 </VBox>
+                <VBox>
+                    <Typography variant="title">검색 가능한 셀렉트</Typography>
+                    <SearchAbleSelect options={ options2 } />
+                </VBox>
+
             </VBox >
         </ThemeProvider >
     )
