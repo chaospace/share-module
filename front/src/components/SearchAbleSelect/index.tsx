@@ -1,10 +1,10 @@
-import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useId, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
-import { VBox } from "@/components/elements/Box";
-import { SearchInput } from "@/components/elements/Input";
-import { Close } from "@styled-icons/material-rounded";
-import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from "../elements/Select";
-import { variant } from "@/colors";
+import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useId, useMemo, useRef, useState } from 'react';
+import styled from 'styled-components';
+import { VBox } from '@/components/elements/Box';
+import { SearchInput } from '@/components/elements/Input';
+import { Close } from '@styled-icons/material-rounded';
+import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from '../elements/Select';
+import { variant } from '@/colors';
 
 //https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-none
 
@@ -27,7 +27,7 @@ const InputContainer = styled.div`
 `;
 
 const OptionContainer = styled.ul<{ open?: boolean }>`
-    display: ${({ open }) => open ? "block" : "none"};
+    display: ${({ open }) => open ? 'block' : 'none'};
     border-radius: 0.5rem;
     box-shadow: 4px 4px 4px rgb(0 0 0 / 10%);
     overflow: hidden;
@@ -57,7 +57,7 @@ interface SearchAbleSelectProps {
     value?: any;
 }
 
-const allowKeys = ["ArrowDown", "ArrowUp", "Enter", " "];
+const allowKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
 
 /**
  * Select에서 검색기능만 추가하면 된다.
@@ -66,12 +66,12 @@ const allowKeys = ["ArrowDown", "ArrowUp", "Enter", " "];
 
 function SearchAbleSelect({
     options = [],
-    value = "",
-    defaultValue = "",
+    value = '',
+    defaultValue = '',
     getLabel = labelGetter,
     getValue = valueGetter }: SearchAbleSelectProps) {
 
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = useState('');
     const [select, setSelect] = useState(getValue(defaultValue || value));
     const [activeIndex, setActiveIndex] = useState(options.findIndex(o => o.label === select));
     const [openList, setOpenList] = useState(false);
@@ -92,8 +92,8 @@ function SearchAbleSelect({
 
     const onChangeInput = ({ target }: ChangeEvent<HTMLInputElement>) => {
         setQuery(target.value);
-        if (target.value === "") {
-            setSelect("");
+        if (target.value === '') {
+            setSelect('');
         }
     }
 
@@ -102,8 +102,8 @@ function SearchAbleSelect({
     }
 
     const onClickClear = useCallback(() => {
-        setQuery("");
-        setSelect("");
+        setQuery('');
+        setSelect('');
         setActiveIndex(-1);
         inputRef.current?.focus();
     }, []);
@@ -135,7 +135,7 @@ function SearchAbleSelect({
         }
 
         switch (key) {
-            case "ArrowDown":
+            case 'ArrowDown':
                 setActiveIndex(prev => {
                     if (prev + 1 < options.length) {
                         return prev + 1;
@@ -143,7 +143,7 @@ function SearchAbleSelect({
                     return prev;
                 });
                 break;
-            case "ArrowUp":
+            case 'ArrowUp':
                 setActiveIndex(prev => {
                     if (prev - 1 > -1) {
                         return prev - 1;
@@ -151,7 +151,7 @@ function SearchAbleSelect({
                     return prev;
                 });
                 break;
-            case "Enter":
+            case 'Enter':
                 setSelect(options[activeIndex].label);
                 setQuery(options[activeIndex].label);
                 setOpenList(false);
@@ -174,30 +174,30 @@ function SearchAbleSelect({
             <InputContainer >
                 <SearchInput
 
-                    role="combobox"
+                    role='combobox'
                     aria-activedescendant={ selectOptionID }
                     aria-controls={ listID }
                     ref={ inputRef }
                     value={ query }
-                    placeholder="검색어를 넣어주세요..."
+                    placeholder='검색어를 넣어주세요...'
                     onChange={ onChangeInput }
                     onBlur={ onBlur }
                     onKeyDown={ onKeyDown }
                     onFocus={ onFocusInput }
                 />
                 <ClearIcon ref={ clearRef } tabIndex={ 0 }
-                    display={ hasQuery ? "block" : "none" }
+                    display={ hasQuery ? 'block' : 'none' }
                     size={ 20 }
                     onClick={ () => onClickClear() }
                     onKeyDown={ (e) => {
-                        if (e.key === "Enter") {
+                        if (e.key === 'Enter') {
                             onClickClear();
                         }
                     } } />
             </InputContainer>
             <OptionContainer
                 id={ listID }
-                role="listbox"
+                role='listbox'
                 tabIndex={ -1 }
                 ref={ listRef }
                 open={ openList }
@@ -210,7 +210,7 @@ function SearchAbleSelect({
                         id={ selected ? selectOptionID : undefined }
                         aria-selected={ selected }
                         data-current={ activeIndex === idx }
-                        role="option"
+                        role='option'
                         onClick={ () => onClickOption(vo, idx) }>
                         { vo.label }
                     </OptionItem>)

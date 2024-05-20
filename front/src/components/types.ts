@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 /**
  * as를 이용한 polymorphic컴포넌트 타입 내용정리

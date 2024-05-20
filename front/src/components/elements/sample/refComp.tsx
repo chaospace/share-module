@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 type Merge<A, B> = Omit<A, keyof B> & B;
@@ -43,12 +43,12 @@ type PolyRefFunction = <
     OnlyAs extends React.ElementType = React.ElementType
 >
     (
-        Component: React.ForwardRefRenderFunction<Default, Props & { as?: OnlyAs }>
+        Component: React.ForwardRefRenderFunction<any, Props & { as?: OnlyAs }>
     ) => PolyForwardComponent<Default, Props, OnlyAs>;
 
 const polymorphicFowardRef = React.forwardRef as PolyRefFunction;
 
-const Box = polymorphicFowardRef<"div", { open?: boolean }>(({ as: Element = "div", ...props }, ref) => {
+const Box = polymorphicFowardRef<'div', { open?: boolean }, 'p' | 'span' | 'div'>(({ as: Element = 'div', ...props }, ref) => {
     return (
         <Element ref={ ref } { ...props } />
     )

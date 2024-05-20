@@ -1,18 +1,18 @@
-import green from "./green";
-import blue from "./blue";
-import lightBlue from "./lightBlue";
-import lightGreen from "./lightGreen";
-import amber from "./amber";
-import indigo from "./indigo";
-import red from "./red";
-import teal from "./teal";
-import grey from "./grey";
-import deepPurple from "./deepPurple";
-import { VariantType } from "../../@types/styled";
+import green from './green';
+import blue from './blue';
+import lightBlue from './lightBlue';
+import lightGreen from './lightGreen';
+import amber from './amber';
+import indigo from './indigo';
+import red from './red';
+import teal from './teal';
+import grey from './grey';
+import deepPurple from './deepPurple';
+import { VariantType } from '../../@types/styled';
 
 const common = {
-    black: "#000",
-    white: "#fff",
+    black: '#000',
+    white: '#fff',
 }
 
 

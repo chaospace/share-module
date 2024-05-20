@@ -1,9 +1,9 @@
 /**
  * 테마 유틸함수
  */
-import { PropsWithCSSAttributes } from "@/components/types";
-import { ColorCategory, VariantType } from "styled";
-import { composer, shouldForwardAllProps } from "styled-composer";
+import { PropsWithCSSAttributes } from '@/components/types';
+import { ColorCategory, VariantType } from 'styled';
+import { composer, shouldForwardAllProps } from 'styled-composer';
 
 const getVariantColor = (key: string, subKey: ColorCategory, values: VariantType) => {
     return <T extends { [key: string]: any }>(props: T) => {

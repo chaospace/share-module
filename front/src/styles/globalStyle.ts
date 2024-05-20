@@ -1,8 +1,8 @@
-import { createGlobalStyle } from "styled-components";
-import resetStyle from "./__partial/reset";
-import buttonStyles from "./__partial/button";
-import formStyles from "./__partial/form";
-import typographyStyle from "./__partial/typography";
+import { createGlobalStyle } from 'styled-components';
+import resetStyle from './__partial/reset';
+import buttonStyles from './__partial/button';
+import formStyles from './__partial/form';
+import typographyStyle from './__partial/typography';
 
 const GlobalStyle = createGlobalStyle`
     ${resetStyle}

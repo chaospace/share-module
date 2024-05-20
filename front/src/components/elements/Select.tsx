@@ -1,9 +1,9 @@
-import React, { ChangeEvent } from "react";
-import styled from "styled-components";
-import { CSSComposerObject, composer, shouldForwardAllProps } from "styled-composer";
-import { PropsWithHTMLAttributes } from "../types";
+import React, { ChangeEvent } from 'react';
+import styled from 'styled-components';
+import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
+import { PropsWithHTMLAttributes } from '../types';
 
-interface SelectBaseProps extends PropsWithHTMLAttributes<"select", CSSComposerObject> { }
+interface SelectBaseProps extends PropsWithHTMLAttributes<'select', CSSComposerObject> { }
 interface SelectProps extends SelectBaseProps {
     options: any[],
     getLabel?(o: any): string;
@@ -11,7 +11,7 @@ interface SelectProps extends SelectBaseProps {
     onChange?(o: any): void;
 }
 
-const Base = styled("select").withConfig({
+const Base = styled('select').withConfig({
     shouldForwardProp: shouldForwardAllProps
 })<SelectBaseProps>(composer);
 type OptionType = { label: string, value: string };

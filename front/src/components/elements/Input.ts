@@ -1,7 +1,7 @@
-import styled, { ExecutionContext } from "styled-components";
-import { PropsWithHTMLAttributes } from "../types";
-import { CSSComposerObject, composer as defaultComposr, shouldForwardAllProps } from "styled-composer";
-import { variant } from "@/colors";
+import styled, { ExecutionContext } from 'styled-components';
+import { PropsWithHTMLAttributes } from '../types';
+import { CSSComposerObject, composer as defaultComposr, shouldForwardAllProps } from 'styled-composer';
+import { variant } from '@/colors';
 
 
 
@@ -35,20 +35,20 @@ const inputVariant = {
 const composer = (props: ExecutionContext & InputProps) => {
     const variant = inputVariant[props.theme.mode];
     return {
-        "&:focus": variant.focus,
-        "&.invalid": variant.invalid
+        '&:focus': variant.focus,
+        '&.invalid': variant.invalid
     }
 }
 
 
-const Input = styled("input").withConfig({
+const Input = styled('input').withConfig({
     shouldForwardProp: shouldForwardAllProps
-}) <PropsWithHTMLAttributes<"input", InputProps>>`
+}) <PropsWithHTMLAttributes<'input', InputProps>>`
     ${defaultComposr}
     ${composer}
 `;
 
-const SearchInput = styled(Input).attrs({ type: "search" })`
+const SearchInput = styled(Input).attrs({ type: 'search' })`
     &::-webkit-search-cancel-button{
         appearance: none;
     }

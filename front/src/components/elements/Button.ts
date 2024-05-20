@@ -1,10 +1,10 @@
-import { PropsWithHTMLAttributes } from "@/components/types";
-import styled, { ExecutionContext } from "styled-components";
-import { CSSComposerObject, composer, shouldForwardAllProps } from "styled-composer";
-import { VariantCategory, VariantColorType } from "styled";
-import { variant } from "@/colors";
+import { PropsWithHTMLAttributes } from '@/components/types';
+import styled, { ExecutionContext } from 'styled-components';
+import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
+import { VariantCategory, VariantColorType } from 'styled';
+import { variant } from '@/colors';
 
-type ButtonProps = PropsWithHTMLAttributes<"button", { variant?: VariantCategory } & CSSComposerObject>;
+type ButtonProps = PropsWithHTMLAttributes<'button', { variant?: VariantCategory } & CSSComposerObject>;
 
 const buttonVariant = {
     ...variant
@@ -16,7 +16,7 @@ const vriantHoverComposer = (props: ExecutionContext & ButtonProps) => {
         color: variantColor.light,
         backgroundColor: variantColor.main,
         borderColor: variantColor.dark,
-        "&:hover": {
+        '&:hover': {
             backgroundColor: variantColor.dark
         }
     }
@@ -27,6 +27,6 @@ const Button = styled.button.withConfig({ shouldForwardProp: shouldForwardAllPro
     ${vriantHoverComposer};
 `
 Button.defaultProps = {
-    variant: "default",
+    variant: 'default',
 }
 export default Button;
