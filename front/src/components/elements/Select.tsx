@@ -1,8 +1,7 @@
+import React, { ChangeEvent } from "react";
 import styled from "styled-components";
 import { CSSComposerObject, composer, shouldForwardAllProps } from "styled-composer";
 import { PropsWithHTMLAttributes } from "../types";
-import React, { ChangeEvent } from "react";
-
 
 interface SelectBaseProps extends PropsWithHTMLAttributes<"select", CSSComposerObject> { }
 interface SelectProps extends SelectBaseProps {
@@ -22,13 +21,13 @@ const defaultLabel = (o: any) => o.label || o.value || o;
 const composeOptionItem = (o: any, labelGetter: Getter, valueGetter: Getter): OptionType => {
     return { label: labelGetter(o), value: valueGetter(o) };
 }
-const Select = ({ ref,
+const Select = ({
+    ref: _ref,
     options = [],
     getLabel = defaultLabel,
     getValue = defaultValue,
     onChange,
     ...rest }: SelectProps) => {
-
     const onChangeHandler = ({ target }: ChangeEvent<HTMLSelectElement>) => {
         const select = options[target.selectedIndex];
         onChange && onChange(select);
