@@ -36,6 +36,7 @@ const App = () => {
     const onChangeSelect = (o: string) => {
         console.log("change-select", o);
     }
+
     const onChangeSelect2 = (o: typeof options2[0]) => {
         console.log('select2-o', o.label);
     }
