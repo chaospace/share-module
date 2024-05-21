@@ -4,8 +4,10 @@ const formStyles = css`
     input[type='text'],
     input[type='tel'],
     input[type='url'], 
+    input[type="file"],
     input[type="search"],
     input[type='email'],
+    input[type='password'],
     input[type='number'], 
     select,
     textarea {
@@ -15,6 +17,10 @@ const formStyles = css`
         padding:0.5rem 1rem;
         border-width: 1px;
         border-radius:.5rem;
+    }
+
+    input[type='search']::-webkit-search-cancel-button{
+        appearance: none;
     }
     
     select {
