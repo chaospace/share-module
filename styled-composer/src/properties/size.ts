@@ -1,20 +1,20 @@
 
 const size = {
     width: {
-        property: "width",
-        alias: "size"
+        property: 'width',
+        alias: 'size'
     },
     height: {
-        property: "height",
-        alias: "size"
+        property: 'height',
+        alias: 'size'
     },
     maxWidth: {
-        property: "maxWidth",
-        alias: "size"
+        property: 'maxWidth',
+        alias: 'size'
     },
     maxHeight: {
-        property: "maxHeight",
-        alias: "size"
+        property: 'maxHeight',
+        alias: 'size'
     }
 }
 

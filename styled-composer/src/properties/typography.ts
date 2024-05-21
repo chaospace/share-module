@@ -1,7 +1,7 @@
 const typography = {
     fontSize: {
-        property: "fontSize",
-        alias: "typography"
+        property: 'fontSize',
+        alias: 'typography'
     },
     lineHeight: true,
     fontWeight: true,

@@ -6,13 +6,13 @@ const border = {
     borderStyle: true,
     borderRadius: true,
     borderColor: {
-        property: "borderColor",
-        alias: "colors"
+        property: 'borderColor',
+        alias: 'colors'
     },
     outline: true,
     outlineColor: {
-        property: "outlineColor",
-        alias: "colors"
+        property: 'outlineColor',
+        alias: 'colors'
     },
     outlineWidth: true,
     outlineStyle: true

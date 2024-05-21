@@ -1,24 +1,24 @@
 const position = {
     position: true,
     top: {
-        property: "top",
-        alias: "space"
+        property: 'top',
+        alias: 'space'
     },
     left: {
-        property: "left",
-        alias: "space"
+        property: 'left',
+        alias: 'space'
     },
     right: {
-        property: "right",
-        alias: "space"
+        property: 'right',
+        alias: 'space'
     },
     bottom: {
-        property: "bottom",
-        alias: "space"
+        property: 'bottom',
+        alias: 'space'
     },
     zIndex: {
-        property: "zIndex",
-        alias: "zIndices"
+        property: 'zIndex',
+        alias: 'zIndices'
     }
 }
 

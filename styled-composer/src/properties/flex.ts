@@ -1,7 +1,7 @@
 const flex = {
     gap: {
-        property: "gap",
-        alias: "space"
+        property: 'gap',
+        alias: 'space'
     },
     flexDirection: true,
     flexGrow: true,

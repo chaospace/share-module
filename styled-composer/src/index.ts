@@ -1,4 +1,4 @@
-import { createStyleComposer, keyword, allKeywordName } from "@/core";
+import { createStyleComposer, keyword, allKeywordName } from '@/core';
 
 const composer = createStyleComposer(keyword);
 

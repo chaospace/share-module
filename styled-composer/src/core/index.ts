@@ -1,12 +1,12 @@
-import bg from "@/properties/background";
-import border from "@/properties/border";
-import display from "@/properties/display";
-import flex from "@/properties/flex";
-import position from "@/properties/position";
-import size from "@/properties/size";
-import space from "@/properties/space";
-import typography from "@/properties/typography";
-import { CSSProperties } from "react"
+import bg from '@/properties/background';
+import border from '@/properties/border';
+import display from '@/properties/display';
+import flex from '@/properties/flex';
+import position from '@/properties/position';
+import size from '@/properties/size';
+import space from '@/properties/space';
+import typography from '@/properties/typography';
+import { CSSProperties } from 'react'
 
 const isArray = (o: unknown): o is [] => Array.isArray(o);
 
@@ -59,7 +59,7 @@ interface StyleComposer {
 }
 
 const getOrReplaceValue = <T extends PropsKeyType>(key: T, provider?: any, replaceValue?: T) => {
-    const keys = typeof key === "string" ? key.split(".") : [key];
+    const keys = typeof key === 'string' ? key.split('.') : [key];
     for (let i = 0; i < keys.length; i++) {
         if (provider !== undefined && provider[keys[i]]) {
             provider = provider[keys[i]];
@@ -73,7 +73,7 @@ const getOrReplaceValue = <T extends PropsKeyType>(key: T, provider?: any, repla
 
 const getKeyValue = (key: string | number, provider: StyleValueType) => getOrReplaceValue(key, provider, key);
 
-const isStyleProcessorConfig = (b: StyleProcessorParameter | boolean): b is StyleProcessorParameter => typeof b !== "boolean";
+const isStyleProcessorConfig = (b: StyleProcessorParameter | boolean): b is StyleProcessorParameter => typeof b !== 'boolean';
 
 const createStyleProcessor = ({ property, alias, interpreter = getKeyValue, defaultAlias }: StyleProcessorParameter): StyleProcessor => {
     const properties = isArray(property) ? property : [property as string];
