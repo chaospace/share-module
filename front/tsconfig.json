@@ -4,11 +4,12 @@
         "composite": true,
         "typeRoots":["../node_modules/@types", "node_modules/@types", "./@mf-types", "./@types"],
         "paths": {
-            // "*":["./@mf-types/*"],
-            "@/*":["./src/*"]
+            "@/*":["./src/*", "../src/*"]
         }
     },
     "include": [
+        ".storybook/*.ts",
+        ".storybook/*.tsx",
         "config/*.ts",
         "src/**/*.ts",
         "src/**/*.tsx",

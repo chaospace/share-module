@@ -213,3 +213,6 @@
     }
   </pre>
 - monorepo라면 .lintstagedrc.js를 폴더별 루트에 생성하면 된다.
+
+## storybook 설정 
+ - root에 storybook을 초기화 후 하위 프로젝트마다 .storybook폴더를 구성 후 사용.
