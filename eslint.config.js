@@ -29,11 +29,6 @@ const tsconfig = tseslint.config({
       },
     ],
   },
-  settings: {
-    react: {
-      version: "18.3.1",
-    },
-  },
 });
 
 const arules = {};
@@ -44,7 +39,7 @@ for (let p in eslintReactRecommended.rules) {
 }
 
 const reactRecommended = {
-  files: ["src/**/*.{tsx,ts}"],
+  // files: ["src/**/*.{tsx,ts}"],
   plugins: {
     react: fixupPluginRules(eslintReactRecommended),
   },
@@ -54,9 +49,14 @@ const reactRecommended = {
   rules: {
     ...eslintReactRecommended.configs.recommended.rules,
   },
+  settings: {
+    react: {
+      version: "18.3.1",
+    },
+  },
 };
 const reactHooks = {
-  files: ["src/**/*.{tsx,ts}"],
+  // files: ["src/**/*.{tsx,ts}"],
   plugins: {
     "react-hooks": fixupPluginRules(eslintReactHooks),
   },

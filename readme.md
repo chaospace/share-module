@@ -153,7 +153,6 @@
     });
 
     const reactEsList = {
-      files:[], 
       plugins:{
         react:fixupPluginRules(reactRecommended)
       },
@@ -165,6 +164,8 @@
       }
     }
 
+    // 배열로 전달하면 내부에서 merge를 하는 듯 
+    // files설정을 앞에서 하면 뒤에는 필요없음.
     const config = [
       defaultConfig[0], // typescript-eslint   설정
       reactEsLint,      // eslint-plugin-react 설정
