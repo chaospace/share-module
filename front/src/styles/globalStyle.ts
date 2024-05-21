@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
     html, body {
         margin:0;
         padding:0;
-        line-height: 100%;
+        line-height:normal;
         font-size: 16px;
     }
     ${buttonStyles}
