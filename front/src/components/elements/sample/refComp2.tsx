@@ -1,4 +1,6 @@
-import React from "react";
+
+
+import React from 'react';
 
 type Merge<A = object, B = object> = Omit<A, keyof B> & B;
 type MergeProps<E, P = object> = P & Merge<E extends React.ElementType ? React.ComponentPropsWithRef<E> : never, P>;
@@ -16,8 +18,11 @@ interface ForwardRefComponent<IntrinsicElementString, OwnProps = object>
 }
 
 // 리맵핑을 통한 처리. 타입지정을 as를 통한 단언으로 적용
-const Box2 = React.forwardRef(({ as: Element = "div", ...props }, forwaredRef) => {
+
+/* eslint-disable react/display-name, react/prop-types */
+const Box2 = React.forwardRef(({ as: Element = 'div', ...props }, forwaredRef) => {
     return <Element ref={ forwaredRef } { ...props } />
-}) as ForwardRefComponent<"div">;
+}) as ForwardRefComponent<'div'>;
+/* eslint-enable react/display-name, react/prop-types */
 
 export default Box2;
