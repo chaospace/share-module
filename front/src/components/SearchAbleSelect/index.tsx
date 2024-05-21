@@ -1,24 +1,30 @@
 import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useId, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
-import { SearchInput } from '@/components/elements/Input';
+import Input from '@/components/elements/Input';
 import { Close } from '@styled-icons/material-rounded';
 import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from '../elements/Select';
 import { variant } from '@/colors';
 
 //https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-none
 
-const ClearIcon = styled(Close)`
-    display:${({ display }) => display};
+const ClearIcon = styled('button') <{ display: string }>`
+    padding:0;
+    background: none;
+    top:50%;
+    border:none;
+    display: ${({ display }) => display};
+    &:focus{
+        border:1px solid;
+    }
 `;
 
 const InputContainer = styled.div`
     position: relative;
-    ${SearchInput} {
+    ${Input} {
         width: 100%;
     }
     ${ClearIcon} {
-        cursor: pointer;
         position: absolute;
         right: 16px;
         top: 50%;
@@ -82,7 +88,7 @@ function SearchAbleSelect({
 
     const inputRef = useRef<HTMLInputElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
-    const clearRef = useRef<SVGSVGElement>(null);
+    const clearRef = useRef<HTMLButtonElement>(null);
 
     const hasQuery = document.activeElement === inputRef.current && query.length > 0;
 
@@ -111,7 +117,7 @@ function SearchAbleSelect({
     const onBlur = (e: FocusEvent<HTMLElement>) => {
         // 옵션 클릭시 리턴처리
         const { relatedTarget } = e;
-
+        // console.log('blur-e', relatedTarget);
         if (listRef.current?.contains(relatedTarget)) {
             e.preventDefault();
             inputRef.current?.focus();
@@ -172,8 +178,8 @@ function SearchAbleSelect({
     return (
         <VBox>
             <InputContainer >
-                <SearchInput
-
+                <Input
+                    type="search"
                     role='combobox'
                     aria-activedescendant={ selectOptionID }
                     aria-controls={ listID }
@@ -185,15 +191,12 @@ function SearchAbleSelect({
                     onKeyDown={ onKeyDown }
                     onFocus={ onFocusInput }
                 />
-                <ClearIcon ref={ clearRef } tabIndex={ 0 }
+                <ClearIcon ref={ clearRef }
                     display={ hasQuery ? 'block' : 'none' }
-                    size={ 20 }
-                    onClick={ () => onClickClear() }
-                    onKeyDown={ (e) => {
-                        if (e.key === 'Enter') {
-                            onClickClear();
-                        }
-                    } } />
+                    onClick={ onClickClear }
+                >
+                    <Close size={ 20 } />
+                </ClearIcon>
             </InputContainer>
             <OptionContainer
                 id={ listID }

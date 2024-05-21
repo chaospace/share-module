@@ -8,6 +8,7 @@ import Button from './components/elements/Button';
 import Input from '@/components/elements/Input';
 import Select from './components/elements/Select';
 import SearchAbleSelect from './components/SearchAbleSelect';
+import SearchInput from './components/elements/SearchInput';
 
 
 const options = ['딸기', '참외', '수박'];
@@ -103,7 +104,7 @@ const App = () => {
                     <Typography variant='title'>검색 가능한 셀렉트</Typography>
                     <SearchAbleSelect options={ options2 } />
                 </VBox>
-
+                <SearchInput />
             </VBox >
         </ThemeProvider >
     )
