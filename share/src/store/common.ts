@@ -1,6 +1,6 @@
 
 //타입 단언
-const isFunc = (value: unknown): value is Function => typeof value === "function";
+const isFunc = (value: unknown): value is Function => typeof value === 'function';
 
 
 const curriedSetter = <U>(key: string, next: U, prev: U) => {

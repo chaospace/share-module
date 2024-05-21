@@ -1,6 +1,6 @@
-import { useStore } from "zustand";
-import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from "./types";
-import { curriedSetter, getNextState } from "./common";
+import { useStore } from 'zustand';
+import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from './types';
+import { getNextState } from './common';
 
 const ACTION = { SET_SELECT: 'SET_SELECT', SET_POKEMONS: 'SET_POKEMONS' }
 

@@ -1,5 +1,5 @@
-import { setupServer } from "msw/node";
-import handlers from "@/mocks/server/handlers";
+import { setupServer } from 'msw/node';
+import handlers from '@/mocks/server/handlers';
 
 
 

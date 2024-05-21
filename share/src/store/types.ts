@@ -1,4 +1,4 @@
-import { StateCreator, StoreApi } from "zustand";
+import { StateCreator, StoreApi } from 'zustand';
 
 
 type StateUpdater<S> = ((prev: S) => S);
@@ -29,7 +29,7 @@ type StateHooks<S, K extends keyof S = keyof S> = {
 
 type StateHookCreator<State, Store extends StoreApi<State> = StoreApi<State>> = (store: Store) => StateHooks<State>;
 
-type StateCreatorEnhancer<State> = StateCreator<State, [["zustand/immer", never], ["zustand/devtools", never]], [], State>;
+type StateCreatorEnhancer<State> = StateCreator<State, [['zustand/immer', never], ['zustand/devtools', never]], [], State>;
 
 export type {
     State,

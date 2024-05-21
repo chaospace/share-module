@@ -1,9 +1,9 @@
 //스토어 생성
-import { StoreApi, createStore, useStore } from "zustand";
-import { type PokemonState, createPokemonState, createPokemonHooks } from "./pokemonState";
-import { type CountState, createCountState, createCountHooks } from "./countState";
-import { devtools } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
+import { StoreApi, createStore, useStore } from 'zustand';
+import { type PokemonState, createPokemonState, createPokemonHooks } from './pokemonState';
+import { type CountState, createCountState, createCountHooks } from './countState';
+import { devtools } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 
 interface ShareModuleStore extends PokemonState, CountState { }
 

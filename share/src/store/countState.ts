@@ -1,6 +1,6 @@
-import { useStore } from "zustand";
-import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from "./types";
-import { getNextState } from "./common";
+import { useStore } from 'zustand';
+import type { PropsSelector, State, StateCreatorEnhancer, StateHookCreator } from './types';
+import { getNextState } from './common';
 
 
 interface CountProps {
@@ -8,7 +8,7 @@ interface CountProps {
 }
 
 const ACTION = {
-    SET_COUNT: "SET_COUNT"
+    SET_COUNT: 'SET_COUNT'
 }
 
 type CountState = State<CountProps>;
