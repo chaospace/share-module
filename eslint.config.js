@@ -3,7 +3,6 @@ const tseslint = require("typescript-eslint");
 const eslintReactRecommended = require("eslint-plugin-react");
 const eslintReactHooks = require("eslint-plugin-react-hooks");
 const { fixupPluginRules } = require("@eslint/compat");
-const { plugins } = require("eslint-plugin-react/configs/all");
 
 const tsconfig = tseslint.config({
   files: ["src/**/*.{tsx,ts}"],
@@ -13,17 +12,13 @@ const tsconfig = tseslint.config({
   languageOptions: {
     parser: tseslint.parser,
     parserOptions: {
-      project: [
-        "tsconfig.json",
-        "./front/tsconfig.json",
-        "./share/tsconfig.json",
-        "./styled-composer/tsconfig.json",
-      ],
+      project: true, // 실행 위치에서 가장 가까운 tsconfig참조
       tsConfigRootDir: __dirname,
     },
   },
   rules: {
-    "@typescript-eslint/quotes": ["error", "double", { avoidEscape: true }],
+    "jsx-quotes": ["warn", "prefer-single"],
+    "@typescript-eslint/quotes": ["warn", "single", { avoidEscape: true }],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
@@ -49,7 +44,7 @@ for (let p in eslintReactRecommended.rules) {
 }
 
 const reactRecommended = {
-  files: ["src/**/*.tsx", "src/**/*.ts"],
+  files: ["src/**/*.{tsx,ts}"],
   plugins: {
     react: fixupPluginRules(eslintReactRecommended),
   },
@@ -72,6 +67,13 @@ const reactHooks = {
 };
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
-const config = [...tsconfig, reactRecommended, reactHooks];
+const config = [
+  ...tsconfig,
+  reactRecommended,
+  reactHooks,
+  {
+    ignores: ["node_modules/**", "dist/**", "config/**", "assets/**"],
+  },
+];
 
 module.exports = config;
