@@ -174,3 +174,42 @@
     module.exports = config;
   ```
    - <mark>eslint/compat</mark>을 쓰는 이유 : 일부 plugin이 eslint에서 요구하는 스펙을 제공하지 않아 발생하는 에러를 해결해주기 때문.
+
+## husky, lint-staged 설정
+ - eslint, prettier 체크를 매번하는건 비효율 적이니 commit전에 체크를 하기 위해 사용.
+    <pre>
+      // husky설치
+      pnpm add -D husky
+      // husky 초기화 (.husky폴더 및 pre-commit생성)
+      pnpm exec husky init
+      // lint-staged 설치
+      pnpm add -D lint-staged
+    </pre>
+- pre-commit파일 편집
+  <pre>
+    #!/usr/bin/env sh
+    . "$(dirname -- "$0")/_/husky.sh"
+    echo "🔍 commit 이전에 lint 규칙을 적용합니다..."
+    if pnpm exec lint-staged; then
+      echo "✅ 모든 lint 규칙이 성공적으로 적용되었습니다."
+      exit 0
+    else
+      echo "❌ lint 규칙 검사에서 오류가 발생했습니다."
+      exit 1
+    fi
+  </pre>
+- lint-staged명령 추가(package.json 또는 .lintstagedrc.js )
+  <pre>
+   // .lintstagedrc.js
+    {
+      "*.{tsx,ts}": "pnpm lint",
+    };
+
+    // package.json
+    {
+      "lint-staged":{
+        "*.{tsx,ts}": "pnpm lint"
+      }
+    }
+  </pre>
+- monorepo라면 .lintstagedrc.js를 폴더별 루트에 생성하면 된다.
