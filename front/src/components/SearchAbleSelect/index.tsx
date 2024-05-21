@@ -1,36 +1,12 @@
 import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useId, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
-import Input from '@/components/elements/Input';
-import { Close } from '@styled-icons/material-rounded';
 import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from '../elements/Select';
 import { variant } from '@/colors';
+import SearchInput from '../elements/SearchInput';
 
 //https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-none
 
-const ClearIcon = styled('button') <{ display: string }>`
-    padding:0;
-    background: none;
-    top:50%;
-    border:none;
-    display: ${({ display }) => display};
-    &:focus{
-        border:1px solid;
-    }
-`;
-
-const InputContainer = styled.div`
-    position: relative;
-    ${Input} {
-        width: 100%;
-    }
-    ${ClearIcon} {
-        position: absolute;
-        right: 16px;
-        top: 50%;
-        transform: translate(0%, -50%);
-    }
-`;
 
 const OptionContainer = styled.ul<{ open?: boolean }>`
     display: ${({ open }) => open ? 'block' : 'none'};
@@ -88,9 +64,7 @@ function SearchAbleSelect({
 
     const inputRef = useRef<HTMLInputElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
-    const clearRef = useRef<HTMLButtonElement>(null);
 
-    const hasQuery = document.activeElement === inputRef.current && query.length > 0;
 
     const uniqueId = useId();
     const listID = `list${uniqueId}`;
@@ -117,12 +91,9 @@ function SearchAbleSelect({
     const onBlur = (e: FocusEvent<HTMLElement>) => {
         // 옵션 클릭시 리턴처리
         const { relatedTarget } = e;
-        // console.log('blur-e', relatedTarget);
         if (listRef.current?.contains(relatedTarget)) {
             e.preventDefault();
             inputRef.current?.focus();
-            return;
-        } else if (clearRef.current?.contains(relatedTarget)) {
             return;
         } else if (select) {
             setQuery(select);
@@ -177,27 +148,19 @@ function SearchAbleSelect({
     }
     return (
         <VBox>
-            <InputContainer >
-                <Input
-                    type="search"
-                    role='combobox'
-                    aria-activedescendant={ selectOptionID }
-                    aria-controls={ listID }
-                    ref={ inputRef }
-                    value={ query }
-                    placeholder='검색어를 넣어주세요...'
-                    onChange={ onChangeInput }
-                    onBlur={ onBlur }
-                    onKeyDown={ onKeyDown }
-                    onFocus={ onFocusInput }
-                />
-                <ClearIcon ref={ clearRef }
-                    display={ hasQuery ? 'block' : 'none' }
-                    onClick={ onClickClear }
-                >
-                    <Close size={ 20 } />
-                </ClearIcon>
-            </InputContainer>
+            <SearchInput
+                role='combobox'
+                aria-activedescendant={ selectOptionID }
+                aria-controls={ listID }
+                ref={ inputRef }
+                value={ query }
+                placeholder='검색어를 넣어주세요...'
+                onChange={ onChangeInput }
+                onBlur={ onBlur }
+                onKeyDown={ onKeyDown }
+                onFocus={ onFocusInput }
+                onClickReset={ onClickClear }
+            />
             <OptionContainer
                 id={ listID }
                 role='listbox'

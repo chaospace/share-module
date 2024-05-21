@@ -48,12 +48,4 @@ const Input = styled('input').withConfig({
     ${composer}
 `;
 
-const SearchInput = styled(Input).attrs({ type: 'search' })`
-    &::-webkit-search-cancel-button{
-        appearance: none;
-    }
-`;
-
-export { SearchInput };
-
 export default Input;
