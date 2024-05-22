@@ -1,11 +1,10 @@
 import webpack from "webpack";
 import "webpack-dev-server"; //devServer type참조를 위한 import
 import merge from "webpack-merge";
-
 import commonConfig from "./webpack.common";
-import { outDir, publicDir } from "./webpack.path";
+import { outDir } from "./webpack.path";
 
-const devConfig: webpack.Configuration = {
+const config: webpack.Configuration = {
     watch: true,
     devServer: {
         static: { directory: outDir },
@@ -20,4 +19,4 @@ const devConfig: webpack.Configuration = {
 };
 
 
-export default merge(commonConfig, devConfig);
+export default merge(commonConfig, config);
