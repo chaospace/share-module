@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import SearchAbleSelect from '.';
+import AutoComplete from '.';
 import { within, fireEvent, expect } from '@storybook/test';
 import { sleep } from '../util';
 
 const provider = Array.from({ length: 20 }).map((_, idx) => ({ label: `옵션-${idx}` }));
 
 const meta = {
-    title: 'front/SearchAbleSelect',
-    component: SearchAbleSelect,
+    title: 'front/AutoComplete',
+    component: AutoComplete,
     parameters: {
         layout: 'fullscreen'
     },
@@ -15,7 +15,7 @@ const meta = {
     args: {
         options: provider
     }
-} satisfies Meta<typeof SearchAbleSelect>;
+} satisfies Meta<typeof AutoComplete>;
 
 export default meta;
 

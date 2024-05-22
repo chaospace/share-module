@@ -7,7 +7,7 @@ import { HBox, VBox } from '@/components/elements/Box';
 import Button from './components/elements/Button';
 import Input from '@/components/elements/Input';
 import Select from './components/elements/Select';
-import SearchAbleSelect from './components/SearchAbleSelect';
+import AutoComplete from './components/autocomplete';
 import SearchInput from './components/elements/SearchInput';
 
 
@@ -67,7 +67,7 @@ const App = () => {
                 </Typography>
                 <VBox>
                     <Typography variant='title'>검색 가능한 셀렉트</Typography>
-                    <SearchAbleSelect options={ options } />
+                    <AutoComplete options={ options } />
                 </VBox>
                 <HBox>
                     <Button variant='success' onClick={ onChangeBoxPadding }>

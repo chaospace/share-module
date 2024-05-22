@@ -38,7 +38,7 @@ const OptionItem = styled.li<{ active?: boolean }>`
     }
 `;
 
-interface SearchAbleSelectProps {
+interface AutoCompleteProps {
     options?: any[],
     getLabel?(o: any): string;
     getValue?(o: any): string;
@@ -68,12 +68,12 @@ const getSelectOptionLabel = (select: HTMLElement) => select.textContent;
  * Autocomplete
  * @returns 
  */
-function SearchAbleSelect({
+function AutoComplete({
     options = [],
     value = '',
     defaultValue = '',
     getLabel = labelGetter,
-    getValue = valueGetter }: SearchAbleSelectProps) {
+    getValue = valueGetter }: AutoCompleteProps) {
 
     const provider = useMemo(() => {
         return options.map(o => ({ label: getLabel(o), value: getValue(o) }));
@@ -130,7 +130,6 @@ function SearchAbleSelect({
                     listRef.current.style.transform = 'translate(0,-100%)';
                 }
             }
-
         }
     }, [openList])
 
@@ -218,6 +217,19 @@ function SearchAbleSelect({
     }
 
 
+    const renderList = (filteredOptions.length ? filteredOptions.map((o, idx) => {
+        const selected = select === o.label;
+        return (<OptionItem key={ o.label }
+            role='option'
+            id={ selected ? selectOptionID : undefined }
+            aria-selected={ activeIndex === idx }
+            ref={ (ele) => {
+                optionItemRef.current[idx] = ele;
+            } }
+            onClick={ () => onClickOption(idx) }>
+            { o.label }
+        </OptionItem>)
+    }) : <OptionItem>검색결과 없음</OptionItem>);
 
     return (
         <VBox gap='1'>
@@ -226,8 +238,10 @@ function SearchAbleSelect({
                 role='combobox'
                 aria-activedescendant={ selectOptionID }
                 aria-controls={ listID }
+                aria-expanded={ openList }
                 ref={ inputRef }
                 value={ query }
+                aria-autocomplete='list'
                 placeholder='검색어를 넣어주세요...'
                 onChange={ onChangeInput }
                 onBlur={ onBlur }
@@ -242,21 +256,8 @@ function SearchAbleSelect({
                 tabIndex={ -1 }
                 ref={ listRef }
                 open={ openList }
-                aria-expanded={ openList }
                 onBlur={ onBlur } >
-                { filteredOptions.length ? filteredOptions.map((o, idx) => {
-                    const selected = select === o.label;
-                    return (<OptionItem key={ o.label }
-                        role='option'
-                        id={ selected ? selectOptionID : undefined }
-                        aria-selected={ activeIndex === idx }
-                        ref={ (ele) => {
-                            optionItemRef.current[idx] = ele;
-                        } }
-                        onClick={ () => onClickOption(idx) }>
-                        { o.label }
-                    </OptionItem>)
-                }) : <OptionItem>검색결과 없음</OptionItem> }
+                { renderList }
             </OptionContainer>
         </VBox >
     )
@@ -264,4 +265,4 @@ function SearchAbleSelect({
 
 
 
-export default SearchAbleSelect;
+export default AutoComplete;
