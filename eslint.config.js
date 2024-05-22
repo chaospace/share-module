@@ -72,7 +72,13 @@ const config = [
   reactRecommended,
   reactHooks,
   {
-    ignores: ["node_modules/**", "dist/**", "config/**", "assets/**"],
+    ignores: [
+      "node_modules/**",
+      "dist/**",
+      "config/**",
+      "assets/**",
+      ".storybook/**",
+    ],
   },
 ];
 
