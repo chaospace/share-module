@@ -1,8 +1,8 @@
-import React, { FocusEvent, MouseEvent } from "react";
-import { PropsWithHTMLAttributes, polymorphicForwardRef } from "../types";
-import styled from "styled-components";
-import Input from "./Input";
-import { CSSComposerObject } from "styled-composer";
+import React, { FocusEvent, MouseEvent } from 'react';
+import { PropsWithHTMLAttributes, polymorphicForwardRef } from '../types';
+import styled from 'styled-components';
+import Input from './Input';
+import { CSSComposerObject } from 'styled-composer';
 import { Close } from '@styled-icons/material-rounded';
 
 const ClearButton = styled.button<{ display?: string }>`
@@ -32,18 +32,17 @@ interface SearchInputProps extends CSSComposerObject {
     onClickReset?(e: MouseEvent<HTMLButtonElement>): void
 }
 
-const SearchInput = polymorphicForwardRef<"input", PropsWithHTMLAttributes<"input", SearchInputProps>>(({ value, onClickReset, onChange, onKeyDown, onBlur, ...rest }, forwardedRef) => {
+const SearchInput = polymorphicForwardRef<'input', PropsWithHTMLAttributes<'input', SearchInputProps>>(({ value, onClickReset, onChange, onKeyDown, onBlur, ...rest }, forwardedRef) => {
     const onBlurHandler = (e: FocusEvent<HTMLInputElement>) => {
         //버튼이 아닐경우만 blur를 발생시킴.
-        console.log('blur', e.relatedTarget?.tagName)
-        if (e.relatedTarget?.tagName.toLocaleLowerCase() !== "button") {
+        if (e.relatedTarget?.tagName.toLocaleLowerCase() !== 'button') {
             onBlur && onBlur(e);
         }
     }
-    const resetDisplay = value ? 'inline-block' : "none";
+    const resetDisplay = value ? 'inline-block' : 'none';
     return (
         <Container>
-            <Input type="search"
+            <Input type='search'
                 ref={ forwardedRef }
                 value={ value }
                 onChange={ onChange }
@@ -57,5 +56,5 @@ const SearchInput = polymorphicForwardRef<"input", PropsWithHTMLAttributes<"inpu
     )
 });
 
-
+export type { SearchInputProps };
 export default SearchInput;

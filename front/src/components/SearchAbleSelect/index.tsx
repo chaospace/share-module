@@ -1,26 +1,33 @@
-import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useId, useMemo, useRef, useState } from 'react';
+import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
-import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from '../elements/Select';
-import { variant } from '@/colors';
-import SearchInput from '../elements/SearchInput';
+import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from '@/components/elements/Select';
+import { variant, grey } from '@/colors';
+import SearchInput from '@/components/elements/SearchInput';
 
 //https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-none
 
 
 const OptionContainer = styled.ul<{ open?: boolean }>`
+    position: absolute;
+    z-index: 100;
+    top:100%;
+    width:100%;
     display: ${({ open }) => open ? 'block' : 'none'};
     border-radius: 0.5rem;
-    box-shadow: 4px 4px 4px rgb(0 0 0 / 10%);
-    overflow: hidden;
+    /* box-shadow: 0px 4px 4px rgb(0 0 0 / 10%); */
+    border:1px solid ${grey[500]};
     padding: 2px;
+    overflow: hidden;
+    overflow-y:auto;
+    max-height: 120px;
+    background-color: white;
 `;
 const OptionItem = styled.li<{ active?: boolean }>`
     padding: 0.5rem 1rem;
     cursor: cursor;
     border-radius:.25rem;
     &:hover, 
-    &:focus, 
     &[aria-selected="true"], 
     &[data-current="true"]{
         background-color: ${variant.default.light};
@@ -40,6 +47,16 @@ interface SearchAbleSelectProps {
 }
 
 const allowKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
+
+const _isElementInView = (element: HTMLElement) => {
+    const bounding = element.getBoundingClientRect();
+    console.log('bounding', bounding);
+}
+
+const isScrollAble = (element: HTMLElement) => {
+    console.log('clientHeight', element.clientHeight, 'scrollHeight', element.scrollHeight);
+    return element && element.clientHeight < element.scrollHeight
+}
 
 /**
  * Select에서 검색기능만 추가하면 된다.
@@ -70,6 +87,12 @@ function SearchAbleSelect({
     const listID = `list${uniqueId}`;
     const selectOptionID = `selected-option${uniqueId}`;
 
+
+    useEffect(() => {
+        // console.log("리스트 시작위치", listRef.current?.getBoundingClientRect());
+        console.log('scroll-able', isScrollAble(listRef.current as HTMLElement));
+    }, [activeIndex]);
+
     const onChangeInput = ({ target }: ChangeEvent<HTMLInputElement>) => {
         setQuery(target.value);
         if (target.value === '') {
@@ -85,7 +108,7 @@ function SearchAbleSelect({
         setQuery('');
         setSelect('');
         setActiveIndex(-1);
-        inputRef.current?.focus();
+        inputRef.current && inputRef.current.focus();
     }, []);
 
     const onBlur = (e: FocusEvent<HTMLElement>) => {
@@ -93,7 +116,7 @@ function SearchAbleSelect({
         const { relatedTarget } = e;
         if (listRef.current?.contains(relatedTarget)) {
             e.preventDefault();
-            inputRef.current?.focus();
+            inputRef.current && inputRef.current.focus();
             return;
         } else if (select) {
             setQuery(select);
@@ -147,8 +170,9 @@ function SearchAbleSelect({
         setOpenList(false);
     }
     return (
-        <VBox>
+        <VBox gap='1'>
             <SearchInput
+                data-testid='combobox'
                 role='combobox'
                 aria-activedescendant={ selectOptionID }
                 aria-controls={ listID }
@@ -163,6 +187,7 @@ function SearchAbleSelect({
             />
             <OptionContainer
                 id={ listID }
+                data-testid='listbox'
                 role='listbox'
                 tabIndex={ -1 }
                 ref={ listRef }

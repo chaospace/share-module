@@ -35,8 +35,8 @@ const inputVariant = {
 const composer = (props: ExecutionContext & InputProps) => {
     const variant = inputVariant[props.theme.mode];
     return {
-        '&:focus': variant.focus,
-        '&.invalid': variant.invalid
+        '&:focus': variant?.focus,
+        '&.invalid': variant?.invalid
     }
 }
 
@@ -48,4 +48,5 @@ const Input = styled('input').withConfig({
     ${composer}
 `;
 
+export type { InputProps };
 export default Input;
