@@ -1,4 +1,4 @@
-import { StateCreator, StoreApi } from "zustand";
+import { StateCreator, StoreApi } from 'zustand';
 type StateUpdater<S> = ((prev: S) => S);
 type PropsSelector<State> = {
     [Property in keyof State as `${Property & string}Selector`]: (state: State) => State[Property];
@@ -12,5 +12,5 @@ type StateHooks<S, K extends keyof S = keyof S> = {
     [P in K as `use${Capitalize<P & string>}`]: () => S[P];
 };
 type StateHookCreator<State, Store extends StoreApi<State> = StoreApi<State>> = (store: Store) => StateHooks<State>;
-type StateCreatorEnhancer<State> = StateCreator<State, [["zustand/immer", never], ["zustand/devtools", never]], [], State>;
+type StateCreatorEnhancer<State> = StateCreator<State, [['zustand/immer', never], ['zustand/devtools', never]], [], State>;
 export type { State, SetterKeys, PropsSelector, Setter, StateHooks, StateHookCreator, StateCreatorEnhancer };

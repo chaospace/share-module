@@ -1,6 +1,6 @@
-import { StoreApi } from "zustand";
-import { type PokemonState } from "./pokemonState";
-import { type CountState } from "./countState";
+import { StoreApi } from 'zustand';
+import { type PokemonState } from './pokemonState';
+import { type CountState } from './countState';
 interface ShareModuleStore extends PokemonState, CountState {
 }
 declare const store: StoreApi<ShareModuleStore>;

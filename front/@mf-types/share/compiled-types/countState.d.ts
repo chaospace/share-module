@@ -1,4 +1,4 @@
-import type { State, StateCreatorEnhancer, StateHookCreator } from "./types";
+import type { State, StateCreatorEnhancer, StateHookCreator } from './types';
 interface CountProps {
     count: number;
 }
