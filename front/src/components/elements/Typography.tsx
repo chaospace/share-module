@@ -22,8 +22,10 @@ const typoVariant = {
     }
 }
 
+type TypoVariant = keyof typeof typoVariant;
+
 interface TypographyProps extends PropsWithHTMLAttributes<'p', CSSComposerObject> {
-    variant?: keyof typeof typoVariant;
+    variant?: TypoVariant;
 };
 
 
@@ -42,14 +44,23 @@ const Typo = styled('p').withConfig({
     ${comopser}
 `;
 
-const Typography = polymorphicForwardRef<'p', TypographyProps>(({ children, variant = 'body', ...rest }, forwardedRef) => {
-    const tag = variant === 'title' ? 'h1'
-        : variant === 'subTitle' ? 'h2'
-            : variant === 'caption' ? 'span'
-                : variant === 'body' ? 'p' : 'p';
+const getTypoTag = (variant: TypoVariant): React.ElementType => {
+    switch (variant) {
+        case "title":
+            return "h1"
+        case "subTitle":
+            return "h2"
+        case "body":
+            return "p"
+        default:
+            return "caption"
+    }
+}
 
+const Typography = polymorphicForwardRef<'p', TypographyProps>(({ children, variant = 'body', ...rest }, forwardedRef) => {
+    const tag = getTypoTag(variant);
     return (
-        <Typo ref={ forwardedRef } as={ tag as React.ElementType }
+        <Typo ref={ forwardedRef } as={ tag }
             variant={ variant } { ...rest }>
             { children }
         </Typo>
