@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FocusEvent, KeyboardEvent, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
-import { composeOptionItem, defaultLabel as labelGetter, defaultValue as valueGetter } from '@/components/elements/Select';
+import { defaultLabel as labelGetter, defaultValue as valueGetter } from '@/components/elements/Select';
 import { variant, grey } from '@/colors';
 import SearchInput from '@/components/elements/SearchInput';
 
@@ -15,25 +15,26 @@ const OptionContainer = styled.ul<{ open?: boolean }>`
     width:100%;
     display: ${({ open }) => open ? 'block' : 'none'};
     border-radius: 0.5rem;
-    /* box-shadow: 0px 4px 4px rgb(0 0 0 / 10%); */
     border:1px solid ${grey[500]};
     padding: 2px;
     overflow: hidden;
     overflow-y:auto;
-    max-height: 120px;
+    max-height: 160px;
     background-color: white;
 `;
 const OptionItem = styled.li<{ active?: boolean }>`
     padding: 0.5rem 1rem;
     cursor: cursor;
     border-radius:.25rem;
-    &:hover, 
-    &[aria-selected="true"], 
-    &[data-current="true"]{
+    &:first-child, &:last-child{
+        margin:1px 0;
+    }
+    &:hover {
         background-color: ${variant.default.light};
     }
-    &[aria-selected="true"] {
-        background-color: aliceblue;
+
+    &[aria-selected='true'] {
+        outline:2px solid ${variant.primary.main};
     }
 `;
 
@@ -48,21 +49,25 @@ interface SearchAbleSelectProps {
 
 const allowKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
 
-const _isElementInView = (element: HTMLElement) => {
-    const bounding = element.getBoundingClientRect();
-    console.log('bounding', bounding);
+const isElementInView = (element: HTMLElement, area: HTMLElement) => {
+    const optionBound = element.getBoundingClientRect();
+    const areaBound = area.getBoundingClientRect();
+    // 화면에 걸치는 경우는 이 두가지
+    if (areaBound.top > optionBound.top || areaBound.bottom < optionBound.bottom) {
+        return false;
+    }
+    return true;
 }
 
 const isScrollAble = (element: HTMLElement) => {
-    console.log('clientHeight', element.clientHeight, 'scrollHeight', element.scrollHeight);
     return element && element.clientHeight < element.scrollHeight
 }
 
+const getSelectOptionLabel = (select: HTMLElement) => select.textContent;
 /**
- * Select에서 검색기능만 추가하면 된다.
+ * Autocomplete
  * @returns 
  */
-
 function SearchAbleSelect({
     options = [],
     value = '',
@@ -70,33 +75,69 @@ function SearchAbleSelect({
     getLabel = labelGetter,
     getValue = valueGetter }: SearchAbleSelectProps) {
 
+    const provider = useMemo(() => {
+        return options.map(o => ({ label: getLabel(o), value: getValue(o) }));
+    }, [options, getLabel, getValue]);
+
     const [query, setQuery] = useState('');
     const [select, setSelect] = useState(getValue(defaultValue || value));
-    const [activeIndex, setActiveIndex] = useState(options.findIndex(o => o.label === select));
+    const [activeIndex, setActiveIndex] = useState(provider.findIndex(o => o.label === select));
     const [openList, setOpenList] = useState(false);
 
-    const filteredOptions = useMemo(() => {
-        return select === query ? options : options.filter(o => o.label.includes(query));
-    }, [select, query, options]);
-
+    //ref참조 초기화
     const inputRef = useRef<HTMLInputElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
+    const optionItemRef = useRef<(null | HTMLLIElement)[]>([]);
+    const prevSelectIndex = useRef<number>(-1);
 
 
+    const filteredOptions = useMemo(() => {
+        return select === query ? provider : provider.filter(o => o.label.includes(query));
+    }, [select, query, provider]);
+
+
+    // aria적용을 위한 돔 id초기화
     const uniqueId = useId();
     const listID = `list${uniqueId}`;
     const selectOptionID = `selected-option${uniqueId}`;
 
 
+    //activeIndex를 sync처리하면 템포가 하나씩 밀리며 역으로 보일 경우 2개의 current가 보이는 문제 발생.
     useEffect(() => {
-        // console.log("리스트 시작위치", listRef.current?.getBoundingClientRect());
-        console.log('scroll-able', isScrollAble(listRef.current as HTMLElement));
+        if (listRef.current && isScrollAble(listRef.current)) {
+            //active에 있는 돔참조 가져오기..
+            const ele = optionItemRef.current[activeIndex];
+            // scrollIntoView를 이용하면 쉽게 이동가능.
+            if (ele && !isElementInView(ele, listRef.current)) {
+                ele.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        }
+
     }, [activeIndex]);
+
+
+    //open시 리스트에 시작위치를 결정
+    useEffect(() => {
+        if (openList) {
+            if (listRef.current) {
+                //참조를 하기 전에는 항상 초기값으로 복원
+                listRef.current.style.transform = 'translate(0,0)';
+                listRef.current.style.top = '100%';
+                const rect = listRef.current.getBoundingClientRect();
+                //active-option참조
+                if (rect.top + rect.height > document.documentElement.clientHeight) {
+                    listRef.current.style.top = '0';
+                    listRef.current.style.transform = 'translate(0,-100%)';
+                }
+            }
+
+        }
+    }, [openList])
 
     const onChangeInput = ({ target }: ChangeEvent<HTMLInputElement>) => {
         setQuery(target.value);
         if (target.value === '') {
-            setSelect('');
+            resetState(); // clear와 동일
         }
     }
 
@@ -104,13 +145,14 @@ function SearchAbleSelect({
         setOpenList(true);
     }
 
-    const onClickClear = useCallback(() => {
+    const resetState = useCallback(() => {
         setQuery('');
         setSelect('');
         setActiveIndex(-1);
         inputRef.current && inputRef.current.focus();
     }, []);
 
+    // 결국 open값이 변경되면 sync되야 한다.
     const onBlur = (e: FocusEvent<HTMLElement>) => {
         // 옵션 클릭시 리턴처리
         const { relatedTarget } = e;
@@ -118,8 +160,9 @@ function SearchAbleSelect({
             e.preventDefault();
             inputRef.current && inputRef.current.focus();
             return;
-        } else if (select) {
+        } else if (select) { // 이전상태 rollback 처리
             setQuery(select);
+            setActiveIndex(prevSelectIndex.current);
         }
         setOpenList(false);
     }
@@ -152,23 +195,30 @@ function SearchAbleSelect({
                 });
                 break;
             case 'Enter':
-                setSelect(options[activeIndex].label);
-                setQuery(options[activeIndex].label);
-                setOpenList(false);
+                onClickOption(activeIndex);
                 break;
             default:
-                setOpenList(true);
+                if (!openList) {
+                    setOpenList(true);
+                }
                 break;
         }
 
     }
 
-    const onClickOption = (o: any, idx: number) => {
-        setSelect(o.label);
-        setQuery(o.label);
+    const onClickOption = (idx: number) => {
         setActiveIndex(idx);
+        const selectLabel = getSelectOptionLabel(optionItemRef.current[idx]!);
+        if (selectLabel) {
+            setSelect(selectLabel);
+            setQuery(selectLabel);
+            prevSelectIndex.current = idx;
+        }
         setOpenList(false);
     }
+
+
+
     return (
         <VBox gap='1'>
             <SearchInput
@@ -183,7 +233,7 @@ function SearchAbleSelect({
                 onBlur={ onBlur }
                 onKeyDown={ onKeyDown }
                 onFocus={ onFocusInput }
-                onClickReset={ onClickClear }
+                onClickReset={ resetState }
             />
             <OptionContainer
                 id={ listID }
@@ -195,15 +245,16 @@ function SearchAbleSelect({
                 aria-expanded={ openList }
                 onBlur={ onBlur } >
                 { filteredOptions.length ? filteredOptions.map((o, idx) => {
-                    const vo = composeOptionItem(o, getLabel, getValue);
-                    const selected = select === vo.label;
-                    return (<OptionItem key={ vo.label }
-                        id={ selected ? selectOptionID : undefined }
-                        aria-selected={ selected }
-                        data-current={ activeIndex === idx }
+                    const selected = select === o.label;
+                    return (<OptionItem key={ o.label }
                         role='option'
-                        onClick={ () => onClickOption(vo, idx) }>
-                        { vo.label }
+                        id={ selected ? selectOptionID : undefined }
+                        aria-selected={ activeIndex === idx }
+                        ref={ (ele) => {
+                            optionItemRef.current[idx] = ele;
+                        } }
+                        onClick={ () => onClickOption(idx) }>
+                        { o.label }
                     </OptionItem>)
                 }) : <OptionItem>검색결과 없음</OptionItem> }
             </OptionContainer>

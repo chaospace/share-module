@@ -11,7 +11,7 @@ import SearchAbleSelect from './components/SearchAbleSelect';
 import SearchInput from './components/elements/SearchInput';
 
 
-const options = ['딸기', '참외', '수박'];
+const options = Array.from({ length: 20 }).map((_, i) => `옵션-${i}`);
 const options2 = [
     {
         label: '옵션2',
@@ -22,7 +22,7 @@ const options2 = [
     {
         label: '옵션3'
     }
-]
+];
 
 const App = () => {
     const count = countHooks.useCount();
@@ -65,6 +65,10 @@ const App = () => {
                 <Typography>
                     Next, we wrap our definition using the utility types that React provides to complete the props for a specified element. Typically, we statically write the tag, for example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass the E type.
                 </Typography>
+                <VBox>
+                    <Typography variant='title'>검색 가능한 셀렉트</Typography>
+                    <SearchAbleSelect options={ options } />
+                </VBox>
                 <HBox>
                     <Button variant='success' onClick={ onChangeBoxPadding }>
                         success
@@ -98,12 +102,9 @@ const App = () => {
 
                     <Input type='number' />
                     <Select defaultValue='참외' options={ options } onChange={ onChangeSelect } />
-                    <Select defaultValue='옵션3' options={ options2 } onChange={ onChangeSelect2 } />
+                    <Select options={ options } onChange={ onChangeSelect2 } />
                 </VBox>
-                <VBox>
-                    <Typography variant='title'>검색 가능한 셀렉트</Typography>
-                    <SearchAbleSelect options={ options2 } />
-                </VBox>
+
                 <SearchInput />
             </VBox >
         </ThemeProvider >

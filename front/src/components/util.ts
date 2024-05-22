@@ -14,4 +14,9 @@ const debounce = (callback: Function, delay: number = 100) => {
     return _callback;
 }
 
-export { debounce }
+
+const sleep = (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export { debounce, sleep }
