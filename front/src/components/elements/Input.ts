@@ -1,10 +1,6 @@
 import styled, { ExecutionContext } from 'styled-components';
 import { PropsWithHTMLAttributes } from '../types';
-import {
-  CSSComposerObject,
-  composer as defaultComposr,
-  shouldForwardAllProps
-} from 'styled-composer';
+import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
 import { variant } from '@/colors';
 
 interface InputProps extends CSSComposerObject {}
@@ -34,7 +30,7 @@ const inputVariant = {
   }
 };
 
-const composer = (props: ExecutionContext & InputProps) => {
+const variantComposr = (props: ExecutionContext & InputProps) => {
   const variant = inputVariant[props.theme.mode];
   return {
     '&:focus': variant?.focus,
@@ -45,8 +41,8 @@ const composer = (props: ExecutionContext & InputProps) => {
 const Input = styled('input').withConfig({
   shouldForwardProp: shouldForwardAllProps
 })<PropsWithHTMLAttributes<'input', InputProps>>`
-  ${defaultComposr}
   ${composer}
+  ${variantComposr}
 `;
 
 export type { InputProps };

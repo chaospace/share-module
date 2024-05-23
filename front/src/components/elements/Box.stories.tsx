@@ -8,10 +8,29 @@ const meta = {
   title: 'elements/Box',
   component: Box,
   args: {
-    gap: '0.5rem',
     position: 'relative',
     display: 'flex',
-    onClick: fn()
+    gap: '0.5rem'
+  },
+  argTypes: {
+    position: {
+      table: { disable: true }
+    },
+    display: {
+      description: 'display방식 flex고정',
+      table: { disable: true }
+    },
+    flexDirection: {
+      description: '자식요소 정렬 방향 설정',
+      table: { disable: true }
+    },
+    gap: {
+      description: '자식요소 사이 간격설정',
+      options: ['2px', '4px', '8px', '12px', '20px'],
+      control: {
+        type: 'select'
+      }
+    }
   },
   tags: ['autodocs'],
   parameters: {
@@ -24,15 +43,28 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const HBoxBasic: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '수평 정렬 컨테이너'
+      }
+    }
+  },
   args: {
     flexDirection: 'row',
+    gap: '8px',
     onClick: fn()
+  },
+  argTypes: {
+    onClick: {
+      table: { disable: true }
+    }
   },
   render: () => {
     // eslint-disable-next-line
-    const [{ flexDirection, onClick }, _] = useArgs();
+    const [{ flexDirection, onClick, gap }, _] = useArgs();
     return (
-      <Box flexDirection={flexDirection} onClick={onClick}>
+      <Box flexDirection={flexDirection} gap={gap} onClick={onClick}>
         <span>1</span>
         <span>2</span>
         <span>3</span>
@@ -43,13 +75,21 @@ const HBoxBasic: Story = {
 
 const VBoxBasic: Story = {
   args: {
-    flexDirection: 'column'
+    flexDirection: 'column',
+    gap: '8px'
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '수직 정렬 컨테이너'
+      }
+    }
   },
   render: () => {
     // eslint-disable-next-line
-    const [{ flexDirection }, _] = useArgs();
+    const [{ flexDirection, gap }, _] = useArgs();
     return (
-      <Box flexDirection={flexDirection}>
+      <Box flexDirection={flexDirection} gap={gap}>
         <span>1</span>
         <span>2</span>
         <span>3</span>

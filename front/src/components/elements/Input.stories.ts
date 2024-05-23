@@ -20,6 +20,15 @@ export const InputBasic: Story = {
     placeholder: 'test-input',
     type: 'text'
   },
+  argTypes: {
+    placeholder: {
+      table: { readonly: true }
+    },
+    type: {
+      options: ['text', 'email', 'url', 'tel', 'number'],
+      control: { type: 'select' }
+    }
+  },
   play: async ({ canvasElement }) => {
     const ue = userEvent.setup();
     const canvas = within(canvasElement);
