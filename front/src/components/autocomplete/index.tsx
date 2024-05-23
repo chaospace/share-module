@@ -51,6 +51,8 @@ const OptionItem = styled.li<{ active?: boolean }>`
   }
 `;
 
+const Container = styled(VBox)``;
+
 interface AutoCompleteProps {
   options?: any[];
   getLabel?(o: any): string;
@@ -246,7 +248,7 @@ function AutoComplete({
   );
 
   return (
-    <VBox gap='1'>
+    <Container gap={1}>
       <SearchInput
         data-testid='combobox'
         role='combobox'
@@ -274,7 +276,7 @@ function AutoComplete({
         onBlur={onBlur}>
         {renderList}
       </OptionContainer>
-    </VBox>
+    </Container>
   );
 }
 

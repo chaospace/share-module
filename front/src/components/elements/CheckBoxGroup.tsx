@@ -27,11 +27,11 @@ interface CheckBoxGroupProps {
 
 const Container = styled.div`
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(8, min-content);
-  grid-auto-rows: auto;
-  grid-column-gap: 0.5rem;
-  grid-row-gap: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  gap: 0.5rem;
 `;
 
 const emptyArr: any = [];

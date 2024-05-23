@@ -54,9 +54,11 @@ type PropsWithHTMLAttributes<
   T extends keyof JSX.IntrinsicElements,
   Props extends {}
 > = React.PropsWithChildren<JSX.IntrinsicElements[T] & Props>;
-type PropsWithCSSAttributes<T> = T & {
-  css?: any;
+
+type PickLabelValueType<T extends object, K extends keyof T, V extends keyof T> = {
+  label: T[K];
+  value: T[V];
 };
 
-export type { PolymorphicProps, PropsWithHTMLAttributes, PropsWithCSSAttributes };
+export type { PolymorphicProps, PropsWithHTMLAttributes, PickLabelValueType };
 export { polymorphicForwardRef };
