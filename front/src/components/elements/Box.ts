@@ -1,29 +1,40 @@
-import type { PropsWithHTMLAttributes } from '@/components/types';
 import styled from 'styled-components';
 import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
 
 // default style
-interface BoxProps extends CSSComposerObject {}
+interface BoxProps extends CSSComposerObject {
+  position?: string;
+  display?: string;
+  gap?: string | number;
+}
 
-const Box = styled('div').withConfig({
-  shouldForwardProp: shouldForwardAllProps
-})<PropsWithHTMLAttributes<'div', BoxProps>>(composer);
+/**
+ * 추상 컨테이너.
+ * 실 사용에는 상속한 VBox, HBox를 사용한다.
+ */
+const Box = styled('div')
+  .attrs<BoxProps>(props => ({
+    position: props.position ?? 'relative',
+    display: props.display ?? 'flex',
+    gap: props.gap ?? '0.5rem'
+  }))
+  .withConfig({
+    shouldForwardProp: shouldForwardAllProps
+  })(composer);
 
-Box.defaultProps = {
-  position: 'relative',
-  display: 'flex',
-  gap: '0.5rem'
-};
+Box.displayName = 'Box';
 
-const VBox = styled(Box)``;
-VBox.defaultProps = {
+const VBox = styled(Box).attrs({
   flexDirection: 'column'
-};
+})``;
 
-const HBox = styled(Box)``;
+VBox.displayName = 'VBox';
 
-HBox.defaultProps = {
+const HBox = styled(Box).attrs({
   flexDirection: 'row'
-};
+})``;
 
+HBox.displayName = 'HBox';
+
+export type { BoxProps };
 export { Box, VBox, HBox };
