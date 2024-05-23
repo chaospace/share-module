@@ -1,19 +1,20 @@
 {
-    "extends":"../tsconfig.json",
-    "compilerOptions": {
-        "composite": true,
-        "typeRoots":["../node_modules/@types", "node_modules/@types", "./@mf-types", "./@types"],
-        "paths": {
-            "@/*":["./src/*", "../src/*"]
-        }
-    },
-    "include": [
-        ".storybook/*.ts",
-        ".storybook/*.tsx",
-        "config/*.ts",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "tests/**/*.ts", 
-        "tests/**/*.tsx"
-    ]
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "typeRoots": ["../node_modules/@types", "node_modules/@types", "./@mf-types", "./@types"],
+    "paths": {
+      "/*": ["./@mf-types", "./@types"],
+      "@/*": ["./src/*", "../src/*"]
+    }
+  },
+  "include": [
+    ".storybook/*.ts",
+    ".storybook/*.tsx",
+    "config/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ]
 }
