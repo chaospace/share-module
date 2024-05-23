@@ -9,6 +9,7 @@ import Input from '@/components/elements/Input';
 import Select from './components/elements/Select';
 import AutoComplete from './components/autocomplete';
 import SearchInput from './components/elements/SearchInput';
+import CheckBox from './components/elements/CheckBox';
 
 const options = Array.from({ length: 20 }).map((_, i) => `옵션-${i}`);
 const options2 = [
@@ -104,8 +105,9 @@ const App = () => {
           <Select defaultValue='참외' options={options} onChange={onChangeSelect} />
           <Select options={options} onChange={onChangeSelect2} />
         </VBox>
-
         <SearchInput />
+
+        <CheckBox variant='primary'>체크박스 스타일</CheckBox>
       </VBox>
     </ThemeProvider>
   );

@@ -8,8 +8,11 @@ import CheckBox from './CheckBox';
 import styled from 'styled-components';
 
 type CheckBoxOptionType = {
+  /** 라벨정보 */
   label: string;
+  /** value정보 */
   value: string;
+  /** 체크여부 */
   selected?: boolean;
 };
 

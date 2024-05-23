@@ -6,8 +6,18 @@ import { PropsWithHTMLAttributes } from '../types';
 import { CSSComposerObject } from 'styled-composer';
 import Typography from './Typography';
 import { CheckmarkOutline } from '@styled-icons/evaicons-outline';
+import { StyleVariantContext, VariantCategory } from '../../../@types/styled';
 
-interface CheckBoxProps extends PropsWithHTMLAttributes<'input', CSSComposerObject> {}
+interface CheckBoxProps extends PropsWithHTMLAttributes<'input', CSSComposerObject> {
+  variant?: VariantCategory;
+}
+const getBackGroundColor = ({ theme, variant }: StyleVariantContext) => {
+  return theme.variant[variant].main;
+};
+const getCheckIconColor = ({ theme, variant }: StyleVariantContext) => {
+  console.log('variant', variant);
+  return theme.variant[variant].light;
+};
 
 const CheckIcon = styled(CheckmarkOutline)``;
 
@@ -34,7 +44,7 @@ const CheckMark = styled.span`
     margin: 0;
   }
 `;
-const Container = styled.label`
+const Container = styled.label<{ variant: VariantCategory }>`
   position: relative;
   display: inline-flex;
   vertical-align: middle;
@@ -48,18 +58,27 @@ const Container = styled.label`
   gap: 0.25rem;
   //체크마크 다음 인풋이 check상태일 경우 스타일 지정.
   ${CheckMark}:has(input[type='checkbox']:checked) {
-    background-color: aquamarine;
+    background-color: ${getBackGroundColor};
     ${CheckIcon} {
       opacity: 1;
+      fill: ${getCheckIconColor};
     }
   }
 `;
 
-function CheckBox({ children, ref: _ref, value, checked, onChange, ...rest }: CheckBoxProps) {
+function CheckBox({
+  children,
+  ref: _ref,
+  variant = 'default',
+  value,
+  checked,
+  onChange,
+  ...rest
+}: CheckBoxProps) {
   // const {} = rest;
   const labelId = `ck-label-${useId()}`;
   return (
-    <Container>
+    <Container id={labelId} variant={variant}>
       <CheckMark>
         <CheckIcon opacity={0} size={18} />
         <Input
@@ -71,11 +90,12 @@ function CheckBox({ children, ref: _ref, value, checked, onChange, ...rest }: Ch
           {...rest}
         />
       </CheckMark>
-      <Typography id={labelId} as='span' mt={1}>
+      <Typography as='span' mt={1}>
         {children}
       </Typography>
     </Container>
   );
 }
 
+export type { CheckBoxProps };
 export default CheckBox;

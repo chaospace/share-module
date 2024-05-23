@@ -1,36 +1,29 @@
 /**
  * 테마 유틸함수
  */
-import { PropsWithCSSAttributes } from '@/components/types';
-import { ColorCategory, VariantType } from 'styled';
-import { composer, shouldForwardAllProps } from 'styled-composer';
+import { shouldForwardAllProps } from 'styled-composer';
 
-const getVariantColor = (key: string, subKey: ColorCategory, values: VariantType) => {
-  return <T extends { [key: string]: any }>(props: T) => {
-    const variantValue = values[props[key] as keyof VariantType];
-    if (variantValue) {
-      return variantValue[subKey] ?? undefined;
-    } else {
-      return undefined;
-    }
-  };
-};
+/**
+ * getValue에 키를 커링으로 기억해서 사용하는 함수.
+ * @param key    :object속성 키
+ * @returns
+ */
+const curriedValue =
+  (key: string) =>
+  <T extends object>(source: T) =>
+    getValue(source, key as keyof T);
 
-const getVariant = (key: string, values: VariantType) => {
-  return <T extends { [key: string]: any }>(props: T) => {
-    const variantValue = values[props[key] as keyof VariantType];
-    return variantValue ?? undefined;
-  };
-};
-
-//css속성으로 넘기면 이거를 사용해 composer를 만들어 리턴한다.
-const cssComposer = <T extends { theme: any }>({ css, theme }: PropsWithCSSAttributes<T>) => {
-  return composer({ ...css, theme });
-};
-
+/**
+ * key에 해당하는 source정보를 반환
+ * @param source :object
+ * @param key    :object속성 키
+ * @returns
+ */
+const getValue = <T extends object, K extends keyof T>(source: T, key: K) => source[key];
+const getVariant = curriedValue('variant');
 const shouldForwardCSSProps =
   (props: string[] = []) =>
   (prop: string) =>
     !props.includes(prop) && shouldForwardAllProps(prop);
 
-export { getVariantColor, getVariant, cssComposer, shouldForwardCSSProps };
+export { getValue, getVariant, curriedValue, shouldForwardCSSProps };
