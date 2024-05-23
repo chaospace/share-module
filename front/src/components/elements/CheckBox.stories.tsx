@@ -5,66 +5,68 @@ import { fireEvent, within, expect } from '@storybook/test';
 import { sleep } from '../util';
 import { useArgs } from '@storybook/preview-api';
 
-
-
 const meta = {
-    title: 'elements/CheckBox',
-    component: CheckBox,
-    parameters: {
-        layout: 'fullscreen'
-    },
-    tags: ['autodocs'],
-    args: {
-        checked: false,
-        value: '',
-        children: null
-    }
+  title: 'elements/CheckBox',
+  component: CheckBox,
+  parameters: {
+    layout: 'fullscreen'
+  },
+  tags: ['autodocs'],
+  args: {
+    checked: false,
+    value: '',
+    children: null
+  }
 } satisfies Meta<typeof CheckBox>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-
 export const CheckBoxBasic: Story = {
-    args: {
-        children: '자동 로그인',
-        checked: false,
-    }
-}
+  args: {
+    children: '자동 로그인',
+    checked: false
+  }
+};
 
 export const CheckBoxChecked: Story = {
-    args: {
-        children: '자동 로그인',
-        checked: true
-    }
-}
-
+  args: {
+    children: '자동 로그인',
+    checked: true
+  }
+};
 
 export const CheckBoxValue: Story = {
-    args: {
-        children: '과일배송',
-        checked: false,
-        value: '사과'
-    },
-    render: () => {
-        // eslint-disable-next-line
-        const [{ value, checked, children }, updateArgs] = useArgs();
-        return (
-            <CheckBox checked={ checked } value={ value } onChange={ () => updateArgs({ checked: !checked }) }>
-                { children }
-            </CheckBox>
-        )
-    },
-    play: async ({ canvasElement }) => {
-        const canvas = within(canvasElement);
-        const label = canvas.getByLabelText('과일배송');
-        const checkbox = canvas.getByRole('checkbox');
-        expect(label).toBeInTheDocument();
-        await sleep(200);
-        await fireEvent.click(label);
-        await sleep(500);
-        expect(checkbox).toBeChecked();
-    }
-}
+  args: {
+    children: '과일배송',
+    checked: false,
+    value: '사과'
+  },
+  render: () => {
+    // eslint-disable-next-line
+    const [{ value, checked, children }, updateArgs] = useArgs();
+    return (
+      <CheckBox checked={checked} value={value} onChange={() => updateArgs({ checked: !checked })}>
+        {children}
+      </CheckBox>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const label = canvas.getByLabelText('과일배송');
+    const checkbox = canvas.getByRole('checkbox') as HTMLInputElement;
+    await step('체크박스 클릭 시 checked상태가 토글한다.', async () => {
+      expect(label).toBeInTheDocument();
+      await sleep(200);
+      const storeChecked = checkbox.checked;
+      await fireEvent.click(label);
+      await sleep(500);
+      expect(storeChecked).toEqual(!checkbox.checked);
+    });
 
+    await step('value값은 사과이다.', async () => {
+      expect(checkbox.value).toEqual('사과');
+    });
+  }
+};

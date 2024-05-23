@@ -1,22 +1,17 @@
-
-
-
 const debounce = (callback: Function, delay: number = 100) => {
+  let debounceID: ReturnType<typeof setTimeout>;
+  const _callback = (...args: any) => {
+    clearTimeout(debounceID);
+    debounceID = setTimeout(() => {
+      callback(args);
+    }, delay);
+  };
 
-    let debounceID: ReturnType<typeof setTimeout>;
-    const _callback = (...args: any) => {
-        clearTimeout(debounceID);
-        debounceID = setTimeout(() => {
-            callback(args);
-        }, delay);
-    }
-
-    return _callback;
-}
-
+  return _callback;
+};
 
 const sleep = (ms: number) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
 
-export { debounce, sleep }
+export { debounce, sleep };

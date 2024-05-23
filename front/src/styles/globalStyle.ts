@@ -17,5 +17,4 @@ const GlobalStyle = createGlobalStyle`
     ${typographyStyle}
 `;
 
-
 export default GlobalStyle;
