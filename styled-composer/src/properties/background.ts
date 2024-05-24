@@ -1,9 +1,25 @@
 const bg = {
-    background: true,
-    backgroundImage: true,
-    backgroundRepeat: true,
-    backgroundPosition: true,
-    backgroundSize: true
-}
+  bg: {
+    property: 'background'
+  },
+  bgImage: {
+    property: 'backgroundImage',
+    alias: 'assets'
+  },
+  bgRepeat: {
+    property: 'backgroundRepeat'
+  },
+  bgPosition: {
+    property: 'backgroundPosition'
+  },
+  bgSize: {
+    property: 'backgroundSize',
+    alias: 'size'
+  },
+  bgColor: {
+    property: 'backgroundColor',
+    alias: 'colors'
+  }
+};
 
 export default bg;
