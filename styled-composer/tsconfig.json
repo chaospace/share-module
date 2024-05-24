@@ -1,21 +1,17 @@
 {
-    "extends":"../tsconfig.json",
-    "compilerOptions": {
-        "composite":true,
-        "paths": {
-            "@/*":["./src/*"]
-        },
-        "outDir": "./dist",
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "preserveSymlinks": false,
+    "composite": true,
+    "paths": {
+      "@/*": ["./src/*"]
     },
-    "include":[
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "tests/**/*.ts", 
-        "tests/**/*.tsx"
-    ],
-    "ts-node":{
-        "compilerOptions": {
-            "module": "CommonJS"
-        }
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
     }
+  }
 }
