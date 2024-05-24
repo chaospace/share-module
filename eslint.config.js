@@ -1,4 +1,5 @@
-// import { fixupPluginRules } from "@eslint/compat";
+// eslint-disable
+
 const tseslint = require('typescript-eslint');
 const eslintReactRecommended = require('eslint-plugin-react');
 const eslintReactHooks = require('eslint-plugin-react-hooks');
