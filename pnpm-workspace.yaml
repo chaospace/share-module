@@ -1,4 +1,4 @@
 packages:
-  - "front"
-  - "share"
-  - "styled-composer"
+  - 'front'
+  - 'share-store'
+  - 'styled-composer'

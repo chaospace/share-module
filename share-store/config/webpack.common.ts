@@ -1,8 +1,8 @@
 import path from 'path';
-import { appDir, publicDir, srcDir, workspaceDir } from './webpack.path';
+import { outDir, publicDir, srcDir, workspaceDir } from './webpack.path';
 import webpack from 'webpack';
 import 'webpack-dev-server';
-import HTMLWebpackPlugin from 'html-webpack-plugin';
+
 import { ModuleFederationPlugin } from '@module-federation/enhanced';
 
 const commonConfig: webpack.Configuration = {
@@ -15,6 +15,9 @@ const commonConfig: webpack.Configuration = {
     }
   },
   output: {
+    path: outDir,
+    filename: '[name].js',
+    chunkFilename: '[name].js',
     clean: true,
     publicPath: 'auto'
   },
@@ -34,37 +37,20 @@ const commonConfig: webpack.Configuration = {
             exclude: ['/node_modules/']
           }
         }
-      },
-      {
-        test: /\.css$/i,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              modules: {
-                namedExport: false,
-                auto: true
-              }
-            }
-          }
-        ]
       }
     ]
   },
   plugins: [
-    new HTMLWebpackPlugin({
-      template: path.resolve(publicDir, 'index.html')
-    }),
     new ModuleFederationPlugin({
-      name: 'Host',
-      remotes: {
-        federation_provider: 'federation_provider@http://localhost:5001/remoteModuleEntry.js'
+      name: 'federation_provider',
+      filename: 'remoteModuleEntry.js',
+      exposes: {
+        './Store': './src/store'
       },
       shared: {
+        zustand: { singleton: true },
         react: { singleton: true },
-        'react-dom': { singleton: true },
-        zustand: { singleton: true }
+        'react-dom': { singleton: true }
       }
     })
   ]
