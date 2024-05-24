@@ -27,3 +27,26 @@
 키보드 초점을 받을 수 있는 요소도 초점을 받을 수 없도록 만들어 줍니다. 초점을 받을 수 없기 때문에 "-1" 이외의 다른 음의 정수 값은 사실상 의미가 없습니다.
 
 [참고](https://naradesign.github.io/tabindex.html)
+
+## scrollIntoView
+호출된 요소가 사용자에게 표시되도록 상위 컨테이너를 스크롤합니다.
+<pre>
+  element.scrollIntoView();
+  element.scrollIntoView(alignTop); //boolean parameter
+  element.scrollIntoView(options); // object parameter
+</pre>
+
+### 매개변수
+- alignToTop : boolean
+  - <mark>ture</mark>일 경우, 요소 상단을 스크롤 가능한 조상 요소의 보이는 영역 상단에 정렬. ({block:"start", inline:"nearest"}) 와 동일
+  - <mark>false</mark>일 경우, 요소 하단을 스크롤 가능한 조상 요소의 보이는 영역 하단에 정렬. ({block:"end", inline:"nearest"})와 동일
+  
+- scrollIntoViewOptions : object
+  - <mark>behavior</mark> 애니메이션 적용여부를 결정
+    - smooth  : 부드럽게 적용
+    - instant : 즉시 적용
+    - auto    : css <mark>scroll-behavior</mark>값에 의해 결정
+  - <mark>block</mark> 수직 정렬을 정의
+    - start, center, end, nearest중에 하나, 기본값은 start
+  - <mark>inline</mark> 수평 정렬을 정의
+    - start, center, end, nearest중에 하나, 기본값은 nearest
