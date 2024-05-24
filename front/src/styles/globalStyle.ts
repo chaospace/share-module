@@ -3,6 +3,7 @@ import resetStyle from './__partial/reset';
 import buttonStyles from './__partial/button';
 import formStyles from './__partial/form';
 import typographyStyle from './__partial/typography';
+import hrStyles from './__partial/hr';
 
 const GlobalStyle = createGlobalStyle`
     ${resetStyle}
@@ -15,7 +16,7 @@ const GlobalStyle = createGlobalStyle`
     ${buttonStyles}
     ${formStyles}
     ${typographyStyle}
-
+    ${hrStyles}
     #app{
       position: relative;
       

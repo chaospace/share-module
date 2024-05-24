@@ -6,8 +6,8 @@
   "scripts": {
     "front": "pnpm -F front",
     "composer": "pnpm -F styled-composer",
-    "share": "pnpm -F share",
-    "serve": "pnpm -F front -F share serve",
+    "share": "pnpm -F share-store",
+    "serve": "pnpm -F front -F share-store serve",
     "prepare": "husky"
   },
   "keywords": [],

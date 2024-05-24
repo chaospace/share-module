@@ -21,9 +21,12 @@ const curriedValue =
  */
 const getValue = <T extends object, K extends keyof T>(source: T, key: K) => source[key];
 const getVariant = curriedValue('variant');
+
+// const shouldFowardProps = (props:string[], prop:string) => !props.includes(prop);
+
 const shouldForwardCSSProps =
-  (props: string[] = []) =>
+  (props: string[] = [], base = true) =>
   (prop: string) =>
-    !props.includes(prop) && shouldForwardAllProps(prop);
+    !props.includes(prop) && base && shouldForwardAllProps(prop);
 
 export { getValue, getVariant, curriedValue, shouldForwardCSSProps };

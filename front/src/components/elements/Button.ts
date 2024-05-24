@@ -21,8 +21,8 @@ const vriantHoverComposer = ({ theme, variant }: any & StyleVariantContext) => {
 };
 // variant를 이용한 컬러 제어
 const Button = styled.button.withConfig({ shouldForwardProp: shouldForwardAllProps })<ButtonProps>`
-  ${composer};
-  ${vriantHoverComposer};
+  ${vriantHoverComposer}
+  ${composer}
 `;
 Button.defaultProps = {
   variant: 'default'

@@ -12,7 +12,7 @@ const App = () => {
           <Link to='/sample'>ui샘플</Link>
           <Link to='/tutorial'>ui 튜토리얼</Link>
         </HBox>
-        <hr />
+
         <Outlet />
       </VBox>
     </ThemeProvider>
