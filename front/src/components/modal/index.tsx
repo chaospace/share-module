@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Box, HBox, VBox } from '@/components/elements/Box';
 import Typography from '../elements/Typography';
 import { CloseOutline } from '@styled-icons/evaicons-outline';
-import { blue } from '@/colors';
+import { grey } from '@/colors';
 import IconButton from '@/components/elements/IconButton';
 import Button from '@/components/elements/Button';
 import { HLine, VLine } from '@/components/elements/Line';
@@ -21,7 +21,7 @@ const ModalContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: ${({ theme }) => theme.zIndices.modal};
 `;
 
 const ContentLayer = styled('div')`
@@ -38,6 +38,50 @@ const DimLayer = styled('div')`
   backdrop-filter: blur(2px);
   pointer-events: none;
 `;
+
+const Modal = styled(VBox).attrs(props => ({
+  gap: 0,
+  minWidth: props.minWidth ?? 400,
+  width: props.width ?? 500,
+  maxWidth: props.maxWidth ?? 900,
+  bgColor: props.bgColor ?? grey[200],
+  overflow: 'hidden',
+  border: props.border ?? '1px solid',
+  borderRadius: props.borderRadius ?? '0.5rem'
+}))``;
+
+const Header = styled(HBox).attrs(props => ({
+  m: props.m ?? 4,
+  alignItems: props.alignItems ?? 'center'
+}))`
+  ${Typography} {
+    text-align: center;
+    margin-top: 2px;
+    flex-grow: 1;
+    line-height: unset;
+  }
+  ${IconButton} {
+    position: absolute;
+    right: 0;
+  }
+`;
+
+const Body = styled(Box).attrs(props => ({
+  p: props.p ?? 4,
+  overflow: props.overflow ?? 'hidden',
+  overflowY: props.overflowY ?? 'auto',
+  maxHeight: props.maxHeight ?? '500px',
+  bgColor: props.bgColor ?? 'white'
+}))``;
+
+const Content = styled(VBox).attrs(props => ({
+  height: props.height ?? 'max-content'
+}))``;
+
+const Footer = styled(HBox).attrs(props => ({
+  justifyContent: props.justifyContent ?? 'center',
+  m: props.m ?? 4
+}))``;
 
 type ModalProps<T extends object> = {
   onClose?: (info?: T) => void;
@@ -65,55 +109,34 @@ function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
     onClose && onClose(data!);
   };
 
+  // eslint react-hooks/exhaustive-deps: 0
   useEffect(() => {
-    console.log('모달 생성!!');
     const onClickDocument = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        alert('사라져도 됨!');
         onCloseHandler();
       }
     };
+    //click을 이용하면 up순간 이벤트가 발생해 등장과 함께 사라지게 된다.
     document.documentElement.addEventListener('mousedown', onClickDocument);
     return () => {
       document.documentElement.removeEventListener('mousedown', onClickDocument);
     };
   }, []);
-
+  // eslint react-hooks/exhaustive-deps: 2
   return (
     <ModalContainer>
       <DimLayer />
       <ContentLayer>
-        <VBox
-          ref={modalRef}
-          minWidth='400px'
-          width='400px'
-          maxWidth='900px'
-          bgColor={blue[200]}
-          p={4}
-          borderRadius='0.5rem'>
-          <HBox alignItems='center'>
-            <Typography
-              variant='subTitle1'
-              mt={1}
-              textAlign='center'
-              flexGrow={1}
-              lineHeight='unset'>
-              타이틀
-            </Typography>
-            <IconButton position='absolute' right={0} onClick={onCloseHandler}>
-              <CloseOutline size={20} />
+        <Modal ref={modalRef}>
+          <Header>
+            <Typography variant='subTitle1'>타이틀</Typography>
+            <IconButton onClick={onCloseHandler}>
+              <CloseOutline size={24} />
             </IconButton>
-          </HBox>
-          <HLine borderWidth='2px' mx='-16px' />
-          <Box
-            overflow='hidden'
-            maxHeight='450px'
-            overflowY='auto'
-            py={4}
-            mx='-14px'
-            my='-8px'
-            bgColor='white'>
-            <VBox mx={4}>
+          </Header>
+          <HLine />
+          <Body>
+            <Content>
               <Typography>
                 Next, we wrap our definition using the utility types that React provides to complete
                 the props for a specified element. Typically, we statically write the tag, for
@@ -126,7 +149,7 @@ function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
                 example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
                 tag, we pass the E type.
               </Typography>
-              {/* <Typography>
+              <Typography>
                 Next, we wrap our definition using the utility types that React provides to complete
                 the props for a specified element. Typically, we statically write the tag, for
                 example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
@@ -150,18 +173,18 @@ function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
                 the props for a specified element. Typically, we statically write the tag, for
                 example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
                 tag, we pass the E type.
-              </Typography> */}
-            </VBox>
-          </Box>
-          <HLine mx='-14px' />
-          <HBox justifyContent='center' mt={3}>
+              </Typography>
+            </Content>
+          </Body>
+          <HLine />
+          <Footer>
             <Button onClick={onCloseHandler}>취소</Button>
-            <VLine my='8px' mx='10px' />
+            <VLine my={3} mx={3} />
             <Button variant='primary' onClick={onSubmit}>
               저장
             </Button>
-          </HBox>
-        </VBox>
+          </Footer>
+        </Modal>
       </ContentLayer>
     </ModalContainer>
   );
