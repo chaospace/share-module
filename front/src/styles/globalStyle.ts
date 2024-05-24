@@ -15,6 +15,11 @@ const GlobalStyle = createGlobalStyle`
     ${buttonStyles}
     ${formStyles}
     ${typographyStyle}
+
+    #app{
+      position: relative;
+      
+    }
 `;
 
 export default GlobalStyle;
