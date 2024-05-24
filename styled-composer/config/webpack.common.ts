@@ -1,51 +1,51 @@
-import path from "path";
-import { outDir, srcDir } from "./webpack.path";
-import webpack from "webpack";
-import BundleDeclarationsWebpackPlugin from "bundle-declarations-webpack-plugin";
+import path from 'path';
+import { outDir, srcDir, workspaceDir } from './webpack.path';
+import webpack from 'webpack';
+import BundleDeclarationsWebpackPlugin from 'bundle-declarations-webpack-plugin';
 const commonConfig: webpack.Configuration = {
-  entry: path.resolve(srcDir, "index.ts"),
+  entry: path.resolve(srcDir, 'index.ts'),
   resolve: {
-    modules: ["node_modules"],
-    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
+    modules: ['node_modules'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
-      "@": srcDir,
-    },
+      '@': srcDir
+    }
   },
   output: {
     clean: true,
     path: outDir,
-    filename: "main.js",
+    filename: 'main.js',
     library: {
-      type: "umd",
+      type: 'umd',
       umdNamedDefine: true,
-      name: "styledComposer",
+      name: 'styledComposer'
     },
-    globalObject: "this"
+    globalObject: 'this'
   },
   module: {
     rules: [
       {
-        type: "asset",
-        resourceQuery: /url/,
+        type: 'asset',
+        resourceQuery: /url/
       },
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
-            exclude: ["/node_modules/"],
-          },
-        },
-      },
-    ],
+            configFile: path.resolve(workspaceDir, 'babel.config.json'),
+            exclude: ['/node_modules/']
+          }
+        }
+      }
+    ]
   },
   plugins: [
     new BundleDeclarationsWebpackPlugin({
-      outFile: "index.d.ts"
+      outFile: 'index.d.ts'
     })
-
-  ],
+  ]
 };
 
 export default commonConfig;
