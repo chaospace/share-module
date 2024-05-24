@@ -2,8 +2,8 @@ import React from 'react';
 import CheckBoxGroup from './CheckBoxGroup';
 import { fn } from '@storybook/test';
 import { Meta, StoryObj } from '@storybook/react';
-import Button from './Button';
 import { useArgs } from '@storybook/preview-api';
+import Button from '@/components/elements/Button';
 
 const defaultOptions = Array.from({ length: 10 }).map((_, idx) => {
   return {
@@ -22,7 +22,6 @@ const meta = {
     options: [],
     onChange: fn()
   },
-  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen'
   }
@@ -41,15 +40,15 @@ const CheckBoxGroupBasic: Story = {
 const tempSelected = defaultOptions.map(o => ({ ...o }));
 Object(tempSelected[1]).selected = true;
 Object(tempSelected[5]).selected = true;
-
-/**
- * 초기 selected상태 전달
- */
 const CheckBoxWithSelected: Story = {
   args: {
     options: tempSelected
   }
 };
+
+/**
+ * 초기 selected상태 전달
+ */
 
 const CheckBoxWithChangeOptions: Story = {
   args: {

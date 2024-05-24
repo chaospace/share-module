@@ -12,17 +12,18 @@ const meta = {
     display: 'flex',
     gap: '0.5rem'
   },
+
   argTypes: {
     position: {
       table: { disable: true }
     },
     display: {
       description: 'display방식 flex고정',
-      table: { disable: true }
+      table: { readonly: true }
     },
     flexDirection: {
       description: '자식요소 정렬 방향 설정',
-      table: { disable: true }
+      table: { readonly: true }
     },
     gap: {
       description: '자식요소 사이 간격설정',
@@ -32,7 +33,6 @@ const meta = {
       }
     }
   },
-  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen'
   }
@@ -78,6 +78,7 @@ const VBoxBasic: Story = {
     flexDirection: 'column',
     gap: '8px'
   },
+
   parameters: {
     docs: {
       description: {

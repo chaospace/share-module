@@ -16,7 +16,6 @@ const meta = {
   parameters: {
     layout: 'fullscreen'
   },
-  tags: ['autodocs'],
   args: {
     checked: false,
     value: '',

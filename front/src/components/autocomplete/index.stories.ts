@@ -11,9 +11,9 @@ const meta = {
   parameters: {
     layout: 'fullscreen'
   },
-  tags: ['stable'],
   args: {
-    options: provider
+    options: provider,
+    defaultValue: '옵션-4'
   }
 } satisfies Meta<typeof AutoComplete>;
 

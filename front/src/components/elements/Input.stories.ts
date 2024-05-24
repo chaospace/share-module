@@ -7,8 +7,7 @@ const meta = {
   component: Input,
   parameters: {
     layout: 'fullscreen'
-  },
-  tags: ['stable']
+  }
 } satisfies Meta<InputProps>;
 
 export default meta;
