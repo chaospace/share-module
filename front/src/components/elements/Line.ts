@@ -2,7 +2,7 @@
 
 import { shouldForwardCSSProps } from '@/styles/utils';
 import styled, { ExecutionContext, css } from 'styled-components';
-import { CSSComposerObject } from 'styled-composer';
+import { CSSComposerObject, composer } from 'styled-composer';
 
 const baseStyle = css`
   margin: 0;
@@ -20,11 +20,11 @@ const vBorderComposer = ({
   borderStyle,
   borderColor,
   mx,
-  my
+  my,
+  theme
 }: ExecutionContext & LineProps) => ({
   borderLeft: `${borderWidth} ${borderStyle}`,
-  borderColor,
-  margin: `${my ?? 0} ${mx ?? 0}`
+  ...composer({ borderColor, mx, my, theme })
 });
 
 const initProps = (props: LineProps) => ({
@@ -39,11 +39,11 @@ const hBorderComposer = ({
   borderStyle,
   borderColor,
   mx,
-  my
+  my,
+  theme
 }: ExecutionContext & LineProps) => ({
   borderTop: `${borderWidth} ${borderStyle}`,
-  borderColor,
-  margin: `${my ?? 0} ${mx ?? 0}`
+  ...composer({ borderColor, mx, my, theme })
 });
 
 const HLine = styled.hr.attrs<LineProps>(initProps).withConfig({

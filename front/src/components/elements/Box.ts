@@ -22,19 +22,13 @@ const Box = styled('div')
     shouldForwardProp: shouldForwardAllProps
   })(composer);
 
-Box.displayName = 'Box';
-
-const VBox = styled(Box).attrs({
+const VBox = styled(Box).attrs(() => ({
   flexDirection: 'column'
-})``;
+}))``;
 
-VBox.displayName = 'VBox';
-
-const HBox = styled(Box).attrs({
+const HBox = styled(Box).attrs(() => ({
   flexDirection: 'row'
-})``;
-
-HBox.displayName = 'HBox';
+}))``;
 
 export type { BoxProps };
 export { Box, VBox, HBox };
