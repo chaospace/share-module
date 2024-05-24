@@ -32,6 +32,8 @@ declare type StyleVariantProps = {
   variant?: VariantCategory;
 };
 
+declare type ScaleType = SetKeyValueType<'s' | 'm' | 'l', string>;
+
 /**
     default:{dark:{main:"", light:"", dark:""}, light:{}};
     일반 js로는 어떻게 구성할까?
@@ -43,6 +45,11 @@ declare module 'styled-components' {
   export interface DefaultTheme {
     mode: ThemeMode;
     variant: VariantType;
+    zIndices: {
+      modal: number;
+    };
+    radius: ScaleType;
+    thickness: ScaleType;
   }
 }
 
