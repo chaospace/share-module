@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import SimpleModal, { ModalFooterProps } from '.';
 import Typography from '@/components/elements/Typography';
@@ -111,4 +111,26 @@ const ModalBasic: Story = {
   }
 };
 
-export { ModalBasic };
+const ModalExample: Story = {
+  parameters: {
+    controls: {
+      disable: true
+    }
+  },
+  render: () => {
+    // eslint-disable-next-line
+    const [open, setOpen] = useState(false);
+    return (
+      <React.Fragment>
+        <Button onClick={() => setOpen(!open)}>모달 확인</Button>
+        {open && (
+          <SimpleModal onClose={() => setOpen(false)}>
+            <Content />
+          </SimpleModal>
+        )}
+      </React.Fragment>
+    );
+  }
+};
+
+export { ModalBasic, ModalExample };

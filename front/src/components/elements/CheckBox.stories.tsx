@@ -54,9 +54,8 @@ export const CheckBoxVariant: Story = {
     children: '자동 로그인',
     checked: true
   },
-  render: ({ checked }) => {
+  render: ({ checked }: any) => {
     const variantKey = Object.keys(variant);
-    // const [{ checked }, updateArgs] = useArgs();
     return (
       <>
         {variantKey.map((o, idx) => {
