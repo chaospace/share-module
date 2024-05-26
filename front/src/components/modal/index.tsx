@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useId, useRef } from 'react';
+import React, { FunctionComponent, PropsWithChildren, useEffect, useId, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Box, HBox, VBox } from '@/components/elements/Box';
 import Typography from '../elements/Typography';
@@ -110,8 +110,7 @@ type ModalProps = {
   onClose?: (isSubmit?: boolean) => void;
   /** content최소 높이 값 기본은 150 */
   contentMineight?: number;
-  /** content 정보 */
-  children?: React.ReactNode | null;
+
   /**헤더 랜더러 */
   HeaderContent?: FunctionComponent;
   /** 풋더 랜더러 */
@@ -171,10 +170,10 @@ const SimpleFooterContent = ({ onClick, onSubmit }: ModalFooterProps) => {
 function SimpleModal({
   title = '알림',
   contentMineight = 150,
-  children,
+  children = null,
   onClose,
   FooterContent = SimpleFooterContent
-}: ModalProps) {
+}: PropsWithChildren<ModalProps>) {
   const modalRef = useRef<HTMLDivElement>(null);
   const focusableNodes = useRef<HTMLElement[]>([]);
   const dialogLabelId = `dl-${useId()}`;
