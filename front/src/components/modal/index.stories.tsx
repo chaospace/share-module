@@ -1,7 +1,9 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import SimpleModal from '.';
+import SimpleModal, { ModalFooterProps } from '.';
 import Typography from '@/components/elements/Typography';
+import { fn } from '@storybook/test';
+import Button from '../elements/Button';
 
 const Content = () => {
   return (
@@ -26,6 +28,34 @@ const Content = () => {
   );
 };
 
+const AFooter = ({ onSubmit, onClick }: ModalFooterProps) => {
+  return (
+    <>
+      <Button variant='danger'>닫기</Button>
+      <Button onClick={onClick}>이전</Button>
+      <Button variant='info' onClick={onSubmit}>
+        다음
+      </Button>
+    </>
+  );
+};
+
+const FormFooter = ({ onSubmit, onClick }: ModalFooterProps) => {
+  return (
+    <>
+      <Button variant='danger' onClick={onClick}>
+        닫기
+      </Button>
+      <Button variant='info' type='reset'>
+        리셋
+      </Button>
+      <Button variant='primary' onClick={onSubmit}>
+        저장
+      </Button>
+    </>
+  );
+};
+
 const meta = {
   title: 'components/SimpleModal',
   component: SimpleModal,
@@ -38,18 +68,33 @@ const meta = {
     }
   },
   args: {
-    children: 'default'
+    children: 'default',
+    onClose: fn()
   },
   argTypes: {
     children: {
       description: '모달 컨텐츠',
-      type: 'React.ReactNode|null',
+      type: 'object',
       options: ['default'],
       control: { type: 'select' },
       table: { readonly: true },
       mapping: {
         default: <Content />
       }
+    },
+    FooterContent: {
+      type: 'object',
+      options: ['a', 'b'],
+      control: { type: 'select' },
+      mapping: {
+        a: (props: ModalFooterProps) => <AFooter {...props} />,
+        b: (props: ModalFooterProps) => <FormFooter {...props} />
+      }
+    },
+    footerAlign: {
+      type: 'string',
+      options: ['start', 'center', 'end'],
+      control: { type: 'select' }
     }
   }
 } satisfies Meta<typeof SimpleModal>;
@@ -60,7 +105,7 @@ type Story = StoryObj<typeof meta>;
 
 const ModalBasic: Story = {
   args: {
-    title: '모달타이틀',
+    title: '알림',
     children: 'default'
   }
 };

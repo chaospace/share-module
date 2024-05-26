@@ -110,10 +110,15 @@ type ModalProps = {
   onClose?: (isSubmit?: boolean) => void;
   /** content최소 높이 값 기본은 150 */
   contentMineight?: number;
-
+  /** 취소버튼 라벨*/
+  cancelLabel?: string;
+  /** 확인버튼 라벨*/
+  okLabel?: string;
   /**헤더 랜더러 */
   HeaderContent?: FunctionComponent;
-  /** 풋더 랜더러 */
+  /** 풋더 버튼 정렬 */
+  footerAlign?: string;
+  /** 풋더 커스텀 컴포넌트 속성에 onClose onSubmit 핸들러를 전달 */
   FooterContent?: FunctionComponent<ModalFooterProps>;
 };
 
@@ -151,16 +156,16 @@ const findFocusableChildNode = (ele: HTMLElement, result: Element[]): any => {
 const getFirstFocusElement = (candidate: HTMLElement[]) =>
   candidate.find(o => o.ariaLabel !== 'close');
 
-const SimpleFooterContent = ({ onClick, onSubmit }: ModalFooterProps) => {
+/* const SimpleFooterContent = ({ onClick, onSubmit }: ModalFooterProps) => {
   return (
     <React.Fragment>
-      <Button onClick={onClick}>취소</Button>
+      <Button onClick={onClick}>{cancelLabel}</Button>
       <Button variant='primary' onClick={onSubmit}>
-        확인
+        {okLabel}
       </Button>
     </React.Fragment>
   );
-};
+}; */
 
 /**
  * 모달컴포넌트
@@ -172,7 +177,10 @@ function SimpleModal({
   contentMineight = 150,
   children = null,
   onClose,
-  FooterContent = SimpleFooterContent
+  cancelLabel = '취소',
+  okLabel = '확인',
+  footerAlign = 'center',
+  FooterContent
 }: PropsWithChildren<ModalProps>) {
   const modalRef = useRef<HTMLDivElement>(null);
   const focusableNodes = useRef<HTMLElement[]>([]);
@@ -248,12 +256,22 @@ function SimpleModal({
         <Body>
           <Content minHeight={contentMineight}>{children}</Content>
         </Body>
-        <Footer gap={4}>
-          <FooterContent onClick={onCloseHandler} onSubmit={onSubmit} />
+        <Footer justifyContent={footerAlign} gap={4}>
+          {FooterContent ? (
+            <FooterContent onClick={onCloseHandler} onSubmit={onSubmit} />
+          ) : (
+            <React.Fragment>
+              <Button onClick={onCloseHandler}>{cancelLabel}</Button>
+              <Button variant='primary' onClick={onSubmit}>
+                {okLabel}
+              </Button>
+            </React.Fragment>
+          )}
         </Footer>
       </Modal>
     </ModalContainer>
   );
 }
 
+export type { ModalFooterProps };
 export default SimpleModal;
