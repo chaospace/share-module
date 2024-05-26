@@ -41,12 +41,13 @@ const AFooter = ({ onSubmit, onClick }: ModalFooterProps) => {
 };
 
 const FormFooter = ({ onSubmit, onClick }: ModalFooterProps) => {
+  const mockReset = fn();
   return (
     <>
       <Button variant='danger' onClick={onClick}>
         닫기
       </Button>
-      <Button variant='info' type='reset'>
+      <Button variant='info' type='reset' onClick={mockReset}>
         리셋
       </Button>
       <Button variant='primary' onClick={onSubmit}>
