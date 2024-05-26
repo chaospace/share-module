@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useId, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Box, HBox, VBox } from '@/components/elements/Box';
 import Typography from '../elements/Typography';
@@ -77,7 +77,7 @@ const Header = styled(HBox).attrs(props => ({
 `;
 
 const Body = styled(Box).attrs(props => ({
-  p: props.p ?? 4,
+  p: props.p ?? 5,
   overflow: props.overflow ?? 'hidden',
   overflowY: props.overflowY ?? 'auto',
   bgColor: props.bgColor ?? 'white'
@@ -98,14 +98,25 @@ const Footer = styled(HBox).attrs(props => ({
     0px -1px 1px rgb(0 0 0 / 10%);
 `;
 
-type ModalProps<T extends object> = {
-  onClose?: (info?: T) => void;
-  contentMaxHeight?: number;
-  onRenderBody?: () => React.ReactNode | null;
-  data?: T;
+type ModalFooterProps = {
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+  onSubmit?: () => void;
 };
 
-// type AA<T extends keyof JSX.IntrinsicElements> = JSX.IntrinsicElements[T];
+type ModalProps = {
+  /** 모달 타이틀 */
+  title?: string;
+  /** close 핸들러 함수 isSubmit정보는 확인으로 호출될 경우 전달 */
+  onClose?: (isSubmit?: boolean) => void;
+  /** content최소 높이 값 기본은 150 */
+  contentMineight?: number;
+  /** content 정보 */
+  children?: React.ReactNode | null;
+  /**헤더 랜더러 */
+  HeaderContent?: FunctionComponent;
+  /** 풋더 랜더러 */
+  FooterContent?: FunctionComponent<ModalFooterProps>;
+};
 
 const focusAbleNode = (ele: HTMLElement) => {
   //안되는 경우를 먼저 제거
@@ -128,7 +139,6 @@ const focusAbleNode = (ele: HTMLElement) => {
 };
 
 const findFocusableChildNode = (ele: HTMLElement, result: Element[]): any => {
-  // ele.childNodes
   for (let i = 0; i < ele.children.length; i++) {
     const child = ele.children[i] as HTMLElement;
     if (focusAbleNode(child)) {
@@ -142,15 +152,31 @@ const findFocusableChildNode = (ele: HTMLElement, result: Element[]): any => {
 const getFirstFocusElement = (candidate: HTMLElement[]) =>
   candidate.find(o => o.ariaLabel !== 'close');
 
+const SimpleFooterContent = ({ onClick, onSubmit }: ModalFooterProps) => {
+  return (
+    <React.Fragment>
+      <Button onClick={onClick}>취소</Button>
+      <Button variant='primary' onClick={onSubmit}>
+        확인
+      </Button>
+    </React.Fragment>
+  );
+};
+
 /**
  * 모달컴포넌트
- * 헤더는 고정 혹은 스크롤 가능.
- * 조건은 body는 스크롤가능
- * 풋더는 하단 혹은 콘텐츠하단 가능.
- * 모달에 기본은 하단에 컨텐츠를 제거할 막이 있어야 한다.?
+ * 헤더와 풋더는 고정
+ * body는 유동이며 minContentHeight로 최소높이만 제어.
  */
-function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
+function SimpleModal({
+  title = '알림',
+  contentMineight = 150,
+  children,
+  onClose,
+  FooterContent = SimpleFooterContent
+}: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const focusableNodes = useRef<HTMLElement[]>([]);
   const dialogLabelId = `dl-${useId()}`;
 
   const onCloseHandler = (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -161,7 +187,7 @@ function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
   };
 
   const onSubmit = () => {
-    onClose && onClose(data!);
+    onClose && onClose(true);
   };
 
   // eslint react-hooks/exhaustive-deps: 0
@@ -179,72 +205,52 @@ function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
   }, []);
   // eslint react-hooks/exhaustive-deps: 2
 
+  //초기 포커스적용.
   useEffect(() => {
-    const ele = getFirstFocusElement(findFocusableChildNode(modalRef.current!, []));
+    focusableNodes.current = findFocusableChildNode(modalRef.current!, []);
+    const ele = getFirstFocusElement(focusableNodes.current);
     ele?.focus();
-    // console.log('active', document.activeElement === ele);
+  }, []);
+
+  // 포커스 이동 처리
+  useEffect(() => {
+    let lastFocus: Element | null;
+    const onFocusDocument = (_: FocusEvent) => {
+      const eles = focusableNodes.current;
+      //포커스가 모달 밖으로 이동하면 다시 모달로 지정한다.
+      if (!modalRef.current?.contains(document.activeElement)) {
+        if (lastFocus === eles[0]) {
+          eles[eles.length - 1].focus();
+        } else {
+          eles[0].focus();
+        }
+      }
+      lastFocus = document.activeElement;
+    };
+    //click을 이용하면 up순간 이벤트가 발생해 등장과 함께 사라지게 된다.
+    window.addEventListener('focus', onFocusDocument, true);
+    return () => {
+      window.removeEventListener('focus', onFocusDocument, true);
+    };
   }, []);
 
   return (
     <ModalContainer>
-      <DimLayer tabIndex={0} />
+      <DimLayer />
       <Modal role='dialog' aria-modal='true' aria-labelledby={dialogLabelId} ref={modalRef}>
         <Header>
           <Typography id={dialogLabelId} variant='subTitle1'>
-            타이틀
+            {title}
           </Typography>
           <IconButton aria-label='close' onClick={onCloseHandler}>
             <CloseOutline size={24} />
           </IconButton>
         </Header>
-
         <Body>
-          <Content>
-            <Typography>
-              Next, we wrap our definition using the utility types that React provides to complete
-              the props for a specified element. Typically, we statically write the tag, for example
-              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
-              the E type.
-            </Typography>
-            <Typography>
-              Next, we wrap our definition using the utility types that React provides to complete
-              the props for a specified element. Typically, we statically write the tag, for example
-              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
-              the E type.
-            </Typography>
-            <Typography>
-              Next, we wrap our definition using the utility types that React provides to complete
-              the props for a specified element. Typically, we statically write the tag, for example
-              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
-              the E type.
-            </Typography>
-
-            <Typography>
-              Next, we wrap our definition using the utility types that React provides to complete
-              the props for a specified element. Typically, we statically write the tag, for example
-              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
-              the E type.
-            </Typography>
-            <Typography>
-              Next, we wrap our definition using the utility types that React provides to complete
-              the props for a specified element. Typically, we statically write the tag, for example
-              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
-              the E type.
-            </Typography>
-            <Typography>
-              Next, we wrap our definition using the utility types that React provides to complete
-              the props for a specified element. Typically, we statically write the tag, for example
-              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
-              the E type.
-            </Typography>
-          </Content>
+          <Content minHeight={contentMineight}>{children}</Content>
         </Body>
-
         <Footer gap={4}>
-          <Button onClick={onCloseHandler}>취소</Button>
-          <Button variant='primary' onClick={onSubmit}>
-            저장
-          </Button>
+          <FooterContent onClick={onCloseHandler} onSubmit={onSubmit} />
         </Footer>
       </Modal>
     </ModalContainer>
