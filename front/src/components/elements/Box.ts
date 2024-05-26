@@ -16,7 +16,7 @@ const Box = styled('div')
   .attrs<BoxProps>(props => ({
     position: props.position ?? 'relative',
     display: props.display ?? 'flex',
-    gap: props.gap ?? '0.5rem'
+    gap: props.gap ?? 3
   }))
   .withConfig({
     shouldForwardProp: shouldForwardAllProps

@@ -44,9 +44,9 @@ const Modal = styled(Grid).attrs(props => ({
   maxWidth: props.maxWidth ?? 900,
   bgColor: props.bgColor ?? grey[200],
   overflow: 'hidden',
-  borderWidth: 1,
+  borderWidth: 's',
   borderColor: grey[300],
-  borderRadius: props.borderRadius ?? '0.5rem',
+  borderRadius: props.borderRadius ?? 'm',
   maxHeight: props.maxHeight ?? '70%',
   minHeight: props.minHeight ?? 320
 }))`
@@ -155,17 +155,6 @@ const findFocusableChildNode = (ele: HTMLElement, result: Element[]): any => {
 
 const getFirstFocusElement = (candidate: HTMLElement[]) =>
   candidate.find(o => o.ariaLabel !== 'close');
-
-/* const SimpleFooterContent = ({ onClick, onSubmit }: ModalFooterProps) => {
-  return (
-    <React.Fragment>
-      <Button onClick={onClick}>{cancelLabel}</Button>
-      <Button variant='primary' onClick={onSubmit}>
-        {okLabel}
-      </Button>
-    </React.Fragment>
-  );
-}; */
 
 /**
  * 모달컴포넌트
