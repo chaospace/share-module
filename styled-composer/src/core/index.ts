@@ -1,6 +1,7 @@
 import bg from '@/properties/background';
 import border from '@/properties/border';
 import display from '@/properties/display';
+import filters from '@/properties/filter';
 import flex from '@/properties/flex';
 import grid from '@/properties/grid';
 import position from '@/properties/position';
@@ -20,12 +21,13 @@ const keyword = {
   ...bg,
   ...flex,
   ...grid,
-  ...typography
+  ...typography,
+  ...filters
 } as const;
 
 const allKeywordName = Object.keys(keyword);
 
-type StyleValueType = string | number | (string | number)[];
+type StyleValueType = string | number | (string | number)[] | any;
 type StyleProcessorParameter = Partial<{
   property: string | string[];
   alias: string;
@@ -104,7 +106,7 @@ const createStyleProcessorStore = (state: StyleComposerState) => {
   for (let key in state) {
     const config = state[key as StyleStateKeyWord];
     store[key] = isStyleProcessorConfig(config)
-      ? createStyleProcessor(config)
+      ? createStyleProcessor({ property: key, ...config })
       : createStyleProcessor({
           alias: key,
           property: key
