@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from '@storybook/preview-api';
 import Button from '@/components/elements/Button';
 
-const defaultOptions = Array.from({ length: 10 }).map((_, idx) => {
+const defaultOptions = Array.from({ length: 4 }).map((_, idx) => {
   return {
     label: `옵션-${idx}`,
     value: `선택-${idx}`
@@ -58,7 +58,7 @@ const CheckBoxWithChangeOptions: Story = {
     // eslint-disable-next-line
     const [{ options }, updateArgs] = useArgs();
     const generateOpt = () => {
-      const next = Array.from({ length: ~~(Math.random() * 14) }).map((_, idx) => ({
+      const next = Array.from({ length: ~~(Math.random() * 7) }).map((_, idx) => ({
         label: `옵션-${idx}`,
         value: `선택-${idx}`,
         selected: Math.random() > 0.5

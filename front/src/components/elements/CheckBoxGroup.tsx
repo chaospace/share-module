@@ -23,6 +23,8 @@ interface CheckBoxGroupProps {
   options: CheckBoxOptionType[];
   /** 체크박스 값 변경 시 호출되는 핸들러 함수 */
   onChange: (selected: CheckBoxOptionType[]) => void;
+  /** 전체선택 표시여부 */
+  hasAll?: boolean;
 }
 
 const Container = styled.div`
@@ -42,8 +44,13 @@ const initProvider = (opts: CheckBoxOptionType[]) =>
 /**
  * 체크박스 그룹 컴포넌트
  */
-function CheckBoxGroup({ options = emptyArr, onChange = emptyHandler }: CheckBoxGroupProps) {
+function CheckBoxGroup({
+  hasAll = false,
+  options = emptyArr,
+  onChange = emptyHandler
+}: CheckBoxGroupProps) {
   const [provider, setProvider] = useState<CheckBoxOptionType[]>(initProvider(options));
+  // const [all, setAll] = useState(false);
 
   const onChangeHandler = (idx: number) => {
     const next = provider.map((o, i) => {
@@ -58,8 +65,17 @@ function CheckBoxGroup({ options = emptyArr, onChange = emptyHandler }: CheckBox
     setProvider(initProvider(options));
   }, [options]);
 
+  const all = provider.every(o => o.selected);
+  const toggleAll = (b: boolean) => {
+    setProvider(prev => prev.map(o => ({ ...o, selected: b })));
+  };
   return (
     <Container>
+      {hasAll && (
+        <CheckBox variant='primary' checked={all} onChange={() => toggleAll(!all)}>
+          전체
+        </CheckBox>
+      )}
       {provider
         ? provider.map((o: CheckBoxOptionType, idx: number) => {
             return (
