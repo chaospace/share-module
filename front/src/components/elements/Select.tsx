@@ -16,8 +16,8 @@ const Base = styled('select').withConfig({
 })<SelectBaseProps>(composer);
 type OptionType = { label: string; value: string };
 type Getter = (o: any) => string;
-const defaultValue = (o: any) => o.value || o.label || o;
-const defaultLabel = (o: any) => o.label || o.value || o;
+const defaultValue = (o: any) => o.value ?? o.label ?? o;
+const defaultLabel = (o: any) => o.label ?? o.value ?? o;
 const composeOptionItem = (o: any, labelGetter: Getter, valueGetter: Getter): OptionType => {
   return { label: labelGetter(o), value: valueGetter(o) };
 };
