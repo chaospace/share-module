@@ -21,8 +21,8 @@ const GlobalStyle = createGlobalStyle`
       position: relative;
       
     }
-    //요소 focus시 기본스타일
-    *:focus {
+    //keyboard에 의한 focus시 적용 스타일
+    *:focus-visible {
       outline: 2px solid darkblue;
     }
 `;

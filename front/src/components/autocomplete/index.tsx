@@ -187,7 +187,15 @@ function AutoComplete({
       return;
     }
 
+    if (key === 'Tab' && openList) {
+      setOpenList(false);
+      return;
+    }
+
     switch (key) {
+      case 'Escape':
+        if (query === '') setOpenList(false);
+        break;
       case 'ArrowDown':
         setActiveIndex(prev => {
           if (prev + 1 < options.length) {

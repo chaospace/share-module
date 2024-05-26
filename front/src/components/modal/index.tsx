@@ -232,7 +232,7 @@ function SimpleModal({
 
   return (
     <ModalContainer>
-      <DimLayer />
+      <DimLayer tabIndex={0} />
       <Modal role='dialog' aria-modal='true' aria-labelledby={dialogLabelId} ref={modalRef}>
         <Header>
           <Typography id={dialogLabelId} variant='subTitle1'>
@@ -258,6 +258,8 @@ function SimpleModal({
           )}
         </Footer>
       </Modal>
+      {/** 포커스 이동 시 모달안에 머물게 하기 위한 방지용 돔 modal태그 앞뒤로 넣어주는게 안전*/}
+      <div tabIndex={0}></div>
     </ModalContainer>
   );
 }
