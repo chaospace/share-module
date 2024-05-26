@@ -21,6 +21,10 @@ const GlobalStyle = createGlobalStyle`
       position: relative;
       
     }
+    //요소 focus시 기본스타일
+    *:focus {
+      outline: 2px solid darkblue;
+    }
 `;
 
 export default GlobalStyle;

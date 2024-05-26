@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useId, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Box, HBox, VBox } from '@/components/elements/Box';
 import Typography from '../elements/Typography';
@@ -6,7 +6,7 @@ import { CloseOutline } from '@styled-icons/evaicons-outline';
 import { grey } from '@/colors';
 import IconButton from '@/components/elements/IconButton';
 import Button from '@/components/elements/Button';
-import { HLine, VLine } from '@/components/elements/Line';
+import Grid from '@/components/elements/Grid';
 
 const layerBaseStyle = css`
   position: fixed;
@@ -18,15 +18,13 @@ const layerBaseStyle = css`
 `;
 
 const ModalContainer = styled.div`
-  position: absolute;
+  position: fixed;
+  display: flex;
   top: 0;
   left: 0;
+  bottom: 0;
+  right: 0;
   z-index: ${({ theme }) => theme.zIndices.modal};
-`;
-
-const ContentLayer = styled('div')`
-  ${layerBaseStyle};
-  //내용 중앙정렬
   align-items: center;
   justify-content: center;
 `;
@@ -39,21 +37,33 @@ const DimLayer = styled('div')`
   pointer-events: none;
 `;
 
-const Modal = styled(VBox).attrs(props => ({
-  gap: 0,
+const Modal = styled(Grid).attrs(props => ({
+  gridTemplateRows: 'min-content 1fr min-content',
   minWidth: props.minWidth ?? 400,
   width: props.width ?? 500,
   maxWidth: props.maxWidth ?? 900,
   bgColor: props.bgColor ?? grey[200],
   overflow: 'hidden',
-  border: props.border ?? '1px solid',
-  borderRadius: props.borderRadius ?? '0.5rem'
-}))``;
+  borderWidth: 1,
+  borderColor: grey[300],
+  borderRadius: props.borderRadius ?? '0.5rem',
+  maxHeight: props.maxHeight ?? '70%',
+  minHeight: props.minHeight ?? 320
+}))`
+  box-shadow:
+    0px 2px 4px rgb(0 0 0 / 10%),
+    0px 1px 2px rgb(0 0 0 / 20%);
+`;
 
 const Header = styled(HBox).attrs(props => ({
-  m: props.m ?? 4,
-  alignItems: props.alignItems ?? 'center'
+  p: props.p ?? 4,
+  alignItems: props.alignItems ?? 'center',
+  minHeight: 38
 }))`
+  z-index: 1;
+  box-shadow:
+    0px 2px 4px rgb(0 0 0 / 10%),
+    0px 1px 1px rgb(0 0 0 / 10%);
   ${Typography} {
     text-align: center;
     margin-top: 2px;
@@ -62,7 +72,7 @@ const Header = styled(HBox).attrs(props => ({
   }
   ${IconButton} {
     position: absolute;
-    right: 0;
+    right: 16px;
   }
 `;
 
@@ -70,23 +80,67 @@ const Body = styled(Box).attrs(props => ({
   p: props.p ?? 4,
   overflow: props.overflow ?? 'hidden',
   overflowY: props.overflowY ?? 'auto',
-  maxHeight: props.maxHeight ?? '500px',
   bgColor: props.bgColor ?? 'white'
 }))``;
 
 const Content = styled(VBox).attrs(props => ({
-  height: props.height ?? 'max-content'
+  height: props.height ?? 'max-content',
+  minHeight: props.minHeight ?? 150
 }))``;
 
 const Footer = styled(HBox).attrs(props => ({
   justifyContent: props.justifyContent ?? 'center',
-  m: props.m ?? 4
-}))``;
+  p: props.p ?? 4,
+  minHeight: 38
+}))`
+  box-shadow:
+    0px -2px 4px rgb(0 0 0 / 10%),
+    0px -1px 1px rgb(0 0 0 / 10%);
+`;
 
 type ModalProps<T extends object> = {
   onClose?: (info?: T) => void;
+  contentMaxHeight?: number;
+  onRenderBody?: () => React.ReactNode | null;
   data?: T;
 };
+
+// type AA<T extends keyof JSX.IntrinsicElements> = JSX.IntrinsicElements[T];
+
+const focusAbleNode = (ele: HTMLElement) => {
+  //안되는 경우를 먼저 제거
+  if (ele.tabIndex < 0 || (ele as any).disabled) {
+    return false;
+  }
+
+  switch (ele.tagName) {
+    case 'A':
+      return (ele as HTMLAnchorElement).href && (ele as HTMLAnchorElement).rel !== 'ignore';
+    case 'INPUT':
+      return (ele as HTMLInputElement).type !== 'hidden';
+    case 'BUTTON':
+    case 'SELECT':
+    case 'TEXTAREA':
+      return true;
+    default:
+      return false;
+  }
+};
+
+const findFocusableChildNode = (ele: HTMLElement, result: Element[]): any => {
+  // ele.childNodes
+  for (let i = 0; i < ele.children.length; i++) {
+    const child = ele.children[i] as HTMLElement;
+    if (focusAbleNode(child)) {
+      result.push(child);
+    }
+    findFocusableChildNode(child, result);
+  }
+  return result;
+};
+
+const getFirstFocusElement = (candidate: HTMLElement[]) =>
+  candidate.find(o => o.ariaLabel !== 'close');
 
 /**
  * 모달컴포넌트
@@ -97,6 +151,7 @@ type ModalProps<T extends object> = {
  */
 function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const dialogLabelId = `dl-${useId()}`;
 
   const onCloseHandler = (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) {
@@ -123,69 +178,75 @@ function SimpleModal<T extends object>({ data, onClose }: ModalProps<T>) {
     };
   }, []);
   // eslint react-hooks/exhaustive-deps: 2
+
+  useEffect(() => {
+    const ele = getFirstFocusElement(findFocusableChildNode(modalRef.current!, []));
+    ele?.focus();
+    // console.log('active', document.activeElement === ele);
+  }, []);
+
   return (
     <ModalContainer>
-      <DimLayer />
-      <ContentLayer>
-        <Modal ref={modalRef}>
-          <Header>
-            <Typography variant='subTitle1'>타이틀</Typography>
-            <IconButton onClick={onCloseHandler}>
-              <CloseOutline size={24} />
-            </IconButton>
-          </Header>
-          <HLine />
-          <Body>
-            <Content>
-              <Typography>
-                Next, we wrap our definition using the utility types that React provides to complete
-                the props for a specified element. Typically, we statically write the tag, for
-                example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
-                tag, we pass the E type.
-              </Typography>
-              <Typography>
-                Next, we wrap our definition using the utility types that React provides to complete
-                the props for a specified element. Typically, we statically write the tag, for
-                example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
-                tag, we pass the E type.
-              </Typography>
-              <Typography>
-                Next, we wrap our definition using the utility types that React provides to complete
-                the props for a specified element. Typically, we statically write the tag, for
-                example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
-                tag, we pass the E type.
-              </Typography>
+      <DimLayer tabIndex={0} />
+      <Modal role='dialog' aria-modal='true' aria-labelledby={dialogLabelId} ref={modalRef}>
+        <Header>
+          <Typography id={dialogLabelId} variant='subTitle1'>
+            타이틀
+          </Typography>
+          <IconButton aria-label='close' onClick={onCloseHandler}>
+            <CloseOutline size={24} />
+          </IconButton>
+        </Header>
 
-              <Typography>
-                Next, we wrap our definition using the utility types that React provides to complete
-                the props for a specified element. Typically, we statically write the tag, for
-                example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
-                tag, we pass the E type.
-              </Typography>
-              <Typography>
-                Next, we wrap our definition using the utility types that React provides to complete
-                the props for a specified element. Typically, we statically write the tag, for
-                example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
-                tag, we pass the E type.
-              </Typography>
-              <Typography>
-                Next, we wrap our definition using the utility types that React provides to complete
-                the props for a specified element. Typically, we statically write the tag, for
-                example React.ComponentPropsWithoutRef , but since we are dealing with a dynamic
-                tag, we pass the E type.
-              </Typography>
-            </Content>
-          </Body>
-          <HLine />
-          <Footer>
-            <Button onClick={onCloseHandler}>취소</Button>
-            <VLine my={3} mx={3} />
-            <Button variant='primary' onClick={onSubmit}>
-              저장
-            </Button>
-          </Footer>
-        </Modal>
-      </ContentLayer>
+        <Body>
+          <Content>
+            <Typography>
+              Next, we wrap our definition using the utility types that React provides to complete
+              the props for a specified element. Typically, we statically write the tag, for example
+              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
+              the E type.
+            </Typography>
+            <Typography>
+              Next, we wrap our definition using the utility types that React provides to complete
+              the props for a specified element. Typically, we statically write the tag, for example
+              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
+              the E type.
+            </Typography>
+            <Typography>
+              Next, we wrap our definition using the utility types that React provides to complete
+              the props for a specified element. Typically, we statically write the tag, for example
+              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
+              the E type.
+            </Typography>
+
+            <Typography>
+              Next, we wrap our definition using the utility types that React provides to complete
+              the props for a specified element. Typically, we statically write the tag, for example
+              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
+              the E type.
+            </Typography>
+            <Typography>
+              Next, we wrap our definition using the utility types that React provides to complete
+              the props for a specified element. Typically, we statically write the tag, for example
+              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
+              the E type.
+            </Typography>
+            <Typography>
+              Next, we wrap our definition using the utility types that React provides to complete
+              the props for a specified element. Typically, we statically write the tag, for example
+              React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass
+              the E type.
+            </Typography>
+          </Content>
+        </Body>
+
+        <Footer gap={4}>
+          <Button onClick={onCloseHandler}>취소</Button>
+          <Button variant='primary' onClick={onSubmit}>
+            저장
+          </Button>
+        </Footer>
+      </Modal>
     </ModalContainer>
   );
 }
