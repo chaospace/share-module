@@ -15,7 +15,6 @@ const getBackGroundColor = ({ theme, variant }: StyleVariantContext) => {
   return theme.variant[variant].main;
 };
 const getCheckIconColor = ({ theme, variant }: StyleVariantContext) => {
-  console.log('variant', variant);
   return theme.variant[variant].light;
 };
 
@@ -39,7 +38,6 @@ const CheckMark = styled.span`
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
     padding: 0;
     margin: 0;
   }

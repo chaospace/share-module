@@ -4,6 +4,7 @@ import { VBox } from './components/elements/Box';
 import Typography from './components/elements/Typography';
 import TutorialApp from './tutorial';
 import UISample from './pages/sample';
+import CheckBoxApp from './pages/checkbox';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: 'sample',
         element: <UISample />
+      },
+      {
+        path: 'checkbox',
+        element: <CheckBoxApp />
       },
       {
         path: 'tutorial',
