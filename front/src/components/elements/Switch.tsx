@@ -107,8 +107,7 @@ type SwitchProps = React.DetailedHTMLProps<
 
 /**
  * label정보는 children으로 구성하며 모든 정보는 상위에서 컨트롤 한다는 가정.
- * @param param0
- * @returns
+ *
  */
 function Switch({ variant, value, checked, onChange, children, ...rest }: SwitchProps) {
   const labelID = `switchLabel-${useId()}`;
