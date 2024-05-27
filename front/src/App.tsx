@@ -10,6 +10,7 @@ const App = () => {
       <VBox p={5}>
         <HBox>
           <Link to='/sample'>ui샘플</Link>
+          <Link to='/radio'>라디오버튼</Link>
           <Link to='/checkbox'>체크박스</Link>
           <Link to='/tutorial'>ui 튜토리얼</Link>
         </HBox>

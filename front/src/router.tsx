@@ -5,6 +5,7 @@ import Typography from './components/elements/Typography';
 import TutorialApp from './tutorial';
 import UISample from './pages/sample';
 import CheckBoxApp from './pages/checkbox';
+import RadioApp from './pages/radio';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: 'sample',
         element: <UISample />
+      },
+      {
+        path: 'radio',
+        element: <RadioApp />
       },
       {
         path: 'checkbox',

@@ -33,7 +33,7 @@ const Container = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   flex-grow: 1;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
 const emptyArr: any = [];
