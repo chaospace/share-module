@@ -19,7 +19,8 @@ const formStyles = css`
     border-radius: 0.5rem;
   }
 
-  input[type='checkbox'] {
+  input[type='checkbox'],
+  input[type='radio'] {
     appearance: none;
   }
 

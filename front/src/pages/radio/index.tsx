@@ -2,6 +2,7 @@ import React from 'react';
 import RadioGroup from '@/components/elements/RadioGroup';
 import { HBox, VBox } from '@/components/elements/Box';
 import Typography from '@/components/elements/Typography';
+import Switch from '@/components/elements/Switch';
 
 const options = ['사과', '귤', '바나나'];
 
@@ -30,6 +31,9 @@ function RadioApp() {
           />
         </HBox>
       </VBox>
+
+      <Switch variant='info'>자동저장</Switch>
+      <Switch variant='success'>단위</Switch>
     </VBox>
   );
 }
