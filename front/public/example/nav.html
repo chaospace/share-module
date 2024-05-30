@@ -246,7 +246,8 @@
 
       const convertStrToBoolean = value => value === 'true';
       const getMenuItemByQuerySelector = node =>
-        Array.from(node.querySelectorAll('[role=menuitem]'));
+        Array.from(node.children).map(o => o.firstElementChild);
+      // Array.from(node.querySelectorAll('[role=menuitem]'));
 
       const clearPopoverContent = () => {
         if (hasPopover()) {
@@ -256,7 +257,6 @@
             o.removeEventListener('click', onClickMenuItem);
             o.removeEventListener('keydown', onKeyDownMenuItem);
             o.removeEventListener('focus', onFocusMenuItem);
-            o.removeEventListener('focusout', onFocusOutMenuItem);
           });
           popover.remove();
         }
@@ -288,8 +288,6 @@
         container.ariaOrientation = 'vertical';
         container.style.left = `${position}px`;
         registPopoverMenuItemEvent(container);
-        // registPopoverMenu(parentId);
-        // registPopoverMenu(parentId, container);
         popover.append(container);
         document.body.append(popover);
       };
@@ -299,7 +297,6 @@
           o.addEventListener('click', onClickPopoverMenuItem);
           o.addEventListener('keydown', onKeyDownMenuItem);
           o.addEventListener('focus', onFocusMenuItem);
-          o.addEventListener('focusout', onFocusOutMenuItem);
         });
       };
 
@@ -308,7 +305,6 @@
           o.addEventListener('click', onClickMenuItem);
           o.addEventListener('keydown', onKeyDownMenuItem);
           o.addEventListener('focus', onFocusMenuItem);
-          o.addEventListener('focusout', onFocusOutMenuItem);
         });
       };
 
@@ -342,7 +338,6 @@
             locations.unshift(pLocation);
           }
         }
-        // locations.push(node.getAttribute('id'));
         return locations;
       };
 
@@ -357,16 +352,16 @@
 
       const clearMenuElement = menu => {
         //menuitem에 expanded속성 초기화
-        if (popupTree[menu.getAttribute('aria-labelledby')]) {
-          delete popupTree[menu.getAttribute('aria-labelledby')];
-        }
-        getMenuItemById(menu.getAttribute('aria-labelledby')).ariaExpanded = false;
-        //menu.previousElementSibling.setAttribute('aria-expanded', false);
-        Array.from(menu.children).forEach(m => {
+        const menukey = menu.getAttribute('aria-labelledby');
+        delete popupTree[menukey];
+        getMenuItemById(menukey).ariaExpanded = false;
+        menu.querySelectorAll('[role=menu]').forEach(cm => {
+          delete popupTree[cm.getAttribute('aria-labelledby')];
+        });
+        getMenuItemByQuerySelector(menu).forEach(m => {
           m.removeEventListener('click', onClickPopoverMenuItem);
           m.removeEventListener('keydown', onKeyDownMenuItem);
           m.removeEventListener('focus', onFocusMenuItem);
-          m.removeEventListener('focusout', onFocusOutMenuItem);
         });
         menu.remove();
       };
@@ -412,40 +407,28 @@
       const getMenuItemById = id => document.querySelector(`#${id}`);
       const swapFocusItem = (current, next) => {
         current.tabIndex = -1;
-        next.focus();
         next.tabIndex = 0;
+        next.focus();
       };
-      const getSubMenuByParentId = parentId => {
+      const getMenuByLabelledBy = parentId => {
         return document.querySelector(`[aria-labelledby=${parentId}]`);
       };
-      // const getParentMenuitem =
-      const onFocusOutMenuItem = e => {
-        // const expanded = convertStrToBoolean(e.target.ariaExpanded);
-        // const menu = getFindParentMenu(e.target);
-        // const subMenu = getSubMenuByParentId(e.target.id);
-        // // || getMenuItemById(menu.getAttribute('aria-labelledby'));
-        // //if (e.target.classList.has('selected')) return;
-        // //포커스 아웃 시 제거를 해야 하는데.
-        // if (expanded && !subMenu) {
-        //   clearPopoverContent();
-        //   e.target.ariaExpanded = false;
-        // }
-      };
+
       const onFocusMenuItem = e => {
         // focusout발생이 focus보다 늦게 일어남.
-        console.log('focus', document.activeElement === e.target);
+        //console.log('focus', e.target.id);
+        //포커스를 가지고 있지 않은 요소는 팝업이 있다면 제거
+
         const hasPopup = convertStrToBoolean(e.target.ariaHasPopup);
         const expanded = convertStrToBoolean(e.target.ariaExpanded);
         const menuId = e.target.id;
-        //포커스를 가지고 있지 않은 요소는 팝업이 있다면 제거
         const locs = getMenuLocations(e.target);
         for (let key in popupTree) {
           if (!locs.includes(key)) {
-            clearMenuElement(getSubMenuByParentId(key));
+            clearMenuElement(getMenuByLabelledBy(key));
           }
         }
         if (Object.keys(popupTree).every(o => !o)) {
-          console.log('clear');
           clearPopoverContent();
         }
         if (hasPopup && !expanded) {
@@ -462,108 +445,107 @@
           }
         }
       };
+
+      /**
+       * 키보드를 이용한 이동정리
+       * 결국 키보드에 따라 서브, 부모, 현재 메뉴를 이동할 수 있어야 한다.
+       * 이를 위해 필요한 정보는
+       *  - 현재 키보드 이벤트 발생 메뉴아이템 목록에서의 위치.
+       *  - 메뉴 방향에 따른 방향액션 처리
+       *
+       * 액션을 결정짓는 요소는?
+       *  - 메뉴방향
+       *  - 현재포커싱된-메뉴아이템
+       *  - 키보드 방향
+       *
+       * swap_next에 조건은
+       * 현재 메뉴가 aria-haspopup속성이 있다면
+       * ? 하위메뉴로
+       * : 상위메뉴로 이동하는데 여기서 분기
+       * ? 상위메뉴를 aria-labelledby로 찾을 수 있는지
+       *
+       */
+      const KeyAction = {
+        NEXT: 'NEXT',
+        PREV: 'PREV',
+        SWAP_NEXT: 'SWAP_NEXT',
+        SWAP_PREV: 'SWAP_PREV'
+      };
+
+      const getKeyAction = (key, horizontalMenu = false) => {
+        let action;
+        switch (key) {
+          case 'ArrowUp':
+            action = horizontalMenu ? KeyAction.SWAP_PREV : KeyAction.PREV;
+            break;
+          case 'ArrowDown':
+            action = horizontalMenu ? KeyAction.SWAP_NEXT : KeyAction.NEXT;
+            break;
+          case 'ArrowLeft':
+            action = horizontalMenu ? KeyAction.PREV : KeyAction.SWAP_PREV;
+            break;
+          case 'ArrowRight':
+            action = horizontalMenu ? KeyAction.NEXT : KeyAction.SWAP_NEXT;
+            break;
+        }
+        return action;
+      };
+
       const onKeyDownMenuItem = e => {
         const { key, target } = e;
         //상위 노드 참조.
         const menu = getFindParentMenu(target);
-        const menuIsRoot = menu.role === 'menubar';
         const menuId = target.id;
         const locations = getMenuLocations(e.target);
+        const isHorizontal = menu.ariaOrientation === 'horizontal';
+        const action = getKeyAction(key, isHorizontal);
+        const hasSub = convertStrToBoolean(e.target.ariaHasPopup);
+        const menuData = getMenuItemByQuerySelector(menu);
+        if (isHorizontal && !hasSub && action === (KeyAction.SWAP_NEXT || KeyAction.SWAP_PREV))
+          return;
+        switch (action) {
+          case KeyAction.NEXT:
+            swapFocusItem(
+              e.target,
+              getLoopMenuItem(menuData, findIndex(menuData, predicateElementID(menuId)))
+            );
+            break;
 
-        //포커스 시 이미 목록은 생성된 상태.
-        //포키싱 메뉴에서 방향이 중요
-        switch (key) {
-          case 'ArrowLeft':
-            if (menuIsRoot) {
-              const menuData = Array.from(menu.querySelectorAll('[role=menuitem]'));
-              const prevItem = getLoopMenuItem(
-                menuData,
-                findIndex(menuData, predicateElementID(menuId)),
-                'prev'
-              );
-              swapFocusItem(target, prevItem);
+          case KeyAction.PREV:
+            swapFocusItem(
+              e.target,
+              getLoopMenuItem(menuData, findIndex(menuData, predicateElementID(menuId)), 'prev')
+            );
+            break;
+
+          case KeyAction.SWAP_PREV:
+            //하위메뉴가 열린상태면 닫게만든다.
+            const pmenu = getMenuItemById(menu.getAttribute('aria-labelledby'));
+            if (convertStrToBoolean(pmenu.ariaExpanded) && !rootTree.find(o => o.id === pmenu.id)) {
+              swapFocusItem(e.target, pmenu);
             } else {
-              const parentMenu = document.querySelector(`#${menu.getAttribute('aria-labelledby')}`);
-              const menuData = getMenuItemByQuerySelector(getFindParentMenu(parentMenu));
-              if (!parentMenu.contains(menu)) {
-                swapFocusItem(target, parentMenu);
-              } else {
-                const prevItem = getLoopMenuItem(
-                  menuData,
-                  findIndex(menuData, predicateElementID(menuId)),
+              // 자식이 없는 메뉴는 루트를 스왑한다.
+              swapFocusItem(
+                e.target,
+                getLoopMenuItem(
+                  rootTree,
+                  findIndex(rootTree, predicateElementID(locations[0])),
                   'prev'
-                );
-                swapFocusItem(target, prevItem);
-              }
+                )
+              );
             }
             break;
-          case 'ArrowRight':
-            if (menuIsRoot) {
-              const menuData = Array.from(menu.querySelectorAll('[role=menuitem]'));
-              const nextItem = getLoopMenuItem(
-                menuData,
-                findIndex(menuData, predicateElementID(menuId))
-              );
-              swapFocusItem(target, nextItem);
-            } else {
-              const subMenu = getSubMenuByParentId(menuId);
-              if (subMenu) {
-                if (!subMenu.contains(e.target)) {
-                  const subMenuData = getMenuItemByQuerySelector(subMenu);
-                  swapFocusItem(target, subMenuData[0]);
-                } else {
-                  const menuData = Array.from(subMenu.querySelectorAll('[role=menuitem]'));
-                  const nextItem = getLoopMenuItem(
-                    menuData,
-                    findIndex(menuData, predicateElementID(menuId))
-                  );
-                  swapFocusItem(target, nextItem);
-                }
-              } else {
-                const parentMenu = document.querySelector(
-                  `#${menu.getAttribute('aria-labelledby')}`
-                );
-                if (!parentMenu.contains(menu)) {
-                  swapFocusItem(target, parentMenu);
-                } else {
-                  const menuData = getMenuItemByQuerySelector(getFindParentMenu(parentMenu));
-                  swapFocusItem(
-                    target,
-                    getLoopMenuItem(
-                      menuData,
-                      findIndex(menuData, predicateElementID(parentMenu.id))
-                    )
-                  );
-                }
-              }
-            }
-            break;
-          case 'ArrowUp':
-            if (!menuIsRoot) {
-              const subMenu = getFindParentMenu(e.target);
-              const subMenuData = getMenuItemByQuerySelector(subMenu);
-              const prevItem = getLoopMenuItem(
-                subMenuData,
-                findIndex(subMenuData, predicateElementID(menuId)),
-                'prev'
-              );
-              swapFocusItem(target, prevItem);
-            }
 
-            break;
-          case 'ArrowDown':
-            if (menuIsRoot) {
-              const subMenu = getSubMenuByParentId(menuId);
-              const subMenuData = getMenuItemByQuerySelector(subMenu);
-              swapFocusItem(target, subMenuData[0]);
+          case KeyAction.SWAP_NEXT:
+            if (hasSub) {
+              const cmenu = getMenuByLabelledBy(menuId);
+              swapFocusItem(e.target, cmenu.children[0].firstElementChild);
             } else {
-              const subMenu = getFindParentMenu(e.target);
-              const subMenuData = getMenuItemByQuerySelector(subMenu);
-              const nextItem = getLoopMenuItem(
-                subMenuData,
-                findIndex(subMenuData, predicateElementID(menuId))
+              // 자식이 없는 메뉴는 루트를 스왑한다.
+              swapFocusItem(
+                e.target,
+                getLoopMenuItem(rootTree, findIndex(rootTree, predicateElementID(locations[0])))
               );
-              swapFocusItem(target, nextItem);
             }
             break;
         }
@@ -650,8 +632,10 @@
 
       createMenu(menuTree);
       const popupTree = {};
+      const menubar = document.querySelector('[role=menubar]');
       const flatTree = createFloatTree();
       const flatTreeKeys = Object.keys(flatTree);
+      const rootTree = getMenuItemByQuerySelector(menubar);
 
       // console.log('getFlatMenuData', flatTree);
     </script>
