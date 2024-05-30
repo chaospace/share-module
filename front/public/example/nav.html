@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+      html,
+      body {
+        color: #666;
+        padding: 10px;
+        margin: 0;
+      }
+
+      a,
+      a:hover,
+      a:active,
+      a:visited {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      [role='menubar'] {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        background-color: #ddd;
+      }
+
+      ul,
+      li {
+        padding: 0;
+        margin: 0;
+      }
+
+      li {
+        list-style: none;
+      }
+
+      nav > ul > li a[role='menuitem'] {
+        justify-content: center;
+      }
+
+      a[role='menuitem'] {
+        position: relative;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        padding: 16px;
+        width: fit-content;
+        min-width: 80px;
+      }
+      a[role='menuitem'].selected,
+      a[role='menuitem']:visited,
+      a[role='menuitem']:hover,
+      a[role='menuitem']:focus,
+      a[role='menuitem']:focus-visible {
+        background-color: azure;
+      }
+
+      [role='menu'] {
+        position: relative;
+      }
+      [role='menu'][aria-orientation='horizontal'] {
+        display: flex;
+        flex-direction: row;
+      }
+      [role='menu'][aria-orientation='vertical'] {
+        display: flex;
+        flex-direction: column;
+      }
+      [role='menu'] [role='none'] {
+        display: inherit;
+        align-items: start;
+      }
+
+      a[role='menuitem'] + [role='menu'] {
+        align-self: flex-start;
+      }
+
+      .popover {
+        position: relative;
+        /* overflow: hidden; */
+        /* pointer-events: none; */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <nav role="navigation">
+      <ul role="menubar" aria-orientation="horizontal">
+        <li role="none">
+          <a
+            role="menuitem"
+            aria-controls="menu-1"
+            aria-haspopup="true"
+            aria-expanded="false"
+            href="/about"
+            >회사소개</a
+          >
+        </li>
+        <li role="none">
+          <a role="menuitem" href="/about">포트폴리오</a>
+        </li>
+        <li role="none">
+          <a role="menuitem" href="/air">항공사</a>
+        </li>
+        <li role="none">
+          <a role="menuitem" href="/about">Contact Us</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="popover">
+      <ul role="menu" id="menu-1" aria-orientation="vertical">
+        <li role="none">
+          <a role="menuitem" href="about/greeting"> 인사말 </a>
+        </li>
+        <li role="none">
+          <a role="menuitem" href="about/history"> 회사연혁 </a>
+        </li>
+        <li role="none">
+          <a role="menuitem" href="/about/map">
+            오시는 길
+            <span class="material-symbols-outlined">arrow_drop_down</span>
+          </a>
+          <ul role="menu">
+            <li role="none">
+              <a role="menuitem" href=""> 약도</a>
+            </li>
+            <li role="none">
+              <a role="menuitem" href="">내부도로</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div> -->
+    <script>
+      /**
+       * flex를 이용하니 그냥 가로는 위치가 맞고
+       * absolute 없이 어떻게 할까.
+       * popover를 이용하면 어떻게 될까.
+       * 근데 가만히 생각해보면
+       * 루트 구조만 있다면.
+       * 좌우는 뎁스이동으로 부모메뉴로 이동하면 된다.
+       * 세로는 현재 포커싱 메뉴목록을 루핑.
+       */
+
+      const menuTree = [
+        {
+          label: '회사소개',
+          link: '/about',
+          children: [
+            {
+              label: '인사말',
+              link: '/about/greeting'
+            },
+            {
+              label: '회사연혁',
+              link: '/about/history'
+            },
+            {
+              label: '오시는길',
+              link: '/about/map',
+              children: [
+                {
+                  label: '약도',
+                  link: '/about/map/kakao'
+                },
+                {
+                  label: '내부도로',
+                  link: '/about/map/load',
+                  children: [
+                    {
+                      label: '뎁스메뉴',
+                      link: '/about/map/depth'
+                    },
+                    {
+                      label: '뎁스메뉴2',
+                      link: '/about/map/depth2'
+                    },
+                    {
+                      label: '뎁스메뉴3',
+                      link: '/about/map/depth3'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '포트폴리오',
+          link: '/portfolio'
+        },
+        {
+          label: '항공사',
+          link: '/air',
+          children: [
+            {
+              label: '항공메뉴',
+              link: '/air/1'
+            },
+            {
+              label: '항공메뉴2',
+              link: '/air/2'
+            }
+          ]
+        },
+        {
+          label: 'Contact',
+          link: '/contact'
+        }
+      ];
+
+      const createMenuRoleTag = (ori = 'vertical') => {
+        const container = document.createElement('ul');
+        container.setAttribute('role', 'menu');
+        if (ori) {
+          container.setAttribute('aria-orientation', ori);
+        }
+        return container;
+      };
+
+      const createMenuItemTag = vo => {
+        const extraAttribute = vo.children
+          ? `
+            aria-haspopup='true'
+            aria-expanded='false'
+            `
+          : '';
+        const navItem = `
+            <li role='none'>
+              <a id='${vo.label}'
+                  tabIndex='-1'
+                  role='menuitem'
+                  ${extraAttribute}
+                  href='${vo.link}'>
+                  ${vo.label}
+              </a>
+            </li>
+          `;
+        return navItem;
+      };
+
+      const convertStrToBoolean = value => value === 'true';
+      const getMenuItemByQuerySelector = node =>
+        Array.from(node.querySelectorAll('[role=menuitem]'));
+
+      const clearPopoverContent = () => {
+        if (hasPopover()) {
+          const popover = document.body.querySelector('.popover');
+          popover.querySelectorAll('[role=menuitem]').forEach(o => {
+            //리스너 제거.
+            o.removeEventListener('click', onClickMenuItem);
+            o.removeEventListener('keydown', onKeyDownMenuItem);
+            o.removeEventListener('focus', onFocusMenuItem);
+            o.removeEventListener('focusout', onFocusOutMenuItem);
+          });
+          popover.remove();
+        }
+      };
+
+      const hasPopover = () => !!document.querySelector('.popover');
+      const registPopoverMenu = menuId => {
+        popupTree[menuId] = true;
+      };
+      const createMenuList = (parentId, provider) => {
+        const container = createMenuRoleTag();
+        container.setAttribute('aria-labelledby', parentId);
+        let tempHTML = '';
+        provider.forEach(vo => {
+          const navItem = createMenuItemTag(vo);
+          tempHTML += navItem;
+        });
+        container.innerHTML = tempHTML;
+        registPopoverMenu(parentId);
+        return container;
+      };
+
+      const createPopover = (parentId, provider) => {
+        const popover = document.createElement('div');
+        popover.classList.add('popover');
+        popover.role = 'presentation';
+        const container = createMenuList(parentId, provider);
+        const position = document.querySelector(`#${parentId}`).offsetLeft;
+        container.ariaOrientation = 'vertical';
+        container.style.left = `${position}px`;
+        registPopoverMenuItemEvent(container);
+        // registPopoverMenu(parentId);
+        // registPopoverMenu(parentId, container);
+        popover.append(container);
+        document.body.append(popover);
+      };
+
+      const registPopoverMenuItemEvent = container => {
+        container.querySelectorAll('[role=menuitem]').forEach(o => {
+          o.addEventListener('click', onClickPopoverMenuItem);
+          o.addEventListener('keydown', onKeyDownMenuItem);
+          o.addEventListener('focus', onFocusMenuItem);
+          o.addEventListener('focusout', onFocusOutMenuItem);
+        });
+      };
+
+      const registMenuItemEvent = container => {
+        container.querySelectorAll('[role=menuitem]').forEach(o => {
+          o.addEventListener('click', onClickMenuItem);
+          o.addEventListener('keydown', onKeyDownMenuItem);
+          o.addEventListener('focus', onFocusMenuItem);
+          o.addEventListener('focusout', onFocusOutMenuItem);
+        });
+      };
+
+      const getFindParentMenu = node => {
+        let role = node.role;
+        while (role !== 'menu' && role !== 'menubar') {
+          node = node.parentElement;
+          role = node.role;
+        }
+        return node;
+      };
+
+      const getChildMenuTree = parentId => {
+        const tree = menuTree.find(o => o.label === parentId);
+        if (tree) {
+          return tree.children;
+        }
+        return null;
+      };
+
+      // 루트부터-현재뎁스까지 찾아갈 수 있는 함수가 필요.
+      const getMenuLocations = node => {
+        //node부터 루트(popover) 찾아갈 수 있는 함수
+        const locations = [node.id];
+        let role = node.role;
+        while (role !== 'presentation' && role !== 'menubar') {
+          node = node.parentElement;
+          role = node.role;
+          if (role === 'menu') {
+            const pLocation = node.getAttribute('aria-labelledby');
+            locations.unshift(pLocation);
+          }
+        }
+        // locations.push(node.getAttribute('id'));
+        return locations;
+      };
+
+      const getFlatMenuData = (path, provider = undefined) => {
+        return (provider || getContainMenuData(path)).find(o => o.label === path);
+      };
+
+      const getContainMenuData = path => {
+        const idx = flatTreeKeys.findIndex(key => key.includes(path));
+        return flatTree[flatTreeKeys[idx]];
+      };
+
+      const clearMenuElement = menu => {
+        //menuitem에 expanded속성 초기화
+        if (popupTree[menu.getAttribute('aria-labelledby')]) {
+          delete popupTree[menu.getAttribute('aria-labelledby')];
+        }
+        getMenuItemById(menu.getAttribute('aria-labelledby')).ariaExpanded = false;
+        //menu.previousElementSibling.setAttribute('aria-expanded', false);
+        Array.from(menu.children).forEach(m => {
+          m.removeEventListener('click', onClickPopoverMenuItem);
+          m.removeEventListener('keydown', onKeyDownMenuItem);
+          m.removeEventListener('focus', onFocusMenuItem);
+          m.removeEventListener('focusout', onFocusOutMenuItem);
+        });
+        menu.remove();
+      };
+
+      const clearLowDepthMenu = node => {
+        const parentNode = getFindParentMenu(node);
+        parentNode.querySelectorAll('[role=menu]').forEach(menu => {
+          if (!node.parentElement.contains(menu)) {
+            //menuitem에 expanded속성 초기화
+            clearMenuElement(menu);
+          }
+        });
+      };
+
+      const getMenuOrientation = menu => menu.ariaOrientation;
+      const getMenuIdIndex = (provider, menuId) => provider.findIndex(o => o.label === menuId);
+      const predicateMenuID = menuId => o => o.label === menuId;
+      const predicateElementID = menuId => o => o.id === menuId;
+      const findIndex = (list, predicate) => list.findIndex(predicate);
+
+      const getLoopMenuId = (provider, index, dir = 'next') => {
+        if (dir === 'next') {
+          index += 1;
+          if (index >= provider.length) index = 0;
+        } else {
+          index -= 1;
+          if (index < 0) index = provider.length - 1;
+        }
+        return provider[index].label;
+      };
+
+      const getLoopMenuItem = (provider, index, dir = 'next') => {
+        if (dir === 'next') {
+          index += 1;
+          if (index >= provider.length) index = 0;
+        } else {
+          index -= 1;
+          if (index < 0) index = provider.length - 1;
+        }
+        return provider[index];
+      };
+
+      const getMenuItemById = id => document.querySelector(`#${id}`);
+      const swapFocusItem = (current, next) => {
+        current.tabIndex = -1;
+        next.focus();
+        next.tabIndex = 0;
+      };
+      const getSubMenuByParentId = parentId => {
+        return document.querySelector(`[aria-labelledby=${parentId}]`);
+      };
+      // const getParentMenuitem =
+      const onFocusOutMenuItem = e => {
+        // const expanded = convertStrToBoolean(e.target.ariaExpanded);
+        // const menu = getFindParentMenu(e.target);
+        // const subMenu = getSubMenuByParentId(e.target.id);
+        // // || getMenuItemById(menu.getAttribute('aria-labelledby'));
+        // //if (e.target.classList.has('selected')) return;
+        // //포커스 아웃 시 제거를 해야 하는데.
+        // if (expanded && !subMenu) {
+        //   clearPopoverContent();
+        //   e.target.ariaExpanded = false;
+        // }
+      };
+      const onFocusMenuItem = e => {
+        // focusout발생이 focus보다 늦게 일어남.
+        console.log('focus', document.activeElement === e.target);
+        const hasPopup = convertStrToBoolean(e.target.ariaHasPopup);
+        const expanded = convertStrToBoolean(e.target.ariaExpanded);
+        const menuId = e.target.id;
+        //포커스를 가지고 있지 않은 요소는 팝업이 있다면 제거
+        const locs = getMenuLocations(e.target);
+        for (let key in popupTree) {
+          if (!locs.includes(key)) {
+            clearMenuElement(getSubMenuByParentId(key));
+          }
+        }
+        if (Object.keys(popupTree).every(o => !o)) {
+          console.log('clear');
+          clearPopoverContent();
+        }
+        if (hasPopup && !expanded) {
+          const menuData = getFlatMenuData(menuId);
+          if (!hasPopover()) {
+            e.target.ariaExpanded = true;
+            // const menuData = getFlatMenuData(menuId);
+            createPopover(e.target.id, menuData.children);
+          } else {
+            const menuList = createMenuList(menuId, menuData.children);
+            registPopoverMenuItemEvent(menuList);
+            e.target.parentElement.append(menuList);
+            e.target.ariaExpanded = true;
+          }
+        }
+      };
+      const onKeyDownMenuItem = e => {
+        const { key, target } = e;
+        //상위 노드 참조.
+        const menu = getFindParentMenu(target);
+        const menuIsRoot = menu.role === 'menubar';
+        const menuId = target.id;
+        const locations = getMenuLocations(e.target);
+
+        //포커스 시 이미 목록은 생성된 상태.
+        //포키싱 메뉴에서 방향이 중요
+        switch (key) {
+          case 'ArrowLeft':
+            if (menuIsRoot) {
+              const menuData = Array.from(menu.querySelectorAll('[role=menuitem]'));
+              const prevItem = getLoopMenuItem(
+                menuData,
+                findIndex(menuData, predicateElementID(menuId)),
+                'prev'
+              );
+              swapFocusItem(target, prevItem);
+            } else {
+              const parentMenu = document.querySelector(`#${menu.getAttribute('aria-labelledby')}`);
+              const menuData = getMenuItemByQuerySelector(getFindParentMenu(parentMenu));
+              if (!parentMenu.contains(menu)) {
+                swapFocusItem(target, parentMenu);
+              } else {
+                const prevItem = getLoopMenuItem(
+                  menuData,
+                  findIndex(menuData, predicateElementID(menuId)),
+                  'prev'
+                );
+                swapFocusItem(target, prevItem);
+              }
+            }
+            break;
+          case 'ArrowRight':
+            if (menuIsRoot) {
+              const menuData = Array.from(menu.querySelectorAll('[role=menuitem]'));
+              const nextItem = getLoopMenuItem(
+                menuData,
+                findIndex(menuData, predicateElementID(menuId))
+              );
+              swapFocusItem(target, nextItem);
+            } else {
+              const subMenu = getSubMenuByParentId(menuId);
+              if (subMenu) {
+                if (!subMenu.contains(e.target)) {
+                  const subMenuData = getMenuItemByQuerySelector(subMenu);
+                  swapFocusItem(target, subMenuData[0]);
+                } else {
+                  const menuData = Array.from(subMenu.querySelectorAll('[role=menuitem]'));
+                  const nextItem = getLoopMenuItem(
+                    menuData,
+                    findIndex(menuData, predicateElementID(menuId))
+                  );
+                  swapFocusItem(target, nextItem);
+                }
+              } else {
+                const parentMenu = document.querySelector(
+                  `#${menu.getAttribute('aria-labelledby')}`
+                );
+                if (!parentMenu.contains(menu)) {
+                  swapFocusItem(target, parentMenu);
+                } else {
+                  const menuData = getMenuItemByQuerySelector(getFindParentMenu(parentMenu));
+                  swapFocusItem(
+                    target,
+                    getLoopMenuItem(
+                      menuData,
+                      findIndex(menuData, predicateElementID(parentMenu.id))
+                    )
+                  );
+                }
+              }
+            }
+            break;
+          case 'ArrowUp':
+            if (!menuIsRoot) {
+              const subMenu = getFindParentMenu(e.target);
+              const subMenuData = getMenuItemByQuerySelector(subMenu);
+              const prevItem = getLoopMenuItem(
+                subMenuData,
+                findIndex(subMenuData, predicateElementID(menuId)),
+                'prev'
+              );
+              swapFocusItem(target, prevItem);
+            }
+
+            break;
+          case 'ArrowDown':
+            if (menuIsRoot) {
+              const subMenu = getSubMenuByParentId(menuId);
+              const subMenuData = getMenuItemByQuerySelector(subMenu);
+              swapFocusItem(target, subMenuData[0]);
+            } else {
+              const subMenu = getFindParentMenu(e.target);
+              const subMenuData = getMenuItemByQuerySelector(subMenu);
+              const nextItem = getLoopMenuItem(
+                subMenuData,
+                findIndex(subMenuData, predicateElementID(menuId))
+              );
+              swapFocusItem(target, nextItem);
+            }
+            break;
+        }
+      };
+
+      const onClickPopoverMenuItem = e => {
+        e.preventDefault();
+        const menuId = e.target.id;
+        const expanded = convertStrToBoolean(e.target.ariaExpanded);
+        const haspopup = convertStrToBoolean(e.target.ariaHasPopup);
+        clearLowDepthMenu(e.target);
+        toggleSelectMenuItem(getFindParentMenu(e.target), menuId);
+        if (expanded || !haspopup) {
+          // otherPopup
+        } else if (haspopup && !expanded) {
+          // const treeData = getFlatMenuData(e.target.id);
+          const pMenu = getFlatMenuData(e.target.id);
+          if (pMenu) {
+            const menuList = createMenuList(menuId, pMenu.children);
+            registPopoverMenuItemEvent(menuList);
+            e.target.parentElement.append(menuList);
+            e.target.ariaExpanded = true;
+          }
+        }
+      };
+
+      const toggleSelectMenuItem = (menu, menuId) => {
+        menu.querySelectorAll('[role=menuitem]').forEach(menuitem => {
+          if (menuitem.id !== menuId) {
+            menuitem.classList.remove('selected');
+          } else {
+            menuitem.classList.add('selected');
+          }
+        });
+      };
+
+      const onClickMenuItem = e => {
+        console.log('click');
+        e.preventDefault();
+        // if (hasPopover()) {
+        //   clearPopoverContent();
+        // }
+        const menuId = e.target.id;
+        toggleSelectMenuItem(getFindParentMenu(e.target), menuId);
+        // const vo = menuTree.find(o => o.label === menuId);
+        // if (vo.children) {
+        //   createPopover(menuId, vo.children);
+        // }
+      };
+
+      const createMenu = provider => {
+        const navigation = document.createElement('nav');
+        navigation.role = 'navigation';
+        navigation.id = 'main-nav';
+
+        const container = document.createElement('ul');
+        container.role = 'menubar';
+        container.ariaOrientation = 'horizontal';
+        navigation.append(container);
+        let tempHTML = '';
+        provider.forEach(vo => {
+          const navItem = createMenuItemTag(vo);
+          tempHTML += navItem;
+        });
+        container.innerHTML = tempHTML;
+        container.querySelector('a').tabIndex = 0;
+        registMenuItemEvent(container);
+        document.body.append(navigation);
+      };
+
+      const createFloatTree = () => {
+        const refs = {};
+        const tracking = list => {
+          const path = list.map(o => o.label).join('|');
+          const next = list.map(o => o.children || undefined).filter(o => o);
+          refs[path] = list;
+          if (next.length) {
+            next.forEach(tracking);
+          }
+        };
+        tracking(menuTree);
+        return refs;
+      };
+
+      createMenu(menuTree);
+      const popupTree = {};
+      const flatTree = createFloatTree();
+      const flatTreeKeys = Object.keys(flatTree);
+
+      // console.log('getFlatMenuData', flatTree);
+    </script>
+  </body>
+</html>
