@@ -20,6 +20,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      zustand:
+        specifier: ^4.5.2
+        version: 4.5.2(@types/react@18.3.1)(immer@10.1.1)(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.24.5
@@ -198,6 +201,9 @@ importers:
       styled-composer:
         specifier: workspace:^
         version: link:../styled-composer
+      zustand:
+        specifier: ^4.5.2
+        version: 4.5.2(@types/react@18.3.1)(immer@10.1.1)(react@18.3.1)
     devDependencies:
       css-loader:
         specifier: ^7.1.1
