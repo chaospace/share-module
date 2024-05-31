@@ -62,8 +62,8 @@ const commonConfig: webpack.Configuration = {
         federation_provider: 'federation_provider@http://localhost:5001/remoteModuleEntry.js'
       },
       shared: {
-        react: { singleton: true },
-        'react-dom': { singleton: true },
+        react: { singleton: true, version: '0', requiredVersion: false },
+        'react-dom': { singleton: true, version: '0', requiredVersion: false },
         zustand: { singleton: true }
       }
     })

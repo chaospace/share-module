@@ -1,5 +1,5 @@
 import path from 'path';
-import { outDir, publicDir, srcDir, workspaceDir } from './webpack.path';
+import { outDir, srcDir, workspaceDir } from './webpack.path';
 import webpack from 'webpack';
 import 'webpack-dev-server';
 
@@ -49,8 +49,8 @@ const commonConfig: webpack.Configuration = {
       },
       shared: {
         zustand: { singleton: true },
-        react: { singleton: true },
-        'react-dom': { singleton: true }
+        react: { singleton: true, version: '0', requiredVersion: false },
+        'react-dom': { singleton: true, version: '0', requiredVersion: false }
       }
     })
   ]
