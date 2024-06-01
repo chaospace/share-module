@@ -7,7 +7,6 @@ import React, {
   useEffect,
   useImperativeHandle,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState
 } from 'react';
@@ -17,18 +16,8 @@ import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-compo
 import { ArrowIosDownwardOutline } from '@styled-icons/evaicons-outline/ArrowIosDownwardOutline';
 import IconButton from '@/components/elements/IconButton';
 import { createPortal } from 'react-dom';
-import createReactContext from '@/components/createReactContext';
-
-type MenuVO = {
-  label: string;
-  link?: string;
-  children?: MenuVO[];
-  expanded?: false;
-};
-
-type MenuBarProps = {
-  provider: MenuVO[];
-};
+import MenuBarProvider, { useMenubarSelectContext, useMenubarValueContext } from './MenubarContext';
+import type { MenuItemImperative, MenuVO } from './MenubarContext';
 
 const ArrowIcon = styled(ArrowIosDownwardOutline)``;
 
@@ -62,17 +51,11 @@ const MenuItem = styled.a`
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
-
   white-space: nowrap;
   gap: 8px;
-
   ${IconButton} {
     pointer-events: none;
   }
-
-  /* &:focus-visible {
-    outline: 2px solid darkblue;
-  } */
 `;
 
 const Container = styled.nav`
@@ -81,6 +64,19 @@ const Container = styled.nav`
 
   ${Menu}[aria-orientation='vertical'] {
     flex-direction: column;
+  }
+`;
+
+const PopOverContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+  ${Menu}[aria-orientation='vertical'] {
+    flex-direction: column;
+    pointer-events: auto;
   }
 `;
 
@@ -109,7 +105,7 @@ const KeyAction = {
 type KEY_ACTION = keyof typeof KeyAction;
 
 const getKeyAction = (key: string, isHorizontal = false) => {
-  let action: KEY_ACTION = KeyAction.NEXT;
+  let action: KEY_ACTION | undefined;
   switch (key) {
     case 'ArrowLeft':
       action = isHorizontal ? KeyAction.PREV : KeyAction.SWAP_PREV;
@@ -124,7 +120,7 @@ const getKeyAction = (key: string, isHorizontal = false) => {
       action = isHorizontal ? KeyAction.SWAP_NEXT : KeyAction.NEXT;
       break;
   }
-  return action;
+  return action ?? '';
 };
 
 /**
@@ -147,23 +143,8 @@ const getMenuHierarchy = (node: HTMLElement) => {
   return locations;
 };
 
-const predicateByElementID = (menuID: string) => (o: MenuVO) => o.label === menuID;
-const findIndex = (list: MenuVO[], predicate: (o: MenuVO) => unknown) => list.findIndex(predicate);
-
-const getLoopMenuIDWithDir = (provider: MenuVO[], menuID: string, dir = 'next') => {
-  let current = findIndex(provider, predicateByElementID(menuID));
-  if (dir === 'next') {
-    current += 1;
-    if (current >= provider.length) current = 0;
-  } else {
-    current -= 1;
-    if (current < 0) current = provider.length - 1;
-  }
-  return provider[current].label;
-};
-
-const getLoopMenuIDWithDir2 = (provider: string[], index: number, dir = 'next') => {
-  let current = index; //findIndex(provider, predicateByElementID(menuID));
+const getLoopMenuIDWithDir = (provider: string[], index: number, dir = 'next') => {
+  let current = index;
   if (dir === 'next') {
     current += 1;
     if (current >= provider.length) current = 0;
@@ -184,40 +165,8 @@ const findParentMenuKeyByMenuItem = (menuId: string) => {
   return next?.getAttribute('aria-labelledby') ?? role!;
 };
 
-const PopOverContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  pointer-events: none;
-  ${Menu}[aria-orientation='vertical'] {
-    flex-direction: column;
-    pointer-events: auto;
-  }
-`;
-
-const [useMenubarContext, MenubarProvider] = createReactContext<{
-  menus: {
-    [key: string]: React.MutableRefObject<{
-      [key: string]: MenuItemRefHandler;
-    }>;
-  };
-  rootMenu: { [key: string]: string[] };
-}>();
-const [useMenubarSelectContext, MenubarSelectProvider] =
-  createReactContext<[string[], React.Dispatch<React.SetStateAction<string[]>>]>();
-
-interface MenuItemRefHandler {
-  setTabEnable: (b: boolean) => void;
-  setExpanded: (b: boolean) => void;
-  setFocus: () => void;
-  getElement: () => HTMLAnchorElement;
-  getData: () => MenuVO;
-}
-
 const MenuItemWrapper = React.forwardRef<
-  MenuItemRefHandler,
+  MenuItemImperative,
   PropsWithChildren<{
     id?: string;
     selected?: boolean;
@@ -255,14 +204,11 @@ const MenuItemWrapper = React.forwardRef<
           setTabEnable(b: boolean) {
             _setTabEnable(b);
           },
-          setExpanded(b: boolean) {
-            _setExpanded(b);
-          },
           setFocus() {
             eleRef.current?.focus();
           },
-          getElement() {
-            return eleRef.current!;
+          getBoundingClientRect() {
+            return eleRef.current!.getBoundingClientRect();
           },
           getData() {
             return data;
@@ -308,18 +254,18 @@ const MenuWrapper = ({
   style?: CSSComposerObject;
 }) => {
   const [selected, setSelected] = useMenubarSelectContext();
-  const { menus, rootMenu } = useMenubarContext();
-  // const menuRef = useRef<HTMLUListElement>(null);
-  const menuItems = useRef<{ [key: string]: MenuItemRefHandler }>({});
-  const registMenuItemRef = useCallback((key: string, node: MenuItemRefHandler) => {
+  const { menus, rootMenu } = useMenubarValueContext();
+
+  const menuItems = useRef<{ [key: string]: MenuItemImperative }>({});
+  const registMenuItemRef = useCallback((key: string, node: MenuItemImperative) => {
     menuItems.current[key] = node;
   }, []);
 
   const onClickMenuItemHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    e.stopPropagation();
-    const ele = e.target as HTMLElement;
-    menuItems.current[ele.id].setTabEnable(false);
+    // e.stopPropagation();
+    // const ele = e.target as HTMLElement;
+    //menuItems.current[ele.id].setTabEnable(false);
   };
   const onFocusHandler = (e: React.FocusEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -331,12 +277,10 @@ const MenuWrapper = ({
     }
     //현재 선택된 메뉴가 있는 트리정보 참조
     const menuLocations = getMenuHierarchy(ele);
-    //popover에 있는 메뉴 id를 가져오면 된다.
-    //clearMenus
     setSelected(menuLocations);
   };
 
-  const swapMenuItem = (current: MenuItemRefHandler, next: MenuItemRefHandler) => {
+  const swapMenuItem = (current: MenuItemImperative, next: MenuItemImperative) => {
     current.setTabEnable(false);
     next.setFocus();
     next.setTabEnable(true);
@@ -346,59 +290,73 @@ const MenuWrapper = ({
     const result: any = {};
     for (let key in rootMenu) {
       if (key.includes(menuLabel)) {
-        result.menuLabelList = rootMenu[key];
+        result.menuLabels = rootMenu[key];
         result.index = rootMenu[key].indexOf(menuLabel);
+        return result;
       }
     }
     return result;
+  };
+
+  const moveFocusMenuItemInMenu = (menuID: string, dir = 'next') => {
+    // menuItems
+    const { menuLabels, index } = findGroupKeyByLabel(menuID);
+    swapMenuItem(
+      menuItems.current[menuID],
+      menuItems.current[getLoopMenuIDWithDir(menuLabels, index, dir)]
+    );
+  };
+
+  const moveFocusMenuItemToNextMenu = (node: HTMLElement) => {
+    const menuID = node.id;
+    const menuRef = menuItems.current[menuID];
+    const vo = menuRef.getData();
+    const locations = getMenuHierarchy(node);
+    if (vo.children) {
+      swapMenuItem(menuRef, menus[menuID].current[vo.children[0].label]);
+    } else if (locations.length > 1) {
+      const { menuLabels, index } = findGroupKeyByLabel(locations[0]);
+      swapMenuItem(menuRef, menus['menubar'].current[getLoopMenuIDWithDir(menuLabels, index)]);
+    }
+  };
+
+  const moveFocusMenuItemToPrevMenu = (node: HTMLElement) => {
+    const menuID = node.id;
+    const menuRef = menuItems.current[menuID];
+    const locations = getMenuHierarchy(node);
+    const hasParent = locations.length > 2;
+    const parentID = hasParent ? locations[locations.indexOf(menuID) - 1] : locations[0];
+    const { menuLabels, index } = findGroupKeyByLabel(parentID);
+    if (hasParent) {
+      const menuKey = findParentMenuKeyByMenuItem(parentID);
+      swapMenuItem(menuRef, menus[menuKey].current[menuLabels[index]]);
+    } else if (locations.length > 1) {
+      swapMenuItem(
+        menuRef,
+        menus['menubar'].current[getLoopMenuIDWithDir(menuLabels, index, 'prev')]
+      );
+    }
   };
 
   const onKeyDownHandler = (e: React.KeyboardEvent<HTMLAnchorElement>) => {
     const { key } = e;
     const isH = ariaOrientation === 'horizontal';
     const ele = e.target as HTMLElement;
-    const vo = menuItems.current[ele.id].getData();
     const action = getKeyAction(key, isH);
-    const locations = getMenuHierarchy(ele);
-
+    const menuID = ele.id;
     //그룹에 index를 찾은 후 키를 찾아야 한다.
     switch (action) {
       case KeyAction.NEXT:
-        swapMenuItem(
-          menuItems.current[ele.id],
-          menuItems.current[getLoopMenuIDWithDir(provider, ele.id)]
-        );
+        moveFocusMenuItemInMenu(menuID);
         break;
       case KeyAction.PREV:
-        swapMenuItem(
-          menuItems.current[ele.id],
-          menuItems.current[getLoopMenuIDWithDir(provider, ele.id, 'prev')]
-        );
+        moveFocusMenuItemInMenu(menuID, 'prev');
         break;
       case KeyAction.SWAP_NEXT:
-        if (vo.children) {
-          swapMenuItem(menuItems.current[ele.id], menus[ele.id].current[vo.children[0].label]);
-        } else if (!isH) {
-          const { menuLabelList, index } = findGroupKeyByLabel(locations[0]);
-          swapMenuItem(
-            menuItems.current[ele.id],
-            menus['menubar'].current[getLoopMenuIDWithDir2(menuLabelList, index)]
-          );
-        }
+        moveFocusMenuItemToNextMenu(ele);
         break;
       case KeyAction.SWAP_PREV:
-        const parentID =
-          locations.length > 2 ? locations[locations.indexOf(ele.id) - 1] : locations[0];
-        const { menuLabelList, index } = findGroupKeyByLabel(parentID);
-        if (locations.length > 2) {
-          const menuKey = findParentMenuKeyByMenuItem(parentID);
-          swapMenuItem(menuItems.current[ele.id], menus[menuKey].current[menuLabelList[index]]);
-        } else if (!isH) {
-          swapMenuItem(
-            menuItems.current[ele.id],
-            menus['menubar'].current[getLoopMenuIDWithDir2(menuLabelList, index, 'prev')]
-          );
-        }
+        moveFocusMenuItemToPrevMenu(ele);
         break;
     }
   };
@@ -427,9 +385,7 @@ const MenuWrapper = ({
         const itemSelect = selected.includes(vo.label);
         const subExpanded = itemSelect && !!vo.children;
         const rect =
-          popOverable && subExpanded
-            ? menuItems.current[vo.label].getElement().getBoundingClientRect()
-            : null;
+          popOverable && subExpanded ? menuItems.current[vo.label].getBoundingClientRect() : null;
         return (
           <MenuItemGuard key={vo.label} role='none'>
             <MenuItemWrapper
@@ -490,10 +446,8 @@ const Popover = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const flatMenuLabel = (provider: MenuVO[], refs: Record<string, string[]>) => {
-  const labels = provider.map(o => o.label);
-  refs[labels.join('|')] = labels;
-  provider.forEach(o => o.children && flatMenuLabel(o.children, refs));
+type MenuBarProps = {
+  provider: MenuVO[];
 };
 
 /**
@@ -511,47 +465,15 @@ const flatMenuLabel = (provider: MenuVO[], refs: Record<string, string[]>) => {
  */
 const MenuBar = polymorphicForwardRef<'nav', MenuBarProps>(
   ({ provider, as = 'nav' }, forwaredRef) => {
-    const synRef = useRefSync(forwaredRef);
-    const value = useMemo(() => {
-      const refs = {};
-      flatMenuLabel(provider, refs);
-      return {
-        menus: {},
-        rootMenu: refs
-      };
-    }, [provider]);
-
-    const [selected, setSelected] = useState<string[]>([]);
-
-    useEffect(() => {
-      const popOverRoot = document.querySelector('#menubarRoot');
-      const onMouseUpDocument = (e: MouseEvent) => {
-        e.preventDefault();
-        const ele = e.target as HTMLElement;
-        if (!synRef.current.contains(ele) && popOverRoot && !popOverRoot.contains(ele)) {
-          if (selected.length) {
-            //메뉴 영역을 벗어난 곳을 클릭 시 메뉴초기화
-            setSelected([]);
-          }
-        }
-      };
-      document.addEventListener('click', onMouseUpDocument, true);
-      return () => {
-        document.removeEventListener('click', onMouseUpDocument, true);
-      };
-      // eslint-disable-next-line
-    }, [selected, synRef.current]);
-
+    const syncRef = useRefSync(forwaredRef);
     //provider는 메뉴 구조를 나타내는 배열정보..
     return (
       <React.Fragment>
-        <MenubarProvider value={value}>
-          <MenubarSelectProvider value={[selected, setSelected]}>
-            <Container as={as} role='navigation' ref={synRef}>
-              <MenuWrapper role='menubar' ariaOrientation='horizontal' provider={provider} />
-            </Container>
-          </MenubarSelectProvider>
-        </MenubarProvider>
+        <MenuBarProvider containerRef={syncRef} provider={provider}>
+          <Container as={as} role='navigation' ref={syncRef}>
+            <MenuWrapper role='menubar' ariaOrientation='horizontal' provider={provider} />
+          </Container>
+        </MenuBarProvider>
       </React.Fragment>
     );
   }
