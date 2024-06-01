@@ -9,6 +9,7 @@ const App = () => {
     <ThemeProvider theme={appTheme}>
       <VBox p={5}>
         <HBox>
+          <Link to='/menubar'>menubar</Link>
           <Link to='/sample'>ui샘플</Link>
           <Link to='/radio'>라디오버튼</Link>
           <Link to='/checkbox'>체크박스</Link>

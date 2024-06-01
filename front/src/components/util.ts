@@ -14,4 +14,6 @@ const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export { debounce, sleep };
+const boolStringToBoolean = (v: string | null | undefined) => (v ?? '') === 'true';
+
+export { debounce, sleep, boolStringToBoolean };

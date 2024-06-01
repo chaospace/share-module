@@ -6,6 +6,7 @@ import TutorialApp from './tutorial';
 import UISample from './pages/sample';
 import CheckBoxApp from './pages/checkbox';
 import RadioApp from './pages/radio';
+import MenuBarApp from './pages/menubar';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: 'menubar',
+        element: <MenuBarApp />
+      },
+      {
         path: 'sample',
         element: <UISample />
       },
@@ -43,6 +48,5 @@ const router = createBrowserRouter([
     ]
   }
 ]);
-//The inferred type of 'router' cannot be named without a reference to '.pnpm/@remix-run+router@1.16.1/node_modules/@remix-run/router'. This is likely not portable. A type annotation is necessary.
 
 export default router;
