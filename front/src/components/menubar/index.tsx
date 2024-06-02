@@ -11,74 +11,19 @@ import React, {
   useState
 } from 'react';
 import { polymorphicForwardRef } from '@/components/types';
-import styled from 'styled-components';
-import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
-import { ArrowIosDownwardOutline } from '@styled-icons/evaicons-outline/ArrowIosDownwardOutline';
+import { CSSComposerObject } from 'styled-composer';
 import IconButton from '@/components/elements/IconButton';
 import { createPortal } from 'react-dom';
 import MenuBarProvider, { useMenubarSelectContext, useMenubarValueContext } from './MenubarContext';
 import type { MenuItemImperative, MenuVO } from './MenubarContext';
-
-const ArrowIcon = styled(ArrowIosDownwardOutline)``;
-
-const MenuItemGuard = styled.li
-  .attrs<CSSComposerObject>(_ => ({
-    position: _.position ?? 'relative',
-    display: _.display ?? 'inherit',
-    alignItems: _.alignItems ?? 'start',
-    bgColor: _.bgColor ?? 'azure'
-  }))
-  .withConfig({
-    shouldForwardProp: shouldForwardAllProps
-  })`
-    ${composer}
-    &:has(a.selected), &:has(a:hover){
-      background-color:lightblue;
-    }
-  `;
-
-const Menu = styled.ul
-  .attrs<CSSComposerObject>(_ => ({
-    position: _.position ?? 'relative',
-    alignSelf: 'start',
-    display: _.display ?? 'flex'
-  }))
-  .withConfig({
-    shouldForwardProp: shouldForwardAllProps
-  })(composer);
-
-const MenuItem = styled.a`
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 16px;
-  white-space: nowrap;
-  gap: 8px;
-  ${IconButton} {
-    pointer-events: none;
-  }
-`;
-
-const Container = styled.nav`
-  position: relative;
-  display: flex;
-
-  ${Menu}[aria-orientation='vertical'] {
-    flex-direction: column;
-  }
-`;
-
-const PopOverContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  pointer-events: none;
-  ${Menu}[aria-orientation='vertical'] {
-    flex-direction: column;
-    pointer-events: auto;
-  }
-`;
+import {
+  Container,
+  PopOverContainer,
+  Menu,
+  MenuItem,
+  MenuItemGuard,
+  ArrowIcon
+} from './elements.style';
 
 function useRefSync<T extends any>(ref: React.ForwardedRef<T>) {
   const innerRef = React.useRef<T>(null);
@@ -355,7 +300,7 @@ const MenuWrapper = ({
     if (role === 'menubar' && !selected.length) {
       menuItems.current[provider[0].label].setTabEnable(true);
     }
-  }, [selected, provider]);
+  }, [selected, provider, role]);
 
   const renderChildMenu = useCallback((itemSelect: boolean, vo: MenuVO, popOverable: boolean) => {
     const subExpanded = vo.children && itemSelect;
@@ -391,9 +336,10 @@ const MenuWrapper = ({
       aria-orientation={ariaOrientation}
       aria-labelledby={ariaLabelledBy}
       {...style}>
-      {provider?.map(vo => {
+      {provider.map(vo => {
         const itemSelect = selected.includes(vo.label);
         const subExpanded = itemSelect && !!vo.children;
+
         return (
           <MenuItemGuard key={vo.label} role='none'>
             <MenuItemWrapper

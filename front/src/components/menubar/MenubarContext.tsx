@@ -10,8 +10,8 @@ type MenuVO = {
 interface MenuItemImperative {
   setTabEnable: (b: boolean) => void;
   setFocus: () => void;
-  getBoundingClientRect: () => DOMRect;
   getData: () => MenuVO;
+  getBoundingClientRect: () => DOMRect;
 }
 
 type NestedMenuItemImperativeMap = {
