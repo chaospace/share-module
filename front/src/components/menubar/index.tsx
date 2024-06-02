@@ -165,19 +165,18 @@ const findParentMenuKeyByMenuItem = (menuId: string) => {
   return next?.getAttribute('aria-labelledby') ?? role!;
 };
 
-const MenuItemWrapper = React.forwardRef<
-  MenuItemImperative,
-  PropsWithChildren<{
-    id?: string;
-    selected?: boolean;
-    ariaHasPopup?: boolean;
-    ariaExpanded?: boolean;
-    onClick?: MouseEventHandler;
-    onKeyDown?: KeyboardEventHandler;
-    onFocus?: FocusEventHandler;
-    data: MenuVO;
-  }>
->(
+type MenuItemProp = {
+  id?: string;
+  selected?: boolean;
+  ariaHasPopup?: boolean;
+  ariaExpanded?: boolean;
+  onClick?: MouseEventHandler;
+  onKeyDown?: KeyboardEventHandler;
+  onFocus?: FocusEventHandler;
+  data: MenuVO;
+};
+
+const MenuItemWrapper = React.forwardRef<MenuItemImperative, PropsWithChildren<MenuItemProp>>(
   (
     {
       ariaHasPopup = false,
@@ -194,7 +193,6 @@ const MenuItemWrapper = React.forwardRef<
     ref
   ) => {
     const [_tabEnable, _setTabEnable] = useState(false);
-    const [_expanded, _setExpanded] = useState(false);
     const eleRef = useRef<HTMLAnchorElement>(null);
 
     useImperativeHandle(
@@ -254,7 +252,7 @@ const MenuWrapper = ({
   style?: CSSComposerObject;
 }) => {
   const [selected, setSelected] = useMenubarSelectContext();
-  const { menus, rootMenu } = useMenubarValueContext();
+  const { menus, getLabelListInMenuItem } = useMenubarValueContext();
 
   const menuItems = useRef<{ [key: string]: MenuItemImperative }>({});
   const registMenuItemRef = useCallback((key: string, node: MenuItemImperative) => {
@@ -272,9 +270,6 @@ const MenuWrapper = ({
 
     const ele = e.target as HTMLElement;
     if (ele.tagName.toLowerCase() !== 'a') return;
-    if (menuItems.current[ele.id]) {
-      menuItems.current[ele.id].setTabEnable(true);
-    }
     //현재 선택된 메뉴가 있는 트리정보 참조
     const menuLocations = getMenuHierarchy(ele);
     setSelected(menuLocations);
@@ -286,24 +281,12 @@ const MenuWrapper = ({
     next.setTabEnable(true);
   };
 
-  const findGroupKeyByLabel = (menuLabel: string) => {
-    const result: any = {};
-    for (let key in rootMenu) {
-      if (key.includes(menuLabel)) {
-        result.menuLabels = rootMenu[key];
-        result.index = rootMenu[key].indexOf(menuLabel);
-        return result;
-      }
-    }
-    return result;
-  };
-
   const moveFocusMenuItemInMenu = (menuID: string, dir = 'next') => {
     // menuItems
-    const { menuLabels, index } = findGroupKeyByLabel(menuID);
+    const { labels, index } = getLabelListInMenuItem(menuID);
     swapMenuItem(
       menuItems.current[menuID],
-      menuItems.current[getLoopMenuIDWithDir(menuLabels, index, dir)]
+      menuItems.current[getLoopMenuIDWithDir(labels, index, dir)]
     );
   };
 
@@ -315,8 +298,8 @@ const MenuWrapper = ({
     if (vo.children) {
       swapMenuItem(menuRef, menus[menuID].current[vo.children[0].label]);
     } else if (locations.length > 1) {
-      const { menuLabels, index } = findGroupKeyByLabel(locations[0]);
-      swapMenuItem(menuRef, menus['menubar'].current[getLoopMenuIDWithDir(menuLabels, index)]);
+      const { labels, index } = getLabelListInMenuItem(locations[0]);
+      swapMenuItem(menuRef, menus['menubar'].current[getLoopMenuIDWithDir(labels, index)]);
     }
   };
 
@@ -326,15 +309,12 @@ const MenuWrapper = ({
     const locations = getMenuHierarchy(node);
     const hasParent = locations.length > 2;
     const parentID = hasParent ? locations[locations.indexOf(menuID) - 1] : locations[0];
-    const { menuLabels, index } = findGroupKeyByLabel(parentID);
+    const { labels, index } = getLabelListInMenuItem(parentID);
     if (hasParent) {
       const menuKey = findParentMenuKeyByMenuItem(parentID);
-      swapMenuItem(menuRef, menus[menuKey].current[menuLabels[index]]);
+      swapMenuItem(menuRef, menus[menuKey].current[labels[index]]);
     } else if (locations.length > 1) {
-      swapMenuItem(
-        menuRef,
-        menus['menubar'].current[getLoopMenuIDWithDir(menuLabels, index, 'prev')]
-      );
+      swapMenuItem(menuRef, menus['menubar'].current[getLoopMenuIDWithDir(labels, index, 'prev')]);
     }
   };
 
@@ -364,16 +344,46 @@ const MenuWrapper = ({
   const popOverable = role === 'menubar';
 
   //초기화
-
   useLayoutEffect(() => {
-    //시작메뉴 탭 인덱스 적용
-    if (popOverable && provider) {
-      menuItems.current[provider[0].label].setTabEnable(true);
-    }
     //하위메뉴 참조 초기화
     menus[ariaLabelledBy || role] = menuItems;
     // eslint-disable-next-line
-  }, [ariaLabelledBy, role, provider]);
+  }, [ariaLabelledBy, role]);
+
+  useLayoutEffect(() => {
+    //시작메뉴 탭 인덱스 적용
+    if (role === 'menubar' && !selected.length) {
+      menuItems.current[provider[0].label].setTabEnable(true);
+    }
+  }, [selected, provider]);
+
+  const renderChildMenu = useCallback((itemSelect: boolean, vo: MenuVO, popOverable: boolean) => {
+    const subExpanded = vo.children && itemSelect;
+    const popOverMenu = subExpanded && popOverable;
+    const parentDomRect = popOverMenu ? menuItems.current[vo.label].getBoundingClientRect() : null;
+    return (
+      subExpanded &&
+      (popOverMenu ? (
+        createPortal(
+          <Popover>
+            <MenuWrapper
+              role='menu'
+              ariaLabelledBy={vo.label}
+              provider={vo.children!}
+              style={{
+                position: 'absolute',
+                left: parentDomRect?.left,
+                top: parentDomRect?.bottom
+              }}
+            />
+          </Popover>,
+          document.body
+        )
+      ) : (
+        <MenuWrapper role='menu' ariaLabelledBy={vo.label} provider={vo.children!} />
+      ))
+    );
+  }, []);
 
   return (
     <Menu
@@ -384,8 +394,6 @@ const MenuWrapper = ({
       {provider?.map(vo => {
         const itemSelect = selected.includes(vo.label);
         const subExpanded = itemSelect && !!vo.children;
-        const rect =
-          popOverable && subExpanded ? menuItems.current[vo.label].getBoundingClientRect() : null;
         return (
           <MenuItemGuard key={vo.label} role='none'>
             <MenuItemWrapper
@@ -395,9 +403,7 @@ const MenuWrapper = ({
               data={vo}
               selected={itemSelect}
               ref={node => {
-                if (node) {
-                  registMenuItemRef(vo.label, node);
-                }
+                node && registMenuItemRef(vo.label, node);
               }}
               onFocus={onFocusHandler}
               onKeyDown={onKeyDownHandler}
@@ -409,26 +415,7 @@ const MenuWrapper = ({
                 </IconButton>
               )}
             </MenuItemWrapper>
-            {subExpanded &&
-              (popOverable ? (
-                createPortal(
-                  <Popover>
-                    <MenuWrapper
-                      role='menu'
-                      ariaLabelledBy={vo.label}
-                      provider={vo.children!}
-                      style={{
-                        position: 'absolute',
-                        left: rect?.left,
-                        top: rect?.bottom
-                      }}
-                    />
-                  </Popover>,
-                  document.body
-                )
-              ) : (
-                <MenuWrapper role='menu' ariaLabelledBy={vo.label} provider={vo.children!} />
-              ))}
+            {renderChildMenu(itemSelect, vo, popOverable)}
           </MenuItemGuard>
         );
       })}
@@ -454,14 +441,7 @@ type MenuBarProps = {
  *
  * menubar 컴포넌트
  * 키보드 방향키를 이용한 탭인덱스 적용
- * 데이터조작은
- * - reducer이용?
- * - context이용?
- * - 결국 context에 의의는 뭔가
- *   변경상태를 공유.
- *   전역설정을 공유.
- *   컴포넌트
- * - menu를 참조할 수 있는 ref만 관리되면 훅 하나로 모든 것이 관리가능 할 듯.
+ * 메뉴, 메뉴아이템의 ref를 참조해 조작한다.
  */
 const MenuBar = polymorphicForwardRef<'nav', MenuBarProps>(
   ({ provider, as = 'nav' }, forwaredRef) => {
@@ -479,5 +459,4 @@ const MenuBar = polymorphicForwardRef<'nav', MenuBarProps>(
   }
 );
 MenuBar.displayName = 'MenuBar';
-export type { MenuVO };
 export default MenuBar;

@@ -20,7 +20,7 @@ type NestedMenuItemImperativeMap = {
 
 const [useMenubarValueContext, MenubarValueProvider] = createReactContext<{
   menus: NestedMenuItemImperativeMap;
-  rootMenu: { [key: string]: string[] };
+  getLabelListInMenuItem: (menuItemLabel: string) => { labels: string[]; index: number };
 }>();
 
 const [useMenubarSelectContext, MenubarSelectProvider] =
@@ -30,6 +30,21 @@ const flatMenuLabel = (provider: MenuVO[], refs: Record<string, string[]>) => {
   const labels = provider.map(o => o.label);
   refs[labels.join('|')] = labels;
   provider.forEach(o => o.children && flatMenuLabel(o.children, refs));
+};
+
+const getLabelListByMenuItemLabel = (labelMap: Record<string, string[]>) => (itemLabel: string) => {
+  const result = {
+    labels: [] as string[],
+    index: -1
+  };
+  for (let key in labelMap) {
+    if (key.includes(itemLabel)) {
+      result.labels = labelMap[key];
+      result.index = labelMap[key].indexOf(itemLabel);
+      return result;
+    }
+  }
+  return result;
 };
 
 function MenuBarProvider({
@@ -42,7 +57,7 @@ function MenuBarProvider({
     flatMenuLabel(provider, refs);
     return {
       menus: {},
-      rootMenu: refs
+      getLabelListInMenuItem: getLabelListByMenuItemLabel(refs)
     };
   }, [provider]);
 

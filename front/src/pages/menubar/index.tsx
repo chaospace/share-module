@@ -54,7 +54,7 @@ const menuTree = [
 ];
 
 function MenuBarApp() {
-  return <MenuBar provider={menuTree}></MenuBar>;
+  return <MenuBar provider={menuTree} />;
 }
 
 export default MenuBarApp;
