@@ -24,12 +24,7 @@ const MenuItemGuard = styled.li
   }))
   .withConfig({
     shouldForwardProp: shouldForwardAllProps
-  })`
-    ${composer}
-    &:has(a.selected), &:has(a:hover){
-      background-color:lightblue;
-    }
-  `;
+  })(composer);
 
 const MenuItem = styled.a`
   display: inline-flex;
@@ -38,6 +33,12 @@ const MenuItem = styled.a`
   white-space: nowrap;
   gap: 8px;
   width: 100%;
+  &:hover {
+    background-color: aliceblue;
+  }
+  &.selected {
+    background-color: cornflowerblue;
+  }
   ${IconButton} {
     pointer-events: none;
   }
@@ -49,6 +50,12 @@ const Container = styled.nav`
 
   ${Menu}[aria-orientation='vertical'] {
     flex-direction: column;
+  }
+
+  ${MenuItem}:hover, ${MenuItem}.selected {
+    ${IconButton} {
+      transform: rotate(-180deg);
+    }
   }
 `;
 
@@ -62,6 +69,11 @@ const PopOverContainer = styled.div`
   ${Menu}[aria-orientation='vertical'] {
     flex-direction: column;
     pointer-events: auto;
+  }
+  ${MenuItem}:hover, ${MenuItem}.selected {
+    ${IconButton} {
+      transform: rotate(-90deg);
+    }
   }
 `;
 
