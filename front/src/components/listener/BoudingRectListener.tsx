@@ -44,6 +44,11 @@ const converToEventName = (name: string) => {
 
 const ownerDocument = (node: Node) => node.ownerDocument;
 
+const clickedRootScrollbar = (e: MouseEvent, doc: Document) => {
+  return (
+    e.clientX > doc.documentElement.clientWidth || e.clientY > doc.documentElement.clientHeight
+  );
+};
 /**
  * chlidren 영역을 벗어난 마우스 이벤트 감지 리스터 컴포넌트
  */
@@ -64,17 +69,22 @@ function BoundingRectListener({
 
   const clickOutSideHandle = (e: MouseEvent | TouchEvent) => {
     if (!nodeRef.current) return;
+
     const node = e.target as Node;
-    //드래그 이동을 한 후면 예외처리.
-    if (movedRef.current) {
+    const doc = ownerDocument(nodeRef.current)!;
+    //스크롤바 영역 클릭시 예외적용
+    if ('clientX' in e && clickedRootScrollbar(e, doc)) {
+      return;
+    } else if (movedRef.current) {
+      //드래그 이동을 한 후면 예외처리.
       movedRef.current = false;
       return;
     }
+
     let inSideDom = false;
     if (e.composedPath) {
       inSideDom = e.composedPath().indexOf(nodeRef.current) > -1;
     } else {
-      const doc = ownerDocument(nodeRef.current)!;
       const isInDoc = doc.documentElement.contains(node);
       const isInChild = nodeRef.current.contains(node);
       inSideDom = !isInDoc || isInChild;
