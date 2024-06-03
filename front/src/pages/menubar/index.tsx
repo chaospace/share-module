@@ -54,7 +54,12 @@ const menuTree = [
 ];
 
 function MenuBarApp() {
-  return <MenuBar provider={menuTree} />;
+  return (
+    <>
+      <MenuBar variant='success' provider={menuTree} />
+      <MenuBar variant='info' provider={menuTree} />
+    </>
+  );
 }
-
+export { menuTree };
 export default MenuBarApp;
