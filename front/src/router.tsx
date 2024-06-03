@@ -7,6 +7,7 @@ import UISample from './pages/sample';
 import CheckBoxApp from './pages/checkbox';
 import RadioApp from './pages/radio';
 import MenuBarApp from './pages/menubar';
+import ChildrenApp from './pages/children';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -19,34 +20,40 @@ const ErrorPage = () => {
   );
 };
 
+const routeChildren = [
+  {
+    path: 'children',
+    element: <ChildrenApp />
+  },
+  {
+    path: 'menubar',
+    element: <MenuBarApp />
+  },
+  {
+    path: 'sample',
+    element: <UISample />
+  },
+  {
+    path: 'radio',
+    element: <RadioApp />
+  },
+  {
+    path: 'checkbox',
+    element: <CheckBoxApp />
+  },
+  {
+    path: 'tutorial',
+    element: <TutorialApp />
+  }
+];
+
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     errorElement: <ErrorPage />,
-    children: [
-      {
-        path: 'menubar',
-        element: <MenuBarApp />
-      },
-      {
-        path: 'sample',
-        element: <UISample />
-      },
-      {
-        path: 'radio',
-        element: <RadioApp />
-      },
-      {
-        path: 'checkbox',
-        element: <CheckBoxApp />
-      },
-      {
-        path: 'tutorial',
-        element: <TutorialApp />
-      }
-    ]
+    children: routeChildren
   }
 ]);
-
+export { routeChildren };
 export default router;

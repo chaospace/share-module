@@ -103,7 +103,7 @@ function AutoComplete({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const optionItemRef = useRef<(null | HTMLLIElement)[]>([]);
-  const prevSelectIndex = useRef<number>(-1);
+  const prevSelectIndex = useRef(-1);
 
   const filteredOptions = useMemo(() => {
     return select === query ? provider : provider.filter(o => o.label.includes(query));

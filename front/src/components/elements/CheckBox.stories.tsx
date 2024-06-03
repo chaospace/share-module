@@ -86,7 +86,7 @@ export const CheckBoxValue: Story = {
       </CheckBox>
     );
   },
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, step }: any) => {
     const canvas = within(canvasElement);
     const label = canvas.getByLabelText('과일배송');
     const checkbox = canvas.getByRole('checkbox') as HTMLInputElement;

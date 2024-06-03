@@ -3,19 +3,22 @@ import { ThemeProvider } from 'styled-components';
 import appTheme from '@/styles/theme';
 import { HBox, VBox } from '@/components/elements/Box';
 import { Link, Outlet } from 'react-router-dom';
+import { routeChildren } from './router';
 
 const App = () => {
   return (
     <ThemeProvider theme={appTheme}>
       <VBox p={5}>
         <HBox>
-          <Link to='/menubar'>menubar</Link>
-          <Link to='/sample'>ui샘플</Link>
-          <Link to='/radio'>라디오버튼</Link>
-          <Link to='/checkbox'>체크박스</Link>
-          <Link to='/tutorial'>ui 튜토리얼</Link>
+          {routeChildren.map(o => {
+            const path = `/${o.path}`;
+            return (
+              <Link key={path} to={path}>
+                {o.path}
+              </Link>
+            );
+          })}
         </HBox>
-
         <Outlet />
       </VBox>
     </ThemeProvider>

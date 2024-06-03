@@ -121,12 +121,10 @@ function BoundingRectListener({
   useLayoutEffect(() => {
     if (mouseEvent !== false && nodeRef.current) {
       const event = converToEventName(mouseEvent);
-      const doc = ownerDocument(nodeRef.current);
-      console.log('event', event, doc);
-      doc && doc.addEventListener(event, clickOutSideHandle);
-
+      const doc = ownerDocument(nodeRef.current)!;
+      doc.addEventListener(event, clickOutSideHandle);
       return () => {
-        doc && doc.removeEventListener(event, clickOutSideHandle);
+        doc.removeEventListener(event, clickOutSideHandle);
       };
     }
   }, [mouseEvent, clickOutSideHandle]);

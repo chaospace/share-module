@@ -305,28 +305,21 @@ const MenuWrapper = ({
   const renderChildMenu = useCallback((itemSelect: boolean, vo: MenuVO, popOverable: boolean) => {
     const subExpanded = vo.children && itemSelect;
     const popOverMenu = subExpanded && popOverable;
-    const parentDomRect = popOverMenu ? menuItems.current[vo.label].getBoundingClientRect() : null;
+    const parentDomRect = subExpanded ? menuItems.current[vo.label].getBoundingClientRect() : null;
+    const style = subExpanded
+      ? {
+          position: 'absolute',
+          left: popOverMenu ? parentDomRect?.left : parentDomRect?.width,
+          top: popOverMenu ? parentDomRect?.bottom : 0,
+          width: parentDomRect?.width
+        }
+      : undefined;
+    const SubMenu = (
+      <MenuWrapper role='menu' ariaLabelledBy={vo.label} provider={vo.children!} style={style} />
+    );
     return (
       subExpanded &&
-      (popOverMenu ? (
-        createPortal(
-          <Popover>
-            <MenuWrapper
-              role='menu'
-              ariaLabelledBy={vo.label}
-              provider={vo.children!}
-              style={{
-                position: 'absolute',
-                left: parentDomRect?.left,
-                top: parentDomRect?.bottom
-              }}
-            />
-          </Popover>,
-          document.body
-        )
-      ) : (
-        <MenuWrapper role='menu' ariaLabelledBy={vo.label} provider={vo.children!} />
-      ))
+      (popOverMenu ? createPortal(<Popover>{SubMenu}</Popover>, document.body) : SubMenu)
     );
   }, []);
 

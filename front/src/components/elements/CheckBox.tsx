@@ -6,7 +6,7 @@ import { PropsWithHTMLAttributes } from '../types';
 import { CSSComposerObject } from 'styled-composer';
 import Typography from './Typography';
 import { CheckmarkOutline } from '@styled-icons/evaicons-outline';
-import { StyleVariantContext, VariantCategory } from '../../../@types/styled';
+import { StyleVariantContext, VariantCategory } from 'styled';
 
 interface CheckBoxProps extends PropsWithHTMLAttributes<'input', CSSComposerObject> {
   variant?: VariantCategory;

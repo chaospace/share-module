@@ -5,6 +5,16 @@ import IconButton from '@/components/elements/IconButton';
 
 const ArrowIcon = styled(ArrowIosDownwardOutline)``;
 
+const Menu = styled.ul
+  .attrs<CSSComposerObject>(_ => ({
+    position: _.position ?? 'relative',
+    alignSelf: 'start',
+    display: _.display ?? 'flex'
+  }))
+  .withConfig({
+    shouldForwardProp: shouldForwardAllProps
+  })(composer);
+
 const MenuItemGuard = styled.li
   .attrs<CSSComposerObject>(_ => ({
     position: _.position ?? 'relative',
@@ -21,22 +31,13 @@ const MenuItemGuard = styled.li
     }
   `;
 
-const Menu = styled.ul
-  .attrs<CSSComposerObject>(_ => ({
-    position: _.position ?? 'relative',
-    alignSelf: 'start',
-    display: _.display ?? 'flex'
-  }))
-  .withConfig({
-    shouldForwardProp: shouldForwardAllProps
-  })(composer);
-
 const MenuItem = styled.a`
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
   white-space: nowrap;
   gap: 8px;
+  width: 100%;
   ${IconButton} {
     pointer-events: none;
   }
