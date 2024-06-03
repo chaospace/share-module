@@ -14,7 +14,11 @@ import { polymorphicForwardRef } from '@/components/types';
 import { CSSComposerObject } from 'styled-composer';
 import IconButton from '@/components/elements/IconButton';
 import { createPortal } from 'react-dom';
-import MenuBarProvider, { useMenubarSelectContext, useMenubarValueContext } from './MenubarContext';
+import MenuBarProvider, {
+  useMenubarSelectContext,
+  useMenubarValueContext,
+  useMenubarVariantContext
+} from './MenubarContext';
 import type { MenuItemImperative, MenuVO } from './MenubarContext';
 import {
   Container,
@@ -24,6 +28,7 @@ import {
   MenuItemGuard,
   ArrowIcon
 } from './elements.style';
+import { VariantCategory } from 'styled';
 
 function useRefSync<T extends any>(ref: React.ForwardedRef<T>) {
   const innerRef = React.useRef<T>(null);
@@ -139,7 +144,7 @@ const MenuItemWrapper = React.forwardRef<MenuItemImperative, PropsWithChildren<M
   ) => {
     const [_tabEnable, _setTabEnable] = useState(false);
     const eleRef = useRef<HTMLAnchorElement>(null);
-
+    const variant = useMenubarVariantContext();
     useImperativeHandle(
       ref,
       () => {
@@ -166,6 +171,7 @@ const MenuItemWrapper = React.forwardRef<MenuItemImperative, PropsWithChildren<M
         id={id}
         ref={eleRef}
         role='menuitem'
+        variant={variant}
         className={(selected && 'selected') || ''}
         href={data.link}
         tabIndex={_tabEnable ? 1 : -1}
@@ -374,6 +380,7 @@ const Popover = ({ children }: { children: React.ReactNode }) => {
 
 type MenuBarProps = {
   provider: MenuVO[];
+  variant?: VariantCategory;
 };
 
 /**
@@ -383,12 +390,12 @@ type MenuBarProps = {
  * 메뉴, 메뉴아이템의 ref를 참조해 조작한다.
  */
 const MenuBar = polymorphicForwardRef<'nav', MenuBarProps>(
-  ({ provider, as = 'nav' }, forwaredRef) => {
+  ({ provider, as = 'nav', variant = 'default' }, forwaredRef) => {
     const syncRef = useRefSync(forwaredRef);
     //provider는 메뉴 구조를 나타내는 배열정보..
     return (
       <React.Fragment>
-        <MenuBarProvider containerRef={syncRef} provider={provider}>
+        <MenuBarProvider containerRef={syncRef} variant={variant} provider={provider}>
           <Container as={as} role='navigation' ref={syncRef}>
             <MenuWrapper role='menubar' ariaOrientation='horizontal' provider={provider} />
           </Container>

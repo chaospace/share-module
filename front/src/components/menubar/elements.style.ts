@@ -1,7 +1,8 @@
-import styled from 'styled-components';
+import styled, { ExecutionContext } from 'styled-components';
 import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
 import { ArrowIosDownwardOutline } from '@styled-icons/evaicons-outline/ArrowIosDownwardOutline';
 import IconButton from '@/components/elements/IconButton';
+import { VariantCategory, StyleVariantProps } from 'styled';
 
 const ArrowIcon = styled(ArrowIosDownwardOutline)``;
 
@@ -26,21 +27,38 @@ const MenuItemGuard = styled.li
     shouldForwardProp: shouldForwardAllProps
   })(composer);
 
-const MenuItem = styled.a`
+const variantComposer = ({ theme, variant }: ExecutionContext & StyleVariantProps) => {
+  const c = theme.variant[variant!];
+  return {
+    color: `${c.light}!important`,
+    backgroundColor: c.main,
+    '&:hover': {
+      backgroundColor: c.dark
+    },
+    '&.selected': {
+      backgroundColor: c.dark
+    }
+  };
+};
+
+const MenuItem = styled.a.attrs<{
+  variant?: VariantCategory;
+}>(_ => ({
+  variant: _.variant ?? 'default'
+}))`
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
   white-space: nowrap;
   gap: 8px;
   width: 100%;
-  &:hover {
-    background-color: aliceblue;
-  }
-  &.selected {
-    background-color: cornflowerblue;
-  }
+  ${variantComposer}
   ${IconButton} {
     pointer-events: none;
+    color: inherit;
+    svg: {
+      fill: currentColor;
+    }
   }
 `;
 

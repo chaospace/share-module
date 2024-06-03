@@ -1,5 +1,6 @@
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import createReactContext from '../createReactContext';
+import { VariantCategory } from '../../../@types/styled';
 
 type MenuVO = {
   label: string;
@@ -22,6 +23,8 @@ const [useMenubarValueContext, MenubarValueProvider] = createReactContext<{
   menus: NestedMenuItemImperativeMap;
   getLabelListInMenuItem: (menuItemLabel: string) => { labels: string[]; index: number };
 }>();
+
+const [useMenubarVariantContext, MenubarVariantProvider] = createReactContext<VariantCategory>();
 
 const [useMenubarSelectContext, MenubarSelectProvider] =
   createReactContext<[string[], React.Dispatch<React.SetStateAction<string[]>>]>();
@@ -50,8 +53,13 @@ const getLabelListByMenuItemLabel = (labelMap: Record<string, string[]>) => (ite
 function MenuBarProvider({
   provider,
   containerRef,
+  variant,
   children
-}: PropsWithChildren<{ provider: MenuVO[]; containerRef: React.RefObject<HTMLElement> }>) {
+}: PropsWithChildren<{
+  provider: MenuVO[];
+  containerRef: React.RefObject<HTMLElement>;
+  variant: VariantCategory;
+}>) {
   const value = useMemo(() => {
     const refs = {};
     flatMenuLabel(provider, refs);
@@ -84,11 +92,13 @@ function MenuBarProvider({
 
   return (
     <MenubarSelectProvider value={[selected, setSelected]}>
-      <MenubarValueProvider value={value}>{children}</MenubarValueProvider>
+      <MenubarVariantProvider value={variant}>
+        <MenubarValueProvider value={value}>{children}</MenubarValueProvider>
+      </MenubarVariantProvider>
     </MenubarSelectProvider>
   );
 }
 
 export type { MenuVO, MenuItemImperative, NestedMenuItemImperativeMap };
-export { useMenubarValueContext, useMenubarSelectContext };
+export { useMenubarValueContext, useMenubarSelectContext, useMenubarVariantContext };
 export default MenuBarProvider;
