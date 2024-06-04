@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import Input from '@/components/elements/Input';
 import { CSSComposerObject } from 'styled-composer';
 import { StyleVariantProps } from 'styled';
-import { shouldForwardCSSProps } from '@/styles/utils';
+import { shouldForwardCSSProps, variantProxy } from '@/styles/utils';
+import appTheme from '@/styles/theme';
 
 const Track = styled.span`
   position: relative;
@@ -54,6 +55,24 @@ const CheckMark = styled.span`
   }
 `;
 
+const checkMarkVariant = variantProxy(appTheme.variant, c => {
+  return {
+    '&:before': {
+      backgroundColor: c.main
+    }
+  };
+});
+
+const trackVariant = variantProxy(appTheme.variant, c => {
+  return {
+    backgroundColor: appTheme.variant.default.light,
+    border: `1px solid ${appTheme.variant.default.main}`,
+    '&:after': {
+      backgroundColor: c.light
+    }
+  };
+});
+
 const Container = styled.label
   .attrs<StyleVariantProps & CSSComposerObject>(_ => ({
     variant: _.variant ?? 'default'
@@ -67,29 +86,13 @@ const Container = styled.label
   cursor: pointer;
   gap: 8px;
   ${CheckMark}{
-    &:before{
-      ${({ theme, variant }) => {
-        const c = theme.variant[variant!];
-        return {
-          backgroundColor: c.main
-        };
-      }}
-    }
+    ${checkMarkVariant}
     &:has(input[type='checkbox']:checked):before{
       transform: translate(calc(60px - 100%), 0%);
     }
   }
   ${Track}{
-    ${({ theme, variant }) => {
-      const c = theme.variant[variant!];
-      return {
-        backgroundColor: theme.variant.default.light,
-        border: `1px solid ${theme.variant.default.main}`,
-        '&:after': {
-          backgroundColor: c.light
-        }
-      };
-    }}
+    ${trackVariant}
   }
   input[type='checkbox']:checked + ${Track}{
     &:after {
@@ -107,7 +110,6 @@ type SwitchProps = React.DetailedHTMLProps<
 
 /**
  * label정보는 children으로 구성하며 모든 정보는 상위에서 컨트롤 한다는 가정.
- *
  */
 function Switch({ variant, value, checked, onChange, children, ...rest }: SwitchProps) {
   const labelID = `switchLabel-${useId()}`;

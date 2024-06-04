@@ -2,7 +2,37 @@
  * 테마 유틸함수
  */
 import { shouldForwardAllProps } from 'styled-composer';
+import { StyleVariantProps, VariantCategory, VariantType } from 'styled';
+import { variant } from '@/colors';
+import { ObjType } from '@/components/types';
+import { StyledObject, css } from 'styled-components';
 
+type MergeValueType<A, B> = {
+  [Property in keyof A]: A[Property] & B;
+};
+
+const appendVariantValue = <
+  Extra extends ObjType,
+  Props extends Record<VariantCategory, Extra> = Record<VariantCategory, Extra>
+>(
+  extra: Props,
+  base = variant
+) => {
+  const answer = structuredClone(base) as MergeValueType<VariantType, Extra>;
+  for (const [key, value] of Object.entries(extra)) {
+    answer[key as VariantCategory] = Object.assign(answer[key as VariantCategory], value);
+  }
+  return answer;
+};
+
+const variantProxy =
+  <T extends VariantType = VariantType>(
+    source: T,
+    callback: (c: T['default']) => ReturnType<typeof css> | StyledObject
+  ) =>
+  ({ variant }: StyleVariantProps) => {
+    return callback(source[variant!]);
+  };
 /**
  * getValue에 키를 커링으로 기억해서 사용하는 함수.
  * @param key    :object속성 키
@@ -28,4 +58,12 @@ const shouldForwardCSSProps =
   (prop: string) =>
     !props.includes(prop) && base && shouldForwardAllProps(prop);
 
-export { getValue, getSpace, getVariant, curriedValue, shouldForwardCSSProps };
+export {
+  getValue,
+  getSpace,
+  getVariant,
+  curriedValue,
+  shouldForwardCSSProps,
+  appendVariantValue,
+  variantProxy
+};

@@ -14,7 +14,7 @@ interface CheckBoxProps extends PropsWithHTMLAttributes<'input', CSSComposerObje
 const getBackGroundColor = ({ theme, variant }: StyleVariantContext) => {
   return theme.variant[variant].main;
 };
-const getCheckIconColor = ({ theme, variant }: StyleVariantContext) => {
+const getCheckIConColor = ({ theme, variant }: StyleVariantContext) => {
   return theme.variant[variant].light;
 };
 
@@ -59,7 +59,7 @@ const Container = styled.label<{ variant: VariantCategory }>`
     background-color: ${getBackGroundColor};
     ${CheckIcon} {
       opacity: 1;
-      fill: ${getCheckIconColor};
+      fill: ${getCheckIConColor};
     }
   }
 `;

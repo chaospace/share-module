@@ -1,8 +1,20 @@
-import styled, { ExecutionContext } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
 import { ArrowIosDownwardOutline } from '@styled-icons/evaicons-outline/ArrowIosDownwardOutline';
 import IconButton from '@/components/elements/IconButton';
-import { VariantCategory, StyleVariantProps } from 'styled';
+import { VariantCategory } from 'styled';
+import { amber, grey, indigo, red, teal } from '@/colors';
+import deepPurple from '@/colors/deepPurple';
+import { appendVariantValue, variantProxy } from '@/styles/utils';
+
+const menubarVariant = appendVariantValue<{ icon?: string }>({
+  default: { icon: grey[50] },
+  primary: { icon: indigo[50] },
+  info: { icon: teal[50] },
+  success: { icon: deepPurple[50] },
+  warning: { icon: amber[50] },
+  danger: { icon: red[50] }
+});
 
 const ArrowIcon = styled(ArrowIosDownwardOutline)``;
 
@@ -27,19 +39,19 @@ const MenuItemGuard = styled.li
     shouldForwardProp: shouldForwardAllProps
   })(composer);
 
-const variantComposer = ({ theme, variant }: ExecutionContext & StyleVariantProps) => {
-  const c = theme.variant[variant!];
-  return {
-    color: `${c.light}!important`,
-    backgroundColor: c.main,
-    '&:hover': {
-      backgroundColor: c.dark
-    },
-    '&.selected': {
-      backgroundColor: c.dark
+const variantComposer = variantProxy(menubarVariant, c => {
+  return css`
+    color: ${c.light}!important;
+    background-color: ${c.main};
+    &:hover,
+    &.selected {
+      background-color: ${c.dark};
     }
-  };
-};
+    ${IconButton} {
+      color: ${c.icon};
+    }
+  `;
+});
 
 const MenuItem = styled.a.attrs<{
   variant?: VariantCategory;
@@ -55,7 +67,6 @@ const MenuItem = styled.a.attrs<{
   ${variantComposer}
   ${IconButton} {
     pointer-events: none;
-    color: inherit;
     svg: {
       fill: currentColor;
     }

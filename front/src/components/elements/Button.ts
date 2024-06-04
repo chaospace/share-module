@@ -1,24 +1,25 @@
 import { PropsWithHTMLAttributes } from '@/components/types';
 import styled from 'styled-components';
 import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
-import { StyleVariantContext, VariantCategory } from 'styled';
+import { VariantCategory } from 'styled';
+import { variantProxy } from '@/styles/utils';
+import appTheme from '@/styles/theme';
 
 type ButtonProps = PropsWithHTMLAttributes<
   'button',
   { variant?: VariantCategory } & CSSComposerObject
 >;
 
-const vriantHoverComposer = ({ theme, variant }: any & StyleVariantContext) => {
-  const variantColor = theme.variant[variant];
+const vriantHoverComposer = variantProxy(appTheme.variant, c => {
   return {
-    color: variantColor.light,
-    backgroundColor: variantColor.main,
-    borderColor: variantColor.dark,
+    color: c.light,
+    backgroundColor: c.main,
+    borderColor: c.dark,
     '&:hover': {
-      backgroundColor: variantColor.dark
+      backgroundColor: c.dark
     }
   };
-};
+});
 // variant를 이용한 컬러 제어
 const Button = styled.button.withConfig({ shouldForwardProp: shouldForwardAllProps })<ButtonProps>`
   ${vriantHoverComposer}
