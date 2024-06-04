@@ -122,27 +122,6 @@ function AutoComplete({
       }
     }
   }, []);
-  //activeIndex를 sync처리하면 템포가 하나씩 밀리며 역으로 보일 경우 2개의 current가 보이는 문제 발생.
-  useEffect(() => {
-    scrollToActiveIndex(activeIndex);
-  }, [activeIndex, scrollToActiveIndex]);
-
-  //open시 리스트에 시작위치를 결정
-  useEffect(() => {
-    if (openList) {
-      if (listRef.current) {
-        //참조를 하기 전에는 항상 초기값으로 복원
-        listRef.current.style.transform = 'translate(0,0)';
-        listRef.current.style.top = '100%';
-        const rect = listRef.current.getBoundingClientRect();
-        //active-option참조
-        if (rect.top + rect.height > document.documentElement.clientHeight) {
-          listRef.current.style.top = '0';
-          listRef.current.style.transform = 'translate(0,-100%)';
-        }
-      }
-    }
-  }, [openList]);
 
   const onChangeInput = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setQuery(target.value);
@@ -157,9 +136,6 @@ function AutoComplete({
 
   const onFocusInput = () => {
     setOpenList(true);
-    if (select) {
-      setActiveIndex(findSelectIndex(select));
-    }
   };
 
   const resetState = useCallback(() => {
@@ -241,6 +217,39 @@ function AutoComplete({
     }
     setOpenList(false);
   };
+
+  //open시 리스트에 시작위치를 결정
+  useEffect(() => {
+    if (openList) {
+      if (listRef.current) {
+        //참조를 하기 전에는 항상 초기값으로 복원
+        listRef.current.style.transform = 'translate(0,0)';
+        listRef.current.style.top = '100%';
+        const rect = listRef.current.getBoundingClientRect();
+        //active-option참조
+        if (rect.top + rect.height > document.documentElement.clientHeight) {
+          listRef.current.style.top = '0';
+          listRef.current.style.transform = 'translate(0,-100%)';
+        }
+      }
+    }
+  }, [openList]);
+
+  // 목록이 열린상태에서 선택값이 있으면 목록포커싱 처리
+  useEffect(() => {
+    if (select && openList) {
+      const nIndex = findSelectIndex(select);
+      const ele = optionItemRef.current[nIndex]!;
+      if (ele && !isElementInView(ele, listRef.current!)) {
+        scrollToActiveIndex(nIndex);
+      }
+    }
+  }, [openList, select]);
+
+  //activeIndex를 sync처리하면 템포가 하나씩 밀리며 역으로 보일 경우 2개의 current가 보이는 문제 발생.
+  useEffect(() => {
+    scrollToActiveIndex(activeIndex);
+  }, [activeIndex, scrollToActiveIndex]);
 
   const renderList = filteredOptions.length ? (
     filteredOptions.map((o, idx) => {
