@@ -8,6 +8,7 @@ import CheckBoxApp from './pages/checkbox';
 import RadioApp from './pages/radio';
 import MenuBarApp from './pages/menubar';
 import ChildrenApp from './pages/children';
+import AccordionApp from './pages/accordion';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -21,6 +22,10 @@ const ErrorPage = () => {
 };
 
 const routeChildren = [
+  {
+    path: 'accordion',
+    element: <AccordionApp />
+  },
   {
     path: 'children',
     element: <ChildrenApp />
