@@ -114,17 +114,18 @@ function AutoComplete({
   const listID = `list${uniqueId}`;
   const selectOptionID = `selected-option${uniqueId}`;
 
-  //activeIndex를 sync처리하면 템포가 하나씩 밀리며 역으로 보일 경우 2개의 current가 보이는 문제 발생.
-  useEffect(() => {
+  const scrollToActiveIndex = useCallback((nIndex: number) => {
     if (listRef.current && isScrollAble(listRef.current)) {
-      //active에 있는 돔참조 가져오기..
-      const ele = optionItemRef.current[activeIndex];
-      // scrollIntoView를 이용하면 쉽게 이동가능.
+      const ele = optionItemRef.current[nIndex];
       if (ele && !isElementInView(ele, listRef.current)) {
-        ele.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        ele.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
-  }, [activeIndex]);
+  }, []);
+  //activeIndex를 sync처리하면 템포가 하나씩 밀리며 역으로 보일 경우 2개의 current가 보이는 문제 발생.
+  useEffect(() => {
+    scrollToActiveIndex(activeIndex);
+  }, [activeIndex, scrollToActiveIndex]);
 
   //open시 리스트에 시작위치를 결정
   useEffect(() => {
@@ -150,8 +151,15 @@ function AutoComplete({
     }
   };
 
+  const findSelectIndex = (select: string) => {
+    return filteredOptions.findIndex(o => o.label === select);
+  };
+
   const onFocusInput = () => {
     setOpenList(true);
+    if (select) {
+      setActiveIndex(findSelectIndex(select));
+    }
   };
 
   const resetState = useCallback(() => {
