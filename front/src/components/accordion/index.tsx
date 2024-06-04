@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Box, VBox } from '../elements/Box';
+import React, { PropsWithChildren, useId, useRef, useState } from 'react';
+import { VBox } from '../elements/Box';
 import Button from '../elements/Button';
 import styled from 'styled-components';
 import Typography from '../elements/Typography';
 import Input from '../elements/Input';
+import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
+import type { StyleVariantProps } from 'styled';
+import { VariantCategory } from '../../../@types/styled';
 
 const IConDownArrow = styled.i`
   position: absolute;
@@ -16,18 +19,24 @@ const IConDownArrow = styled.i`
 `;
 
 const AccordionContentBody = styled.div`
+  position: relative;
+  display: block;
   padding: 20px;
-  transform: translateY(-100%);
 `;
 
-const AccordionContent = styled(Box).attrs({
-  p: 16,
-  overflow: 'hidden'
-})`
-  pointer-events: none;
+const AccordionContent = styled('div')
+  .attrs<CSSComposerObject>({
+    position: 'relative',
+    overflow: 'hidden',
+    overflowY: 'auto',
+    display: 'block'
+  })
+  .withConfig({ shouldForwardProp: shouldForwardAllProps })`
+  ${composer}
+  transition: all 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 `;
 
-const AccordionButton = styled(Button).attrs({
+const AccordionButton = styled(Button).attrs(_ => ({
   gap: 2,
   px: 24,
   py: 16,
@@ -35,8 +44,8 @@ const AccordionButton = styled(Button).attrs({
   display: 'block',
   borderRadius: 0,
   border: 'none',
-  variant: 'info'
-})`
+  variant: _.variant ?? 'info'
+}))`
   ${Typography} {
     position: relative;
     pointer-events: none;
@@ -75,106 +84,127 @@ const Container = styled(VBox).attrs({
 })`
   overflow: hidden;
   border-radius: 8px;
-  border: 2px solid #d1c4e9;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 50%),
+    1px 2px 6px 2px rgb(0 0 0 / 20%);
   // 두번째 요소부터 상단보더 적용
   * + * {
     border-top: 1px solid;
     border-color: currentColor;
   }
-
-  ${AccordionButton}[aria-expanded='true'] + ${AccordionContent} ${AccordionContentBody} {
-    transform: translateY(0);
-    transition: all 300ms 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
 `;
 
-function Accordion() {
-  const [selected, setSelected] = useState('');
+const _Handler = (_: React.MouseEvent<HTMLButtonElement>) => {};
 
+function AccordionItem({
+  label,
+  selected = false,
+  children,
+  variant = 'default',
+  onClick = _Handler
+}: PropsWithChildren<{
+  label: string;
+  selected?: boolean;
+  variant?: VariantCategory;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}>) {
+  const itemID = `acc-ins-${useId()}`;
+  const contentID = `acc-content-${useId()}`;
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const getMaxHeight = (bSelect: boolean) => {
+    return bSelect ? nodeRef.current?.firstElementChild?.clientHeight : 0;
+  };
+  return (
+    <React.Fragment>
+      <AccordionButton
+        id={itemID}
+        variant={variant}
+        aria-controls={contentID}
+        aria-expanded={selected}
+        onClick={onClick}>
+        <Typography as='span'>
+          {label}
+          <IConDownArrow />
+        </Typography>
+      </AccordionButton>
+      <AccordionContent
+        id={contentID}
+        ref={nodeRef}
+        role='region'
+        aria-labelledby={itemID}
+        aria-hidden={!selected}
+        maxHeight={getMaxHeight(selected)}>
+        <AccordionContentBody>{children}</AccordionContentBody>
+      </AccordionContent>
+    </React.Fragment>
+  );
+}
+
+function Accordion({ variant = 'default' }: StyleVariantProps) {
+  const [selected, setSelected] = useState('');
   const onClickItem = (e: React.MouseEvent<HTMLButtonElement>) => {
     // e.preventDefault();
-    console.log(e);
-    setSelected(prev => (prev === e.target?.id ? '' : e.target?.id));
+    const ele = e.target as HTMLElement;
+    const text = ele.textContent!;
+    setSelected(prev => (prev === text ? '' : text));
   };
 
   return (
     <React.Fragment>
       <Container>
-        <AccordionButton
-          id='acc-1'
-          aria-controls='acc-region-1'
-          aria-expanded={selected === 'acc-1'}
+        <AccordionItem
+          variant={variant}
+          label='아코디언 라벨'
+          selected={selected === '아코디언 라벨'}
           onClick={onClickItem}>
-          <Typography as='span'>
-            아코디언
-            <IConDownArrow />
-          </Typography>
-        </AccordionButton>
-        <AccordionContent
-          role='region'
-          id='acc-region-1'
-          aria-labelledby='acc-1'
-          hidden={selected !== 'acc-1'}>
-          <AccordionContentBody>
-            <Input type='text' />
-            <br />
-            <Input type='tel' />
-            <br />
-            <Input type='url' />
-            <br />
-            <Input type='search' />
-          </AccordionContentBody>
-        </AccordionContent>
-        <AccordionButton
-          id='acc-2'
-          aria-controls='acc-region-2'
-          aria-expanded={selected === 'acc-2'}
+          <Input type='text' />
+
+          <Input type='tel' />
+
+          <Input type='url' />
+
+          <Input type='search' />
+          <Input type='text' />
+
+          <Input type='tel' />
+
+          <Input type='url' />
+
+          <Input type='search' />
+        </AccordionItem>
+        <AccordionItem
+          variant={variant}
+          label='아코디언 라벨2'
+          selected={selected === '아코디언 라벨2'}
           onClick={onClickItem}>
-          <Typography as='span'>
-            아코디언2
-            <IConDownArrow />
-          </Typography>
-        </AccordionButton>
-        <AccordionContent
-          role='region'
-          id='acc-region-2'
-          aria-labelledby='acc-2'
-          hidden={selected !== 'acc-2'}>
-          <AccordionContentBody>
-            <Input type='text' />
-            <br />
-            <Input type='tel' />
-            <br />
-            <Input type='url' />
-            <br />
-            <Input type='search' />
-          </AccordionContentBody>
-        </AccordionContent>
-        <AccordionButton
-          id='acc-3'
-          aria-controls='acc-region-3'
-          aria-expanded={selected === 'acc-3'}
+          <Input type='text' />
+
+          <Input type='tel' />
+
+          <Input type='url' />
+
+          <Input type='search' />
+          <Input type='text' />
+
+          <Input type='tel' />
+
+          <Input type='url' />
+
+          <Input type='search' />
+        </AccordionItem>
+        <AccordionItem
+          label='아코디언4'
+          variant={variant}
+          selected={selected === '아코디언4'}
           onClick={onClickItem}>
-          <Typography as='span'>
-            아코디언3
-            <IConDownArrow />
-          </Typography>
-        </AccordionButton>
-        <AccordionContent
-          role='region'
-          id='acc-region-3'
-          aria-labelledby='acc-3'
-          hidden={selected !== 'acc-3'}>
-          <AccordionContentBody>
-            <Input type='text' />
-            <br />
-            <Input type='tel' />
-            <br />
-            <Input type='url' />
-            <br />
-            <Input type='search' />
-          </AccordionContentBody>
-        </AccordionContent>
+          <Input type='text' />
+          <br />
+          <Input type='tel' />
+          <br />
+          <Input type='url' />
+          <br />
+          <Input type='search' />
+        </AccordionItem>
       </Container>
     </React.Fragment>
   );
