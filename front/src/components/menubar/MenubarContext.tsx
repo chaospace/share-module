@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import createReactContext from '../createReactContext';
-import { VariantCategory } from '../../../@types/styled';
+import { VariantCategory } from 'styled';
 
 type MenuVO = {
   label: string;

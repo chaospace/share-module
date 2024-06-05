@@ -49,6 +49,10 @@ const variantComposer = variantProxy(menubarVariant, c => {
     }
     ${IconButton} {
       color: ${c.icon};
+      pointer-events: none;
+      svg: {
+        fill: currentColor;
+      }
     }
   `;
 });
@@ -65,12 +69,6 @@ const MenuItem = styled.a.attrs<{
   gap: 8px;
   width: 100%;
   ${variantComposer}
-  ${IconButton} {
-    pointer-events: none;
-    svg: {
-      fill: currentColor;
-    }
-  }
 `;
 
 const Container = styled.nav`

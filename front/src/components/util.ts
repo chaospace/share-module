@@ -5,6 +5,7 @@ const debounce = (callback: Function, delay: number = 100) => {
     debounceID = setTimeout(() => {
       callback(args);
     }, delay);
+    return debounceID;
   };
 
   return _callback;
