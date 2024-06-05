@@ -4,6 +4,7 @@ import display from '@/properties/display';
 import filters from '@/properties/filter';
 import flex from '@/properties/flex';
 import grid from '@/properties/grid';
+import interactions from '@/properties/interaction';
 import position from '@/properties/position';
 import size from '@/properties/size';
 import space from '@/properties/space';
@@ -22,7 +23,8 @@ const keyword = {
   ...flex,
   ...grid,
   ...typography,
-  ...filters
+  ...filters,
+  ...interactions
 } as const;
 
 const allKeywordName = Object.keys(keyword);
