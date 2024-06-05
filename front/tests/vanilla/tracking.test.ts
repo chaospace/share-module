@@ -78,7 +78,7 @@ type MenuVO = {
   link?: string;
   children?: MenuVO[];
 };
-describe('메뉴찾기', () => {
+describe.skip('메뉴찾기', () => {
   it('루프를 돌며 원하는 값 찾기', () => {
     const findMenuTree = (tree: MenuVO[], label: string) => {
       const tracking = (o: MenuVO, answer: string[]): string[] | null => {
@@ -130,4 +130,11 @@ describe('메뉴찾기', () => {
     const answer = dfs(menus, '멘토링');
     console.log('answer', answer, menus);
   });
+});
+
+it('배열 값중 어디에서 속하지 않은 키 찾기', () => {
+  const a = ['a', 'b', 'c', 'd'];
+  const b = ['a', 'c', 'e'];
+  const diff = a.filter(o => b.every(v => v !== o));
+  console.log('diff', diff);
 });
