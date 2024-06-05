@@ -24,6 +24,12 @@ type Story = StoryObj<typeof meta>;
 export const ComboBasic: Story = {
   args: {
     options: provider
+  }
+};
+
+export const ComboPlay: Story = {
+  args: {
+    options: provider
   },
   play: async ({ canvasElement, step }: any) => {
     const canvas = within(canvasElement);
