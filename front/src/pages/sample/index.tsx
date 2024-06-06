@@ -8,6 +8,7 @@ import SearchInput from '@/components/elements/SearchInput';
 import Select from '@/components/elements/Select';
 import Typography from '@/components/elements/Typography';
 import { countHooks } from 'federation_provider/Store';
+import InputRange from '@/components/range';
 
 const options = Array.from({ length: 20 }).map((_, i) => `옵션-${i}`);
 const options2 = [
@@ -39,14 +40,17 @@ function UISample() {
     console.log('select2-o', o.label);
   };
 
+  const [rangeValue, setRangeValue] = useState(0);
+  const onInput = (e: React.FormEvent<HTMLInputElement>) => {
+    setRangeValue(+(e.target as HTMLInputElement).value);
+  };
+
   return (
     <VBox as='main' p={boxPadding}>
-      <label>
-        current :{' '}
-        <Typography as='span' ref={pRef as any}>
-          {count}
-        </Typography>
-      </label>
+      <InputRange value={rangeValue} onInput={onInput} />
+      <Typography as='span' ref={pRef as any}>
+        {count}
+      </Typography>
       <HBox>
         <Button variant='success' onClick={() => setCount(prev => prev + 1)}>
           카운트 증가

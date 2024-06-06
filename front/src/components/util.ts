@@ -17,4 +17,6 @@ const sleep = (ms: number) => {
 
 const boolStringToBoolean = (v: string | null | undefined) => (v ?? '') === 'true';
 
-export { debounce, sleep, boolStringToBoolean };
+const mockHandler = <T>(_: T) => {};
+
+export { debounce, sleep, boolStringToBoolean, mockHandler };

@@ -9,6 +9,8 @@ import RadioApp from './pages/radio';
 import MenuBarApp from './pages/menubar';
 import ChildrenApp from './pages/children';
 import AccordionApp from './pages/accordion';
+import GridApp from './pages/grid';
+import RangeApp from './pages/range';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -22,6 +24,14 @@ const ErrorPage = () => {
 };
 
 const routeChildren = [
+  {
+    path: 'range',
+    element: <RangeApp />
+  },
+  {
+    path: 'grid',
+    element: <GridApp />
+  },
   {
     path: 'accordion',
     element: <AccordionApp />

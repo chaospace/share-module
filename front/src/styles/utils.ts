@@ -28,10 +28,10 @@ const appendVariantValue = <
 const variantProxy =
   <T extends VariantType = VariantType>(
     source: T,
-    callback: (c: T['default']) => ReturnType<typeof css> | StyledObject
+    callback: (c: T['default'], ...args: any) => ReturnType<typeof css> | StyledObject | string
   ) =>
-  ({ variant }: StyleVariantProps) => {
-    return callback(source[variant!]);
+  ({ variant, ...rest }: StyleVariantProps & Record<string, any>) => {
+    return callback.apply(null, [source[variant!], rest]); //callback(source[variant!], ...rest);
   };
 /**
  * getValue에 키를 커링으로 기억해서 사용하는 함수.
