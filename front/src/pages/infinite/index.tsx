@@ -7,9 +7,12 @@ const ListItem = styled.div`
   display: inline-flex;
   min-width: 200px;
   padding: 10px 16px;
-  border: 1px solid;
+  /* border: 1px solid; */
   &:hover {
     background-color: #ababab;
+  }
+  [aria-role='button'] {
+    border: none;
   }
 `;
 
@@ -21,6 +24,9 @@ const ContentBody = styled.div`
   border: 1px solid;
   overflow: hidden;
   overflow-y: auto;
+  * + ${ListItem} {
+    border-top: 1px solid #ababab;
+  }
 `;
 
 const createPageData = (p: number, num: number = 10) => {
@@ -35,12 +41,15 @@ const createPageData = (p: number, num: number = 10) => {
  */
 function InfiniteApp() {
   const contentRef = useRef<HTMLDivElement>(null);
+  // const [isPending, startTransition] = useTransition();
+
   const pageRef = useRef({
     page: 1,
     total: 10,
     groupItem: 10
   });
   const [provider, setProvider] = useState<number[]>(createPageData(1));
+  // const deferredProvider = useDeferredValue(provider);
   useEffect(() => {
     //페이지그룹을 체크해서 마지막에 도달하면 페이징을 처리한다.
     const ob = new IntersectionObserver(
@@ -58,7 +67,8 @@ function InfiniteApp() {
       },
       {
         root: contentRef.current,
-        threshold: 0
+        threshold: 0,
+        rootMargin: '0px 0px 160px 0px'
       }
     );
 
@@ -75,13 +85,14 @@ function InfiniteApp() {
     <div style={{ padding: '40px' }}>
       <ContentBody ref={contentRef}>
         {provider.map(idx => {
-          // const o = (pageRef.current.page - 1) * pageRef.current.groupItem + idx;
-          return <ListItem key={idx}>더미목록 데이터-{idx}</ListItem>;
+          return (
+            <ListItem key={idx} aria-posinset={idx} aria-setsize={100}>
+              더미목록 데이터-{idx}
+            </ListItem>
+          );
         })}
         {pageRef.current.page < pageRef.current.total && (
-          <ListItem role='button' aria-label='page-next'>
-            다음
-          </ListItem>
+          <ListItem role='button' aria-hidden='true' aria-label='page-next' />
         )}
       </ContentBody>
     </div>

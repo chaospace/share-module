@@ -11,6 +11,7 @@ import ChildrenApp from './pages/children';
 import AccordionApp from './pages/accordion';
 import GridApp from './pages/grid';
 import RangeApp from './pages/range';
+import InfiniteApp from './pages/infinite';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -24,6 +25,10 @@ const ErrorPage = () => {
 };
 
 const routeChildren = [
+  {
+    path: 'infinite',
+    element: <InfiniteApp />
+  },
   {
     path: 'range',
     element: <RangeApp />
