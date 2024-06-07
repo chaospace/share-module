@@ -3,7 +3,6 @@
 const tseslint = require('typescript-eslint');
 const eslintReactRecommended = require('eslint-plugin-react');
 const eslintReactHooks = require('eslint-plugin-react-hooks');
-//const eslitPrettier = require('prettier');
 const { fixupPluginRules } = require('@eslint/compat');
 const eslintPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
@@ -81,7 +80,7 @@ const config = [
   ...tsconfig,
   reactRecommended,
   reactHooks,
-  eslintPrettierRecommended,
+  prettierRecommended,
   {
     ignores: [
       'node_modules/**',

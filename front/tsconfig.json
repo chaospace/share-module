@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "preserveSymlinks": false,
     "composite": true,
     "typeRoots": ["../node_modules/@types", "node_modules/@types", "./@mf-types", "./@types"],
     "paths": {

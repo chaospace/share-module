@@ -28,4 +28,29 @@ function useRefGroupSync<T extends any>(refs: React.ForwardedRef<T>[]) {
   }, [refs]);
 }
 
-export { useRefSync, useRefGroupSync };
+interface FeedObservable {
+  getListener: () => Element[];
+  callback: (o: IntersectionObserverEntry, ...rest: any) => void;
+  getOption: () => IntersectionObserverInit;
+  deps?: readonly any[];
+}
+
+function useFeedObserver({ getListener, getOption, callback, deps }: FeedObservable) {
+  useEffect(() => {
+    const ob = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+      entries.forEach(o => {
+        if (o.isIntersecting) {
+          // ... processing
+          console.log('o', o);
+          callback.apply(null, [o, ...(deps ?? [])]);
+        }
+      });
+    }, getOption());
+    getListener().forEach(o => ob.observe(o));
+    return () => {
+      ob.disconnect();
+    };
+  }, []);
+}
+
+export { useRefSync, useFeedObserver, useRefGroupSync };

@@ -4,9 +4,23 @@ import GlobalStyle from '@/styles/globalStyle';
 import { RouterProvider } from 'react-router-dom';
 import router from './router';
 
-ReactDOM.createRoot(document.querySelector('#app')!).render(
-  <React.StrictMode>
-    <GlobalStyle />
-    <RouterProvider router={router} />
-  </React.StrictMode>
-);
+const prepareRender = async () => {
+  // if (process.env.mode === 'development') {
+  const { worker } = await import('./mocks/server');
+  return worker.start({
+    serviceWorker: {
+      url: '/mockServiceWorker.js'
+    }
+  });
+  // }
+  // return Promise.resolve();
+};
+
+prepareRender().then(() => {
+  ReactDOM.createRoot(document.querySelector('#app')!).render(
+    <React.StrictMode>
+      <GlobalStyle />
+      <RouterProvider router={router} />
+    </React.StrictMode>
+  );
+});
