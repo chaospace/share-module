@@ -8,6 +8,7 @@ interface ErrorBoundaryProps {
 interface ErrorBoundaryState {
   error?: Error;
   errorInfo?: ErrorInfo;
+  reset?: () => void;
 }
 
 // interface FallbackVO extends ErrorBoundaryState {

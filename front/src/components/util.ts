@@ -3,7 +3,7 @@ const debounce = (callback: Function, delay: number = 100) => {
   const _callback = (...args: any) => {
     clearTimeout(debounceID);
     debounceID = setTimeout(() => {
-      callback(args);
+      callback.apply(null, args);
     }, delay);
     return debounceID;
   };

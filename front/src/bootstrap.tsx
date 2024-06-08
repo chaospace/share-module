@@ -5,15 +5,16 @@ import { RouterProvider } from 'react-router-dom';
 import router from './router';
 
 const prepareRender = async () => {
-  // if (process.env.mode === 'development') {
-  const { worker } = await import('./mocks/server');
-  return worker.start({
-    serviceWorker: {
-      url: '/mockServiceWorker.js'
-    }
-  });
-  // }
-  // return Promise.resolve();
+  console.log('process', process.env.mode);
+  if (process.env.mode === 'development') {
+    const { worker } = await import('./mocks/server');
+    return worker.start({
+      serviceWorker: {
+        url: '/mockServiceWorker.js'
+      }
+    });
+  }
+  return Promise.resolve();
 };
 
 prepareRender().then(() => {

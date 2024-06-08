@@ -41,7 +41,6 @@ function useFeedObserver({ getListener, getOption, callback, deps }: FeedObserva
       entries.forEach(o => {
         if (o.isIntersecting) {
           // ... processing
-          console.log('o', o);
           callback.apply(null, [o, ...(deps ?? [])]);
         }
       });
@@ -50,7 +49,7 @@ function useFeedObserver({ getListener, getOption, callback, deps }: FeedObserva
     return () => {
       ob.disconnect();
     };
-  }, []);
+  }, [deps]);
 }
 
 export { useRefSync, useFeedObserver, useRefGroupSync };
