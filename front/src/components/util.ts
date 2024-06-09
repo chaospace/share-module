@@ -19,4 +19,19 @@ const boolStringToBoolean = (v: string | null | undefined) => (v ?? '') === 'tru
 
 const mockHandler = <T>(_: T) => {};
 
-export { debounce, sleep, boolStringToBoolean, mockHandler };
+type Getter = (o: any) => string;
+const valueGetter = (o: any) => o.value ?? o.label ?? o;
+const labelGetter = (o: any) => o.label ?? o.value ?? o;
+const composeOptionItem = (o: any, labelGetter: Getter, valueGetter: Getter) => {
+  return { label: labelGetter(o), value: valueGetter(o) };
+};
+
+export {
+  debounce,
+  sleep,
+  boolStringToBoolean,
+  mockHandler,
+  labelGetter,
+  valueGetter,
+  composeOptionItem
+};

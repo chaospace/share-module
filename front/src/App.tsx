@@ -34,7 +34,7 @@ const App = () => {
                     <React.Fragment>
                       <VBox>
                         <Typography variant='subTitle1'>error 발생</Typography>
-                        <Typography>{info.errorInfo?.componentStack ?? ''}</Typography>
+                        <Typography>{info.errorInfo?.digest ?? ''}</Typography>
                         <Button
                           onClick={() => {
                             info?.reset && info.reset();
@@ -46,7 +46,9 @@ const App = () => {
                     </React.Fragment>
                   );
                 }}>
-                <Outlet />
+                <VBox m={7}>
+                  <Outlet />
+                </VBox>
               </ErrorBoundary>
             )}
           </QueryErrorResetBoundary>

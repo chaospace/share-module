@@ -60,9 +60,11 @@ type PickLabelValueType<T extends object, K extends keyof T, V extends keyof T> 
   value: T[V];
 };
 
-type ObjType<T extends object = Record<string, string>> = {
+type ObjType<T extends object = Record<string, any>> = {
   [P in keyof T]: T[P];
 };
+
+type PropsWithOptionData<T = any> = { data: T };
 
 export type {
   PolymorphicProps,
@@ -70,6 +72,7 @@ export type {
   PickLabelValueType,
   Merge,
   DistributiveMerge,
-  ObjType
+  ObjType,
+  PropsWithOptionData
 };
 export { polymorphicForwardRef };

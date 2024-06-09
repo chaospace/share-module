@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { composeOptionItem, labelGetter, valueGetter } from './util';
 
 const setRef = <T extends any = any>(ref: React.ForwardedRef<T>, instance: T) => {
   if (!ref) return;
@@ -52,4 +53,10 @@ function useFeedObserver({ getListener, getOption, callback, deps }: FeedObserva
   }, [deps]);
 }
 
-export { useRefSync, useFeedObserver, useRefGroupSync };
+function useListProvider<T>(source: T[], getLabel = labelGetter, getValue = valueGetter) {
+  return useMemo(() => {
+    return source.map(o => composeOptionItem(o, getLabel, getValue));
+  }, [source, getLabel, getValue]);
+}
+
+export { useRefSync, useFeedObserver, useRefGroupSync, useListProvider };
