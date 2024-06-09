@@ -6,17 +6,19 @@ import { PropsWithHTMLAttributes } from '../types';
 import { CSSComposerObject } from 'styled-composer';
 import Typography from './Typography';
 import { CheckmarkOutline } from '@styled-icons/evaicons-outline';
-import { StyleVariantContext, VariantCategory } from 'styled';
+import { VariantCategory } from 'styled';
+import { variantProxy } from '@/styles/utils';
+import appTheme from '@/styles/theme';
 
 interface CheckBoxProps extends PropsWithHTMLAttributes<'input', CSSComposerObject> {
   variant?: VariantCategory;
 }
-const getBackGroundColor = ({ theme, variant }: StyleVariantContext) => {
-  return theme.variant[variant].main;
-};
-const getCheckIConColor = ({ theme, variant }: StyleVariantContext) => {
-  return theme.variant[variant].light;
-};
+const getBackGroundColor = variantProxy(appTheme.variant, c => {
+  return c.main;
+});
+const getCheckIConColor = variantProxy(appTheme.variant, c => {
+  return c.light;
+});
 
 const CheckIcon = styled(CheckmarkOutline)``;
 
@@ -42,7 +44,11 @@ const CheckMark = styled.span`
     margin: 0;
   }
 `;
-const Container = styled.label<{ variant: VariantCategory }>`
+const Container = styled('label')
+  .attrs<{ variant?: VariantCategory }>(_ => ({
+    variant: _.variant ?? 'default'
+  }))
+  .withConfig({ shouldForwardProp: (prop: string) => !['variant'].includes(prop) })`
   position: relative;
   display: inline-flex;
   vertical-align: middle;

@@ -11,10 +11,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
-import {
-  defaultLabel as labelGetter,
-  defaultValue as valueGetter
-} from '@/components/elements/Select';
+import { labelGetter, valueGetter } from '@/components/util';
 import { variant, grey } from '@/colors';
 import SearchInput from '@/components/elements/SearchInput';
 
