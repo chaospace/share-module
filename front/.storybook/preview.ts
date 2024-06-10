@@ -1,5 +1,16 @@
 import type { Preview } from '@storybook/react';
 import StoryDecorator, { DocDecorator } from './StoryDecorator';
+import { initialize, mswLoader } from 'msw-storybook-addon';
+import handlers from '@/mocks/handlers';
+
+initialize(
+  {
+    serviceWorker: {
+      url: './mockServiceWorker.js'
+    }
+  },
+  handlers
+);
 
 const preview: Preview = {
   parameters: {
@@ -15,7 +26,8 @@ const preview: Preview = {
     }
   },
   tags: ['autodocs'],
-  decorators: [StoryDecorator]
+  decorators: [StoryDecorator],
+  loaders: [mswLoader]
 };
 
 export default preview;
