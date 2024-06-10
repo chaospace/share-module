@@ -3,14 +3,19 @@ import GlobalStyle from '@/styles/globalStyle';
 import appTheme from '@/styles/theme';
 import { Title, Subtitle, Description, Controls, Primary } from '@storybook/blocks';
 import { ThemeProvider } from 'styled-components';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const StoryDecorator = (Story: any) => (
   <>
     <GlobalStyle />
     <div style={{ padding: '2rem' }}>
-      <ThemeProvider theme={appTheme}>
-        <Story />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={appTheme}>
+          <Story />
+        </ThemeProvider>
+      </QueryClientProvider>
     </div>
   </>
 );
@@ -26,5 +31,6 @@ const DocDecorator = () => {
     </>
   );
 };
+
 export { DocDecorator };
 export default StoryDecorator;
