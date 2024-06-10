@@ -40,4 +40,6 @@ const ListRenderer = React.forwardRef<HTMLDivElement, ListRenderProps>(
     );
   }
 );
+export type { ListRenderProps };
+export { DefaultRenderer };
 export default ListRenderer;
