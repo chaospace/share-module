@@ -78,14 +78,13 @@ function InfiniteList({
   const contentRef = useRef<HTMLDivElement>(null);
 
   const apiRef = useRef({
-    isFetching: false,
     lastFetchingValue: '',
     hasPreviousPage,
     hasNextPage,
     fetchPreviousPage,
     fetchNextPage
   });
-
+  //참조 속성 갱신
   apiRef.current.hasPreviousPage = hasPreviousPage;
   apiRef.current.hasNextPage = hasNextPage;
   apiRef.current.fetchNextPage = fetchNextPage;
@@ -111,7 +110,7 @@ function InfiniteList({
           'scrollend',
           () => {
             //패칭 종료 처리
-            apiRef.current.isFetching = false;
+            apiRef.current.lastFetchingValue = '';
           },
           { once: true }
         );
@@ -120,13 +119,13 @@ function InfiniteList({
 
     const onScroll = debounce((_: Event) => {
       if (containerRef.current) {
-        if (!apiRef.current.isFetching) {
+        if (!apiRef.current.lastFetchingValue) {
           const maxScrollTop =
             containerRef.current.scrollHeight - containerRef.current.clientHeight;
           const scrollTop = containerRef.current.scrollTop;
           if (scrollTop <= FETCH_HEIGHT && apiRef.current.hasPreviousPage) {
             if (!fetchButtonRef.current[0]?.classList.contains('show')) {
-              apiRef.current.isFetching = true;
+              // apiRef.current.isFetching = true;
               fetchButtonRef.current[0]?.classList.add('show');
               apiRef.current.lastFetchingValue = 'prev';
               containerRef.current.firstElementChild?.scrollIntoView();
@@ -134,7 +133,7 @@ function InfiniteList({
             }
           } else if (scrollTop >= maxScrollTop - FETCH_HEIGHT && apiRef.current.hasNextPage) {
             if (!fetchButtonRef.current[1]?.classList.contains('show')) {
-              apiRef.current.isFetching = true;
+              // apiRef.current.isFetching = true;
               fetchButtonRef.current[1]?.classList.add('show');
               apiRef.current.lastFetchingValue = 'next';
               containerRef.current.lastElementChild?.scrollIntoView(false);
