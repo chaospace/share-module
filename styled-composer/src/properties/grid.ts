@@ -10,6 +10,8 @@ const grid = {
     property: 'gridRowGap',
     alias: 'space'
   },
+  gridAutoRows: true,
+  gridAutoColumns: true,
   placeItems: true, // align-items, justify-items 단축형
   placeContent: true, // align-content, justify-content 단축형
   placeSelf: true // align-self, justify-self 단축형

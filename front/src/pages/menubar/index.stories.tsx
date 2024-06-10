@@ -1,7 +1,7 @@
 import MenuBar from '@/components/menubar';
 import { menuTree } from '.';
 import { Meta, StoryObj } from '@storybook/react';
-import { variantOption } from '@/stories/const';
+import { variantArgTypes } from '@/stories/const';
 
 const meta = {
   title: 'components/menubar',
@@ -10,11 +10,9 @@ const meta = {
     variant: 'default',
     provider: menuTree
   },
+  // @ts-ignore
   argTypes: {
-    variant: {
-      options: variantOption,
-      control: { type: 'select' }
-    }
+    ...variantArgTypes
   }
 } satisfies Meta<typeof MenuBar>;
 

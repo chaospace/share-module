@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import AutoComplete from '@/components/autocomplete';
 import { HBox, VBox } from '@/components/elements/Box';
 import Button from '@/components/elements/Button';
@@ -26,7 +26,12 @@ const options2 = [
 function UISample() {
   const count = countHooks.useCount();
   const setCount = countHooks.useSetCount();
+
   const pRef = useRef<HTMLSpanElement>(null);
+
+  const rederCount = useRef(0);
+  const [num, setNum] = useState(0);
+  const [str, setStr] = useState('');
 
   const [boxPadding, setBoxPadding] = useState(5);
   const onChangeBoxPadding = () => {
@@ -45,8 +50,27 @@ function UISample() {
     setRangeValue(+(e.target as HTMLInputElement).value);
   };
 
+  const onClickMultipleSet = useCallback(() => {
+    setTimeout(() => {
+      setNum(p => p + 1);
+      setNum(p => p + 1);
+      setNum(p => p + 1);
+      setNum(p => p + 1);
+      setStr(p => p + 'a');
+      setStr(p => p + 'a');
+      setStr(p => p + 'a');
+    }, 0);
+  }, []);
+
   return (
     <VBox as='main' p={boxPadding}>
+      <label htmlFor=''>
+        랜더링 카운트
+        <span>
+          {rederCount.current++} {num} {str}
+        </span>
+      </label>
+      <Button onClick={() => onClickMultipleSet()}>여러setState호출</Button>
       <InputRange value={rangeValue} onInput={onInput} />
       <Typography as='span' ref={pRef as any}>
         {count}

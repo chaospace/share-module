@@ -57,11 +57,13 @@ const variantComposer = variantProxy(menubarVariant, c => {
   `;
 });
 
-const MenuItem = styled.a.attrs<{
-  variant?: VariantCategory;
-}>(_ => ({
-  variant: _.variant ?? 'default'
-}))`
+const MenuItem = styled.a
+  .attrs<{
+    variant?: VariantCategory;
+  }>(_ => ({
+    variant: _.variant ?? 'default'
+  }))
+  .withConfig({ shouldForwardProp: prop => !['variant'].includes(prop) })`
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
