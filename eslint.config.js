@@ -42,7 +42,6 @@ const reactRecommended = {
     ...eslintReactRecommended.configs.recommended.languageOptions
   },
   rules: {
-    ...eslintReactRecommended.configs.recommended.rules,
     'react/no-unescaped-entities': 'off',
     'react/react-in-jsx-scope': 'off'
   },
