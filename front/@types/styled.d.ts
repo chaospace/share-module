@@ -1,3 +1,4 @@
+// eslint-disable
 import 'styled-components';
 import { DefaultTheme } from 'styled-components';
 
@@ -30,6 +31,7 @@ declare type StyleVariantContext = {
 
 declare type StyleVariantProps = {
   variant?: VariantCategory;
+  accentVariant?: VariantCategory;
 };
 
 declare type ScaleType = SetKeyValueType<'s' | 'm' | 'l', string>;

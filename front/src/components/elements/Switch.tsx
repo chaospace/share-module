@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Input from '@/components/elements/Input';
 import { CSSComposerObject } from 'styled-composer';
 import { StyleVariantProps } from 'styled';
-import { shouldForwardCSSProps, variantProxy } from '@/styles/utils';
+import { shouldForwardCSSProps, parseVariantColor } from '@/styles/utils';
 import appTheme from '@/styles/theme';
 
 const Track = styled.span`
@@ -55,7 +55,7 @@ const CheckMark = styled.span`
   }
 `;
 
-const checkMarkVariant = variantProxy(appTheme.variant, c => {
+const checkMarkVariant = parseVariantColor(c => {
   return {
     '&:before': {
       backgroundColor: c.main
@@ -63,7 +63,7 @@ const checkMarkVariant = variantProxy(appTheme.variant, c => {
   };
 });
 
-const trackVariant = variantProxy(appTheme.variant, c => {
+const trackVariant = parseVariantColor(c => {
   return {
     backgroundColor: appTheme.variant.default.light,
     border: `1px solid ${appTheme.variant.default.main}`,

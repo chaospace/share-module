@@ -2,15 +2,14 @@ import { PropsWithHTMLAttributes } from '@/components/types';
 import styled from 'styled-components';
 import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
 import { VariantCategory } from 'styled';
-import { variantProxy } from '@/styles/utils';
-import appTheme from '@/styles/theme';
+import { parseVariantColor } from '@/styles/utils';
 
 type ButtonProps = PropsWithHTMLAttributes<
   'button',
   { variant?: VariantCategory } & CSSComposerObject
 >;
 
-const vriantHoverComposer = variantProxy(appTheme.variant, c => {
+const vriantHoverComposer = parseVariantColor(c => {
   return {
     color: c.light,
     backgroundColor: c.main,

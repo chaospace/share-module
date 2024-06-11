@@ -7,16 +7,15 @@ import { CSSComposerObject } from 'styled-composer';
 import Typography from './Typography';
 import { CheckmarkOutline } from '@styled-icons/evaicons-outline';
 import { VariantCategory } from 'styled';
-import { variantProxy } from '@/styles/utils';
-import appTheme from '@/styles/theme';
+import { parseVariantColor } from '@/styles/utils';
 
 interface CheckBoxProps extends PropsWithHTMLAttributes<'input', CSSComposerObject> {
   variant?: VariantCategory;
 }
-const getBackGroundColor = variantProxy(appTheme.variant, c => {
+const getBackGroundColor = parseVariantColor(c => {
   return c.main;
 });
-const getCheckIConColor = variantProxy(appTheme.variant, c => {
+const getCheckIConColor = parseVariantColor(c => {
   return c.light;
 });
 

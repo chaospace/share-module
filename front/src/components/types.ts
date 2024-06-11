@@ -66,7 +66,10 @@ type ObjType<T extends object = Record<string, any>> = {
 
 type PropsWithOptionData<T = any> = { data: T };
 
+type TFunc = (...args: any) => any;
+
 export type {
+  TFunc,
   PolymorphicProps,
   PropsWithHTMLAttributes,
   PickLabelValueType,

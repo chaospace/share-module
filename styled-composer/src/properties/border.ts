@@ -16,6 +16,36 @@ const border = {
     alias: 'thickness',
     defaultAlias: thickness
   },
+  btWidth: {
+    property: 'borderTopWidth',
+    alias: 'thickness',
+    defaultAlias: thickness
+  },
+  bbWith: {
+    property: 'borderBottomWidth',
+    alias: 'thickness',
+    defaultAlias: thickness
+  },
+  blWidth: {
+    property: 'borderLeftWidth',
+    alias: 'thickness',
+    defaultAlias: thickness
+  },
+  brWidth: {
+    property: 'borderRightWidth',
+    alias: 'thickness',
+    defaultAlias: thickness
+  },
+  btRadius: {
+    property: ['borderTopLeftRadius', 'borderTopRightRadius'],
+    alias: 'radius',
+    defaultAlias: radius
+  },
+  bbRadius: {
+    property: ['borderBottomLeftRadius', 'borderBottomRightRadius'],
+    alias: 'radius',
+    defaultAlias: radius
+  },
   borderStyle: true,
   borderRadius: {
     alias: 'radius',
@@ -23,6 +53,22 @@ const border = {
   },
   borderColor: {
     property: 'borderColor',
+    alias: 'colors'
+  },
+  btColor: {
+    property: 'borderTopColor',
+    alias: 'colors'
+  },
+  blColor: {
+    property: 'borderLeftColor',
+    alias: 'colors'
+  },
+  brColor: {
+    property: 'borderRightColor',
+    alias: 'colors'
+  },
+  bbColor: {
+    property: 'borderBottomColor',
     alias: 'colors'
   },
   outline: true,
