@@ -21,7 +21,7 @@ const Track = styled.span`
     width: 100%;
     height: 100%;
     transition: all 0.15s cubic-bezier(0.42, 0, 0.58, 1);
-    transform: translate(0, 0);
+    transform: translate(100%, 0);
   }
 `;
 
@@ -40,7 +40,7 @@ const CheckMark = styled.span`
     border-radius: 50%;
     z-index: 1;
     transition: all 0.15s cubic-bezier(0.42, 0, 0.58, 1);
-    transform: translate(0, 0);
+    transform: translate(calc(60px - 100%), 0);
   }
   input[type='checkbox'] {
     position: absolute;
@@ -88,7 +88,7 @@ const Container = styled.label
   ${CheckMark}{
     ${checkMarkVariant}
     &:has(input[type='checkbox']:checked):before{
-      transform: translate(calc(60px - 100%), 0%);
+      transform: translate(0, 0);
     }
   }
   ${Track}{
@@ -96,7 +96,7 @@ const Container = styled.label
   }
   input[type='checkbox']:checked + ${Track}{
     &:after {
-      transform: translate(60px, 0%);
+      transform: translate(0, 0);
     }
   }
 `;
