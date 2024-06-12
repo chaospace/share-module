@@ -1,6 +1,8 @@
 # 컴포넌트 구성 시 주의사항
 
 - 리액트 상태변경이 아니라면 돔은 랜더링이 발생하지 않는다.
+- msw를 storybook에 적용 시 설정 public패스 설정
+  > staticDirs:['../public']
 
 # front 주요 Todo
 
@@ -26,6 +28,13 @@
 - [x] BoundingRectListener 컴포넌트 만들기
   - [x] children 이외의 영역에서 마우스 이벤트 발생 시 이벤트 핸들러 실행
   - [x] ref동기화 처리
+- [x] InfiniteList 컴포넌트 만들기
+  - [x] scroll에 따른 이전, 다음 목록 가져오기
+  - [x] 목록 요청 시 에니메이션 적용
+- [x] 탭컴포넌트 만들기
+  - [x] 키보드를 이용한 포커스 이동적용
+  - [x] children을 이용해 aria속성 자동적용
+  - [x] 키보드 이동 시 ref를 이용한 화면갱신 최적화 적용
 
 ## tabindex 내용정리
 
