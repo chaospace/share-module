@@ -5,7 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "jsx": "preserve",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "typeRoots": ["node_modules/@types"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -27,6 +27,7 @@
   ],
   "exclude": ["src/**/*.ignore.tsx", "src/**/*.ignore.ts", "*.html", "node_modules", "dist"],
   "ts-node": {
+    "esm": true,
     "compilerOptions": {
       "module": "CommonJS"
     }

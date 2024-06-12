@@ -5,7 +5,7 @@
     "composite": true,
     "typeRoots": ["../node_modules/@types", "node_modules/@types", "./@mf-types", "./@types"],
     "paths": {
-      "/*": ["./@mf-types", "./@types"],
+      // "/*": ["./@mf-types", "./@types"],
       "@/*": ["./src/*", "../src/*"]
     }
   },
