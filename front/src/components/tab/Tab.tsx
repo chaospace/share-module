@@ -1,14 +1,15 @@
+import React from 'react';
 import styled from 'styled-components';
 import { StyleVariantProps } from 'styled';
 import {
   getAccentColorDark,
+  getAccentColorLight,
   getAccentColorMain,
   getVariantColorMain,
   shouldForwardVariantProps
 } from '@/styles/utils';
 import Typography from '../elements/Typography';
-import { PropsWithHTMLAttributes } from '../types';
-import { PropsWithoutRef } from 'react';
+import { polymorphicForwardRef } from '../types';
 
 interface TabProps extends StyleVariantProps {
   label?: string;
@@ -44,23 +45,30 @@ const TabButton = styled.button
       border-color:${getAccentColorMain};
     }
   }
+
+  
+  &:focus {
+    background-color: ${getAccentColorLight};
+  }
   & + * {
     border-left:none;
   }
 `;
 
-function Tab({
-  label,
-  value,
-  variant = 'default',
-  accentVariant = 'primary',
-  ...rest
-}: PropsWithoutRef<PropsWithHTMLAttributes<'button', TabProps>>) {
-  return (
-    <TabButton variant={variant} accentVariant={accentVariant} value={value} {...rest}>
-      <Typography as='span'>{label}</Typography>
-    </TabButton>
-  );
-}
+const Tab = polymorphicForwardRef<'button', TabProps>(
+  ({ label, value, variant = 'default', accentVariant = 'primary', ...rest }, forwardedRef) => {
+    return (
+      <TabButton
+        ref={forwardedRef}
+        variant={variant}
+        accentVariant={accentVariant}
+        value={value}
+        {...rest}>
+        <Typography as='span'>{label}</Typography>
+      </TabButton>
+    );
+  }
+);
+
 export type { TabProps };
 export default Tab;

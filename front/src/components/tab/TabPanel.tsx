@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 import { Container } from '@/components/elements/Container';
 import { getPanelId, getTabId, useTabContext } from './TabContext';
@@ -7,8 +7,10 @@ const PanelWrapper = styled(Container)``;
 
 function TabPanel({ value = '', children }: PropsWithChildren<{ value?: string }>) {
   const context = useTabContext();
+
   const panelId = getPanelId(context, value);
   const tabId = getTabId(context, value);
+
   if (context.values.indexOf(value) < 0) {
     throw new Error('유효하지 않은 탭 value값 입니다');
   }

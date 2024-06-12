@@ -1,5 +1,5 @@
 import React, { useId, useMemo } from 'react';
-import createReactContext from '../createReactContext';
+import createReactContext from '@/components/createReactContext';
 
 interface TabContext {
   value: string;
