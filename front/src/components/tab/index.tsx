@@ -1,4 +1,4 @@
-import React, { FunctionComponent, PropsWithChildren, useMemo, useState } from 'react';
+import React, { FunctionComponent, PropsWithChildren, useMemo } from 'react';
 import { Container } from '@/components/elements/Container';
 import { labelGetter, valueGetter } from '@/components/util';
 import TabContextProvider from './TabContext';
@@ -9,7 +9,7 @@ import { StyleVariantProps } from 'styled';
 interface SimpleTabProps extends StyleVariantProps {
   value?: string;
   options?: (string | { label: string; value: string })[];
-  ItemRenderer?: FunctionComponent<{ label: string; value: string }>;
+  ItemRenderer?: FunctionComponent<PropsWithChildren<StyleVariantProps>>;
 }
 
 /**
@@ -34,17 +34,19 @@ function SimpleTab({
     };
   }, [options]);
 
-  const [selectedValue, setSelected] = useState(value);
-
-  const TabComponent = ItemRenderer || Tab;
-
   return (
     <Container>
-      <TabContextProvider value={selectedValue} values={values}>
-        <TabList onChange={v => setSelected(v)}>
+      <TabContextProvider value={value} values={values}>
+        <TabList>
           {provider.map((o, idx) => {
-            return (
-              <TabComponent variant={variant} accentVariant={accentVariant} key={idx} {...o} />
+            return ItemRenderer ? (
+              <Tab variant={variant} accentVariant={accentVariant} key={idx} value={o.value}>
+                <ItemRenderer variant={variant} accentVariant={accentVariant}>
+                  {o.label}
+                </ItemRenderer>
+              </Tab>
+            ) : (
+              <Tab variant={variant} accentVariant={accentVariant} key={idx} {...o} />
             );
           })}
         </TabList>

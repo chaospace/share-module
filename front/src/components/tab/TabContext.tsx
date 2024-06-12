@@ -1,10 +1,11 @@
-import React, { useId, useMemo } from 'react';
+import React, { useId, useMemo, useState } from 'react';
 import createReactContext from '@/components/createReactContext';
 
 interface TabContext {
   value: string;
   values: string[];
   uniqueId: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 const [useTabContext, Provider] = createReactContext<TabContext>();
 
@@ -18,16 +19,20 @@ function TabContextProvider({
   children: React.ReactNode;
 }) {
   const uniqueId = useId();
-
-  const context = useMemo(() => {
+  const [_value, setValue] = useState(() => {
     const valueIndex = values.indexOf(value);
-    const activeIndex = valueIndex >= 0 ? valueIndex : 0;
+    return values[valueIndex >= 0 ? valueIndex : 0];
+  });
+  const context = useMemo(() => {
+    const valueIndex = values.indexOf(_value);
+
     return {
-      value: values[activeIndex],
+      value: values[valueIndex],
       values,
-      uniqueId
+      uniqueId,
+      setValue
     };
-  }, [value, uniqueId, values]);
+  }, [_value, uniqueId, values, setValue]);
   return (
     <React.Fragment>
       <Provider value={context}>{children}</Provider>

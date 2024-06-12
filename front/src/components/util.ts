@@ -21,7 +21,7 @@ const mockHandler = <T>(_: T) => {};
 
 type Getter = (o: any) => string;
 const valueGetter = (o: any) => o.value ?? o.label ?? o;
-const labelGetter = (o: any) => o.label ?? o.value ?? o;
+const labelGetter = (o: any) => (o.label ?? o.value ?? o) as string;
 const composeOptionItem = (o: any, labelGetter: Getter, valueGetter: Getter) => {
   return { label: labelGetter(o), value: valueGetter(o) };
 };

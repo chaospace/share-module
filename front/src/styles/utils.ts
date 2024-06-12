@@ -51,7 +51,10 @@ const getCustomVariant =
 
 const isArray = (value: unknown): value is any[] => Array.isArray(value) === true;
 const isObject = (value: unknown): value is object => typeof value === 'object';
-
+const toReactElement = (o: any) =>
+  o as React.ReactElement<
+    React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & StyleVariantProps, HTMLElement>
+  >;
 const toParams = (value: unknown) => {
   return isArray(value) ? value : [value];
 };
@@ -158,5 +161,6 @@ export {
   toParams,
   isArray,
   isObject,
+  toReactElement,
   pipe
 };

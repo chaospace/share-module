@@ -1,22 +1,25 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { PropsWithChildren } from 'react';
 import { StyleVariantProps } from 'styled';
 import {
   getAccentColorDark,
   getAccentColorLight,
   getAccentColorMain,
   getVariantColorMain,
-  shouldForwardVariantProps
+  shouldForwardVariantProps,
+  toReactElement
 } from '@/styles/utils';
 import Typography from '../elements/Typography';
 import { polymorphicForwardRef } from '../types';
+import { getPanelId, getTabId, useTabContext } from './TabContext';
+import { TabWrapper } from './elements.style';
+import styled from 'styled-components';
 
 interface TabProps extends StyleVariantProps {
   label?: string;
-  value?: string;
+  value: string;
 }
 
-const TabButton = styled.button
+const TabButton = styled.div
   .withConfig({
     shouldForwardProp: shouldForwardVariantProps()
   })
@@ -24,22 +27,22 @@ const TabButton = styled.button
     variant: _.variant ?? 'default',
     accentVariant: _.accentVariant ?? 'primary'
   }))`
-  border-radius: 0;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  
+  padding:8px 16px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  min-width: 100px;
   border: 1px solid ${getVariantColorMain};
-  border-top-width: 4px;
+  border-top-width: 6px;
   ${Typography}{
     color:${getVariantColorMain};
     padding:2px 4px;
     border:1px solid transparent;
   }
-  &:hover,
-  &:focus,
-  &:focus-within,
-  &[aria-selected='true']{
-    outline:none;
-    border-top-color:${getAccentColorMain};
+  ${TabWrapper}:hover &,
+  ${TabWrapper}:focus &,
+  ${TabWrapper}:focus-within &,
+  ${TabWrapper}[aria-selected='true'] &  {
     ${Typography}{
       color:${getAccentColorDark};
       border-color:${getAccentColorMain};
@@ -47,25 +50,45 @@ const TabButton = styled.button
   }
 
   
-  &:focus {
+  ${TabWrapper}[aria-selected='true']  & {
+    border-top-color:${getAccentColorMain};
     background-color: ${getAccentColorLight};
-  }
-  & + * {
-    border-left:none;
   }
 `;
 
-const Tab = polymorphicForwardRef<'button', TabProps>(
-  ({ label, value, variant = 'default', accentVariant = 'primary', ...rest }, forwardedRef) => {
+const Tab = polymorphicForwardRef<'button', PropsWithChildren<TabProps>>(
+  (
+    { label = undefined, value, variant = 'default', accentVariant = 'primary', children, ...rest },
+    forwardedRef
+  ) => {
+    const context = useTabContext();
+
+    const tabId = getTabId(context, value!);
+    const panelId = getPanelId(context, value);
+
     return (
-      <TabButton
+      <TabWrapper
+        id={tabId}
+        aria-controls={panelId}
         ref={forwardedRef}
+        role='tab'
         variant={variant}
         accentVariant={accentVariant}
         value={value}
         {...rest}>
-        <Typography as='span'>{label}</Typography>
-      </TabButton>
+        {label ? (
+          <TabButton variant={variant} accentVariant={accentVariant}>
+            <Typography as='span'>{label}</Typography>
+          </TabButton>
+        ) : (
+          React.Children.toArray(children).map(o => {
+            return React.cloneElement(toReactElement(o), {
+              variant,
+              accentVariant
+            });
+          })
+        )}
+      </TabWrapper>
     );
   }
 );

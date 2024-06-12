@@ -7,12 +7,8 @@ import { TempTypography } from '@/stories/elements';
 import Typography from '../elements/Typography';
 import { CustomTabButton, TabPanelContainer } from './elements.style';
 
-const CustomTabRenderer = ({ label, value, ...rest }: any) => {
-  return (
-    <CustomTabButton role='button' value={value} {...rest}>
-      <span>{label}</span>
-    </CustomTabButton>
-  );
+const CustomTabRenderer = ({ label, children, ...rest }: any) => {
+  return <CustomTabButton {...rest}>{children}</CustomTabButton>;
 };
 
 const meta = {
@@ -44,11 +40,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const SimpleTabBasic: Story = {
-  render: args => {
+  render: ({ children, ...rest }) => {
     return (
-      <SimpleTab {...args}>
+      <SimpleTab {...rest}>
         <TabPanelContainer>
-          {args.options?.map((o, idx) => {
+          {rest.options?.map((o: any, idx: number) => {
             const v = o as string;
             return (
               <TabPanel key={idx} value={v}>
