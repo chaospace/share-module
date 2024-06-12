@@ -27,7 +27,8 @@ const tsconfig = tseslint.config({
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         destructuredArrayIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
+        caughtErrorsIgnorePattern: '^_',
+        ignoreRestSiblings: true
       }
     ]
   }
