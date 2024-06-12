@@ -6,6 +6,7 @@ import { StyleVariantProps, VariantCategory, VariantColorType, VariantType } fro
 import { variant } from '@/colors';
 import { ObjType, TFunc } from '@/components/types';
 import { ExecutionContext, StyledObject, css } from 'styled-components';
+import React from 'react';
 
 type MergeValueType<A, B> = {
   [Property in keyof A]: A[Property] & B;
@@ -19,7 +20,7 @@ type StyleReturnType = ReturnType<typeof css> | StyledObject | string;
  * @param base
  * @returns
  */
-const appendVariantValue = <
+const assignVariantCategory = <
   Extra extends ObjType,
   Props extends Record<VariantCategory, Extra> = Record<VariantCategory, Extra>
 >(
@@ -39,19 +40,13 @@ const appendVariantValue = <
  * @param callback
  * @returns
  */
-const variantProxy =
+const getCustomVariant =
   <T extends VariantType = VariantType>(
     source: T,
     callback: (c: T['default'], ...args: any) => StyleReturnType
   ) =>
   ({ variant, ...rest }: StyleVariantProps & Record<string, any>) => {
     return callback.apply(null, [source[variant!], rest]);
-  };
-
-const styleComposeProxy =
-  <T>(source: T, callback: (...args: any) => StyleReturnType) =>
-  (props: StyleVariantProps & Record<string, any>) => {
-    return callback.apply(null, [source, props]);
   };
 
 const isArray = (value: unknown): value is any[] => Array.isArray(value) === true;
@@ -98,12 +93,6 @@ const parseVariant = (callback: (props: ThemeVariantProps) => StyleReturnType) =
 const parseVariantColor = (callback: (color: VariantColorType) => StyleReturnType) =>
   pipe(forwardComponentVariant, callback);
 
-const parseVariantColorByKey = (
-  key: VariantCategory,
-  callback: (color: VariantColorType) => StyleVariantProps
-) => {
-  return pipe(forwardThemeVariant, ({ themeVariant }) => callback(themeVariant[key]));
-};
 /**
  * getValue에 키를 커링으로 기억해서 사용하는 함수.
  * @param key    :object속성 키
@@ -132,18 +121,40 @@ const shouldForwardCSSProps =
   (prop: string) =>
     !props.includes(prop) && base && shouldForwardAllProps(prop);
 
+const getValidChildren = (children?: React.ReactNode) =>
+  React.Children.toArray(children).filter(o => React.isValidElement(o));
+
+const getVariantColorLight = parseVariantColor(c => c.light);
+const getVariantColorMain = parseVariantColor(c => c.main);
+const getVariantColorDark = parseVariantColor(c => c.dark);
+const getAccentColorDark = parseVariant(
+  ({ themeVariant, accentVariant }) => themeVariant[accentVariant].dark
+);
+const getAccentColorMain = parseVariant(
+  ({ themeVariant, accentVariant }) => themeVariant[accentVariant].main
+);
+
+const getAccentColorLight = parseVariant(
+  ({ themeVariant, accentVariant }) => themeVariant[accentVariant].light
+);
+
 export {
+  getVariantColorDark,
+  getVariantColorMain,
+  getVariantColorLight,
+  getAccentColorDark,
+  getAccentColorMain,
+  getAccentColorLight,
+  getValidChildren,
   getValue,
   parseVariant,
   forwardComponentVariant,
   curriedValue,
   shouldForwardCSSProps,
   shouldForwardVariantProps,
-  appendVariantValue,
-  variantProxy,
+  assignVariantCategory,
+  getCustomVariant,
   parseVariantColor,
-  parseVariantColorByKey,
-  styleComposeProxy,
   toParams,
   isArray,
   isObject,

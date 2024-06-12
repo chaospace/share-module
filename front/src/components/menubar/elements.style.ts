@@ -5,9 +5,9 @@ import IconButton from '@/components/elements/IconButton';
 import { VariantCategory } from 'styled';
 import { amber, grey, indigo, red, teal } from '@/colors';
 import deepPurple from '@/colors/deepPurple';
-import { appendVariantValue, variantProxy } from '@/styles/utils';
+import { assignVariantCategory, getCustomVariant } from '@/styles/utils';
 
-const menubarVariant = appendVariantValue<{ icon?: string }>({
+const menubarVariant = assignVariantCategory<{ icon?: string }>({
   default: { icon: grey[50] },
   primary: { icon: indigo[50] },
   info: { icon: teal[50] },
@@ -39,7 +39,7 @@ const MenuItemGuard = styled.li
     shouldForwardProp: shouldForwardAllProps
   })(composer);
 
-const variantComposer = variantProxy(menubarVariant, c => {
+const variantComposer = getCustomVariant(menubarVariant, c => {
   return css`
     color: ${c.light}!important;
     background-color: ${c.main};
