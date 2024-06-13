@@ -1,5 +1,5 @@
 import React from 'react';
-import BoundingRectListener from '@/components/listener/BoudingRectListener';
+import BoundingRectListener from '@/components/listener/BoundingRectListener';
 
 function ChildrenApp() {
   const onClick = (_: React.MouseEvent<HTMLParagraphElement>) => {
