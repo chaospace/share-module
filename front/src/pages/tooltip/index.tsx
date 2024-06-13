@@ -4,7 +4,7 @@ import Button from '@/components/elements/Button';
 import Typography from '@/components/elements/Typography';
 import { useRefForward } from '@/components/hooks';
 import { getValidChildren, getVariantColorDark, toReactElement } from '@/styles/utils';
-import React, { PropsWithChildren, useEffect, useId, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useId, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
 import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
@@ -30,6 +30,37 @@ const TooltipWrapper = styled.div
   css`
     font-size: 0.8rem;
     background-color: ${getVariantColorDark};
+    visibility: hidden;
+    &.prepare {
+      opacity: 0;
+      visibility: unset;
+      will-change: opacity, transform;
+    }
+    &[data-placement='top'],
+    &[data-placement='top-start'],
+    &[data-placement='top-end'] {
+      transform: translate(0, -20px);
+    }
+    &[data-placement='left'],
+    &[data-placement='left-start'],
+    &[data-placement='left-end'] {
+      transform: translate(-20px, 0);
+    }
+    &[data-placement='right'],
+    &[data-placement='right-start'],
+    &[data-placement='right-end'] {
+      transform: translate(20px, 0);
+    }
+    &[data-placement='bottom'],
+    &[data-placement='bottom-start'],
+    &[data-placement='bottom-end'] {
+      transform: translate(0, 20px);
+    }
+    &.show {
+      opacity: 1;
+      transform: translate(0, 0);
+      transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
   `
 );
 
@@ -37,11 +68,10 @@ interface TooltipProps extends StyleVariantProps {
   title: React.ReactNode;
   placement?: PLACE_MENT;
   disableHover?: boolean;
-  disableClick?: boolean;
 }
 
 interface TooltipPopoverProps
-  extends Omit<TooltipProps, 'title' | 'disableHover' | 'disableClick'> {
+  extends Omit<TooltipProps, 'title' | 'disableHover' | 'disableFocus'> {
   id: string;
   area: DOMRect;
 }
@@ -57,10 +87,15 @@ const TooltipPopover = React.forwardRef<HTMLDivElement, PropsWithChildren<Toolti
         const { px, py } = getPosition(area, boundingRect, placement);
         nodeRef.current.style.left = `${px}px`;
         nodeRef.current.style.top = `${py}px`;
+        //get direction from placement
+        nodeRef.current.classList.add('prepare');
+        setTimeout(() => {
+          nodeRef.current!.classList.add('show');
+        }, 0);
       }
     }, [area]);
     return (
-      <TooltipWrapper role='tooltip' id={id} ref={syncRef} {...rest}>
+      <TooltipWrapper role='tooltip' id={id} data-placement={placement} ref={syncRef} {...rest}>
         {children}
       </TooltipWrapper>
     );
@@ -133,7 +168,6 @@ const Tooltip = ({
   children: childrenProps,
   title,
   placement = 'top',
-  disableClick = true,
   disableHover = false,
   variant = 'default'
 }: PropsWithChildren<TooltipProps>) => {
@@ -147,49 +181,54 @@ const Tooltip = ({
 
   const children = getValidChildren(childrenProps);
 
-  // hover이벤트 처리
-  useEffect(() => {
-    if (disableHover) return;
-
-    const onMouseOver = (_: Event) => {
-      if (nodeRef.current) {
-        const elementBoudingRect = nodeRef.current.getBoundingClientRect();
-        setBoundingRect(elementBoudingRect);
-      }
-    };
-
-    const onMouseOut = (_: Event) => {
-      setBoundingRect(null);
-    };
-    nodeRef.current?.addEventListener('mouseover', onMouseOver);
-    nodeRef.current?.addEventListener('mouseout', onMouseOut);
-    return () => {
-      nodeRef.current?.removeEventListener('mouseover', onMouseOver);
-      nodeRef.current?.removeEventListener('mouseout', onMouseOut);
-    };
+  const trigger = useMemo(() => {
+    return disableHover ? 'click' : 'hover';
   }, [disableHover]);
 
   // click이벤트 처리
   useEffect(() => {
-    if (disableClick) return;
-    const onClick = (_: Event) => {
+    const handler = {
+      in: 'pointerover',
+      out: 'pointerout'
+    };
+    const clickTrigger = trigger === 'click';
+    if (clickTrigger) {
+      handler.in = 'click';
+      handler.out = 'click';
+    }
+
+    const onInHandler = (_: Event) => {
       if (nodeRef.current) {
         const elementBoudingRect = nodeRef.current.getBoundingClientRect();
         setBoundingRect(elementBoudingRect);
       }
     };
-    const onClickOutSide = (_: Event) => {
-      if (_.target && !nodeRef.current?.contains(_.target as Node)) {
+    const onOutHandler = (e: Event) => {
+      if (clickTrigger) {
+        if ('composedPath' in e && !e.composedPath().includes(nodeRef.current!)) {
+          setBoundingRect(null);
+        }
+      } else {
         setBoundingRect(null);
       }
     };
-    nodeRef.current?.addEventListener('click', onClick);
-    nodeRef.current?.ownerDocument.addEventListener('click', onClickOutSide);
+
+    nodeRef.current?.addEventListener(handler.in, onInHandler);
+    if (clickTrigger) {
+      nodeRef.current?.ownerDocument.addEventListener(handler.out, onOutHandler);
+    } else {
+      nodeRef.current?.addEventListener(handler.out, onOutHandler);
+    }
+
     return () => {
-      nodeRef.current?.removeEventListener('click', onClick);
-      nodeRef.current?.ownerDocument.removeEventListener('click', onClickOutSide);
+      nodeRef.current?.removeEventListener(handler.in, onInHandler);
+      if (clickTrigger) {
+        nodeRef.current?.ownerDocument.removeEventListener(handler.out, onOutHandler);
+      } else {
+        nodeRef.current?.removeEventListener(handler.out, onOutHandler);
+      }
     };
-  }, [disableClick]);
+  }, [trigger]);
 
   const popoverId = `tooltip-${useId()}`;
   return (
@@ -345,12 +384,11 @@ function TooltipApp() {
         </HBox>
 
         <Typography variant='title'>툴팁 trigger동작</Typography>
-        <Tooltip
-          title='클릭해야 보여요.'
-          placement='bottom'
-          variant='info'
-          disableHover
-          disableClick={false}>
+        <Tooltip title='클릭해야 보여요.' placement='bottom' variant='info' disableHover>
+          <Button>클릭으로 열고 도큐먼트 클릭시 제거</Button>
+        </Tooltip>
+
+        <Tooltip title='클릭해야 다른클릭.' placement='bottom-end' variant='success' disableHover>
           <Button>클릭으로 열고 도큐먼트 클릭시 제거</Button>
         </Tooltip>
       </VBox>
