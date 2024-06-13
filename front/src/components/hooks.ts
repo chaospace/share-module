@@ -18,7 +18,7 @@ function useRefSync<T extends any>(ref: React.ForwardedRef<T>) {
   return innerRef;
 }
 
-function useRefGroupSync<T extends any>(refs: React.ForwardedRef<T>[]) {
+function useRefForward<T extends any>(refs: React.ForwardedRef<T>[]) {
   return useMemo(() => {
     if (refs.every(o => o === null)) {
       return null;
@@ -50,6 +50,7 @@ function useFeedObserver({ getListener, getOption, callback, deps }: FeedObserva
     return () => {
       ob.disconnect();
     };
+    // eslint-disable-next-line
   }, [deps]);
 }
 
@@ -59,4 +60,4 @@ function useListProvider<T>(source: T[], getLabel = labelGetter, getValue = valu
   }, [source, getLabel, getValue]);
 }
 
-export { useRefSync, useFeedObserver, useRefGroupSync, useListProvider };
+export { useRefSync, useFeedObserver, useRefForward, useListProvider };

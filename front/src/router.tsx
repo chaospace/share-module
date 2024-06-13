@@ -11,21 +11,30 @@ import ChildrenApp from './pages/children';
 import AccordionApp from './pages/accordion';
 import GridApp from './pages/grid';
 import RangeApp from './pages/range';
-// import InfiniteApp from './pages/feed';
 import InfiniteApp_Advance from './pages/feed/index_ad';
+import TabApp from './pages/tab';
+import TooltipApp from './pages/tooltip';
 
 const ErrorPage = () => {
-  const error = useRouteError();
+  const error = useRouteError() as any;
   return (
     <VBox width='100%' height='100vh' alignItems='center' justifyContent='center'>
       <Typography variant='title'>Oops!</Typography>
       <Typography variant='body'>Sorry, an unexpected error has occurred.</Typography>
-      <Typography variant='body'>{error.statusText || error.message}</Typography>
+      <Typography variant='body'>{error?.statusText || error.message}</Typography>
     </VBox>
   );
 };
 
 const routeChildren = [
+  {
+    path: 'tooltip',
+    element: <TooltipApp />
+  },
+  {
+    path: 'tab',
+    element: <TabApp />
+  },
   {
     path: 'infinite',
     element: <InfiniteApp_Advance />
@@ -68,7 +77,7 @@ const routeChildren = [
   }
 ];
 
-const router = createBrowserRouter([
+const router: any = createBrowserRouter([
   {
     path: '/',
     element: <App />,

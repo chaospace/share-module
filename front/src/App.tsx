@@ -34,7 +34,7 @@ const App = () => {
                     <React.Fragment>
                       <VBox>
                         <Typography variant='subTitle1'>error 발생</Typography>
-                        <Typography>{info.errorInfo?.digest ?? ''}</Typography>
+                        <Typography>{info.error?.message ?? ''}</Typography>
                         <Button
                           onClick={() => {
                             info?.reset && info.reset();

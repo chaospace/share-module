@@ -67,6 +67,7 @@ function BoundingRectListener({
     nodeRef // 마우스이벤트 인터셉트용 ref
   ]);
 
+  // eslint-disable-next-line
   const clickOutSideHandle = (e: MouseEvent | TouchEvent) => {
     if (!nodeRef.current) return;
 
@@ -89,7 +90,7 @@ function BoundingRectListener({
       const isInChild = nodeRef.current.contains(node);
       inSideDom = !isInDoc || isInChild;
     }
-    console.log('inside', inSideDom);
+
     if (!inSideDom) {
       onClickOutSide(e);
     }
