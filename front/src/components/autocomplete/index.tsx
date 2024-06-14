@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
 import { labelGetter, valueGetter } from '@/components/util';
@@ -56,7 +64,7 @@ interface AutoCompleteProps {
 }
 
 const allowKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
-
+/* 
 const isElementInView = (element: HTMLElement, area: HTMLElement) => {
   const optionBound = element.getBoundingClientRect();
   const areaBound = area.getBoundingClientRect();
@@ -65,27 +73,28 @@ const isElementInView = (element: HTMLElement, area: HTMLElement) => {
     return false;
   }
   return true;
-};
-
-/* const isScrollAble = (element: HTMLElement) => {
-  return element && element.clientHeight < element.scrollHeight;
 }; */
 
-const getAriaSelected = (node: HTMLElement[]) => {
+const getAriaSelectedIndex = (node: HTMLElement[]) => {
   return node.findIndex(o => o?.ariaSelected === 'true');
 };
 
-const swapElementAriaSelected = (a: HTMLElement, b?: HTMLElement) => {
-  if (a) {
-    a.ariaSelected = 'true';
-    a.scrollIntoView({ behavior: 'smooth', block: 'center' });
+const moveSelected = (node: HTMLElement[], state: 'prev' | 'next' = 'next') => {
+  let nextIndex = getAriaSelectedIndex(node);
+  const prevIndex = nextIndex;
+  const current = nextIndex > -1 ? node[nextIndex]! : undefined;
+  if (state === 'next') {
+    nextIndex = nextIndex + 1 >= node.length ? nextIndex : nextIndex + 1;
+  } else {
+    nextIndex = nextIndex - 1 < 0 ? nextIndex : nextIndex - 1;
   }
-  if (b) {
-    b.ariaSelected = 'false';
+  if (prevIndex !== nextIndex) {
+    node[nextIndex].ariaSelected = 'true';
+    node[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    current && (current.ariaSelected = 'false');
   }
 };
 
-const getSelectOptionLabel = (select: HTMLElement) => select.textContent;
 /**
  * Autocomplete
  * 키보드 액션 정리
@@ -100,23 +109,29 @@ function AutoComplete({
   getLabel = labelGetter,
   getValue = valueGetter
 }: AutoCompleteProps) {
+  //
+  const [openList, setOpenList] = useState(false);
+  const [query, setQuery] = useState('');
+  const [select, setSelect] = useState(getValue(defaultValue || value));
+  const deferredQuery = useDeferredValue(query);
+  //
   const provider = useMemo(() => {
     return options.map(o => ({ label: getLabel(o), value: getValue(o) }));
   }, [options, getLabel, getValue]);
 
-  const [query, setQuery] = useState('');
-  const [select, setSelect] = useState(getValue(defaultValue || value));
+  // query값이 적용된 옵션목록
+  const filteredOptions = useMemo(() => {
+    return select === deferredQuery
+      ? provider
+      : provider.filter(o => o.label.includes(deferredQuery));
+  }, [select, deferredQuery, provider]);
 
-  const [openList, setOpenList] = useState(false);
+  const selectIndex = useDeferredValue(filteredOptions.findIndex(o => o.label === select));
 
   //ref참조 초기화
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const optionItemRef = useRef<(null | HTMLLIElement)[]>([]);
-
-  const filteredOptions = useMemo(() => {
-    return select === query ? provider : provider.filter(o => o.label.includes(query));
-  }, [select, query, provider]);
 
   // aria적용을 위한 돔 id초기화
   const uniqueId = useId();
@@ -124,21 +139,9 @@ function AutoComplete({
   const selectOptionID = `selected-option${uniqueId}`;
 
   const scrollToActiveIndex = useCallback((nIndex: number) => {
-    if (listRef.current) {
-      const ele = optionItemRef.current[nIndex];
-      if (ele && !isElementInView(ele, listRef.current)) {
-        ele.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-      }
-    }
+    const ele = optionItemRef.current[nIndex];
+    ele && ele.scrollIntoView({ behavior: 'auto', block: 'nearest' });
   }, []);
-
-  const onChangeInput = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(target.value);
-  };
-
-  const findSelectIndex = (select: string) => {
-    return filteredOptions.findIndex(o => o.label === select);
-  };
 
   const onFocusInput = () => {
     setOpenList(true);
@@ -192,29 +195,19 @@ function AutoComplete({
       setOpenList(false);
       return;
     }
-    //현재 select에서 active값을 가져온다?
-    //이렇게 되면 항상 ref가 항상 고정된다.
-
-    let nextIndex = getAriaSelected(optionItemRef.current! as HTMLElement[]);
-    const prevIndex = nextIndex;
-    const current = nextIndex > -1 ? optionItemRef.current![nextIndex]! : undefined;
 
     switch (key) {
       case 'Escape':
         setOpenList(false);
         return;
       case 'ArrowDown':
-        nextIndex = nextIndex + 1 >= options.length ? nextIndex : nextIndex + 1;
-        if (nextIndex !== prevIndex)
-          swapElementAriaSelected(optionItemRef.current[nextIndex]!, current);
+        moveSelected(optionItemRef.current as HTMLElement[], 'next');
         break;
       case 'ArrowUp':
-        nextIndex = nextIndex - 1 == -1 ? nextIndex : nextIndex - 1;
-        if (nextIndex !== prevIndex)
-          swapElementAriaSelected(optionItemRef.current[nextIndex]!, current);
+        moveSelected(optionItemRef.current as HTMLElement[], 'prev');
         break;
       case 'Enter':
-        if (nextIndex >= 0) onClickOption(nextIndex);
+        onClickOption(getAriaSelectedIndex(optionItemRef.current as HTMLElement[]));
         return;
       default:
         if (!openList) {
@@ -225,11 +218,9 @@ function AutoComplete({
   };
 
   const onClickOption = (idx: number) => {
-    const selectLabel = getSelectOptionLabel(optionItemRef.current[idx]!);
-    if (selectLabel) {
-      setSelect(selectLabel);
-      setQuery(selectLabel);
-    }
+    const selectLabel = filteredOptions[idx].label;
+    setSelect(selectLabel);
+    setQuery(selectLabel);
     setOpenList(false);
   };
 
@@ -251,31 +242,25 @@ function AutoComplete({
   // 목록이 열린상태에서 선택값이 있으면 목록포커싱 처리
   useEffect(() => {
     if (openList) {
-      if (select) {
-        const nIndex = findSelectIndex(select);
-        const ele = optionItemRef.current[nIndex]!;
+      if (selectIndex >= 0) {
+        const ele = optionItemRef.current[selectIndex]!;
         ele.ariaSelected = 'true';
-        if (ele && !isElementInView(ele, listRef.current!)) {
-          scrollToActiveIndex(nIndex);
-        }
+        scrollToActiveIndex(selectIndex);
       } else {
-        // listRef.current!.scrollTop = 0;
+        //옵션요소 selected속성 초기화
+        optionItemRef.current.forEach((o, idx) => {
+          if (o && selectIndex !== idx && o.ariaSelected === 'true') {
+            o.ariaSelected = 'false';
+          }
+        });
         optionItemRef.current[0]?.scrollIntoView();
       }
-    } else {
-      //옵션요소 selected속성 초기화
-      optionItemRef.current.forEach(o => {
-        if (o && o.textContent !== select && o.ariaSelected === 'true') {
-          o.ariaSelected = 'false';
-        }
-      });
     }
-  }, [openList, select, scrollToActiveIndex]);
+  }, [openList, selectIndex, scrollToActiveIndex]);
 
   const renderList = filteredOptions.length ? (
     filteredOptions.map((o, idx) => {
       const selected = select === o.label;
-
       return (
         <OptionItem
           key={o.label}
@@ -306,7 +291,7 @@ function AutoComplete({
         value={query}
         aria-autocomplete='list'
         placeholder='검색어를 넣어주세요...'
-        onChange={onChangeInput}
+        onChange={({ target }) => setQuery(target.value)}
         onBlur={onBlur}
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
