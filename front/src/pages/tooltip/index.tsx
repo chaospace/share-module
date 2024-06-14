@@ -3,6 +3,7 @@ import { HBox, VBox } from '@/components/elements/Box';
 import Button from '@/components/elements/Button';
 import Typography from '@/components/elements/Typography';
 import Tooltip from '@/components/tooltip';
+import { Container } from '@/components/elements/Container';
 
 function TooltipApp() {
   return (
@@ -92,6 +93,7 @@ function TooltipApp() {
 
           <Tooltip
             placement='right-end'
+            offset='2'
             title={
               <React.Fragment>
                 <Typography>툴팁 컨텐츠</Typography>
@@ -123,6 +125,7 @@ function TooltipApp() {
 
           <Tooltip
             placement='bottom-end'
+            offset='10'
             title={
               <React.Fragment>
                 <Typography>툴팁 컨텐츠</Typography>
@@ -139,6 +142,25 @@ function TooltipApp() {
 
         <Tooltip title='클릭해야 다른클릭.' placement='bottom-end' variant='success' disableHover>
           <Button>클릭으로 열고 도큐먼트 클릭시 제거</Button>
+        </Tooltip>
+
+        <Tooltip
+          disableHover
+          title={
+            <React.Fragment>
+              <Container maxWidth={300} wordWrap='break-word'>
+                <div
+                  css={`
+                    padding: 4px;
+                    border: 1px solid red;
+                  `}>
+                  true || false && false; // true true && (false || false); // false (2 === 3) || (4
+                  &gl 0) && (1 === 1); // false
+                </div>
+              </Container>
+            </React.Fragment>
+          }>
+          <Button>최대넓이 지정</Button>
         </Tooltip>
       </VBox>
     </React.Fragment>

@@ -15,7 +15,7 @@ const TooltipWrapper = styled.div
   .withConfig({
     shouldForwardProp: shouldForwardAllProps
   })
-  .attrs<CSSComposerObject & StyleVariantProps>({
+  .attrs<CSSComposerObject & StyleVariantProps & { offset?: number }>({
     position: 'absolute',
     pointerEvents: 'none',
     borderRadius: 's',
@@ -26,6 +26,7 @@ const TooltipWrapper = styled.div
   })(
   composer,
   css`
+    --offset: 5;
     font-size: 0.8rem;
     background-color: ${getVariantColorDark};
     visibility: hidden;
@@ -47,7 +48,7 @@ const TooltipWrapper = styled.div
     &[data-placement='top-end'] {
       transform: translate(0, -20px);
       &.show {
-        transform: translate(0, -5px);
+        transform: translate(0, calc(var(--offset) * -1px));
       }
     }
 
@@ -56,7 +57,7 @@ const TooltipWrapper = styled.div
     &[data-placement='left-end'] {
       transform: translate(-20px, 0);
       &.show {
-        transform: translate(-5px, 0);
+        transform: translate(calc(var(--offset) * -1px), 0);
       }
     }
     &[data-placement='right'],
@@ -64,7 +65,7 @@ const TooltipWrapper = styled.div
     &[data-placement='right-end'] {
       transform: translate(20px, 0);
       &.show {
-        transform: translate(5px, 0);
+        transform: translate(calc(var(--offset) * 1px), 0);
       }
     }
     &[data-placement='bottom'],
@@ -72,28 +73,33 @@ const TooltipWrapper = styled.div
     &[data-placement='bottom-end'] {
       transform: translate(0, 20px);
       &.show {
-        transform: translate(0, 5px);
+        transform: translate(0, calc(var(--offset) * 1px));
       }
     }
   `
 );
 
 interface TooltipProps extends StyleVariantProps {
+  /** 툴팁 메시지 내용 */
   title: React.ReactNode;
+  /** 툴팁 메시지 위치 */
   placement?: PLACE_MENT;
+  /** 툴팁 동작 trigger */
   disableHover?: boolean;
+  /** 대상으로 부터의 offset 기본은 5 */
+  offset?: string;
 }
 
-interface TooltipPopoverProps
-  extends Omit<TooltipProps, 'title' | 'disableHover' | 'disableFocus'> {
+interface TooltipPopoverProps extends Omit<TooltipProps, 'title' | 'disableHover' | 'offset'> {
   id: string;
   area: DOMRect;
+  style?: React.CSSProperties;
 }
 
 const TooltipPopover = React.forwardRef<HTMLDivElement, PropsWithChildren<TooltipPopoverProps>>(
   ({ id, placement = 'top', area, children, ...rest }, ref) => {
     const nodeRef = React.useRef<HTMLDivElement>(null);
-    const syncRef = useRefForward([ref, nodeRef]);
+    const syncRef = useRefForward([ref, nodeRef].filter(v => v));
 
     useEffect(() => {
       if (nodeRef.current && area) {
@@ -173,17 +179,16 @@ const getPosition = (area: DOMRect, target: DOMRect, placement: PLACE_MENT = 'to
 };
 
 /**
- * 이벤트에 따른 노출은 여기서 결정하고
- * 디스플레이 부분은 TooltipPopover에서 처리
- * @param param0
- * @returns
+ * 툴팁 컴포넌트 기본 hover로 동작하며 disableHover를 설정하면 click으로 동작<br/>
+ * @param {TooltipProps} param
  */
 const Tooltip = ({
   children: childrenProps,
   title,
   placement = 'top',
   disableHover = false,
-  variant = 'default'
+  variant = 'default',
+  offset = '5'
 }: PropsWithChildren<TooltipProps>) => {
   const [boundingRect, setBoundingRect] = useState<DOMRect | null>(null);
 
@@ -260,7 +265,9 @@ const Tooltip = ({
             id={popoverId}
             area={boundingRect}
             placement={placement}
-            variant={variant}>
+            variant={variant}
+            // @ts-ignore
+            style={{ '--offset': offset }}>
             {title}
           </TooltipPopover>,
           document.body
