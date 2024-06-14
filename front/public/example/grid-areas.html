@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: #fff;
+      }
+      /**
+        grid-template-areas는 
+        grid-template-columns
+        grid-template-rows로 영역을 구분한 후 이름으로 영역을 나눌 때 유효하다.
+      */
+      main {
+        position: relative;
+        display: grid;
+        grid-template-columns: 240px 1fr 1fr;
+        grid-template-rows: 100px 1fr 1fr;
+        /* row-gap: 16px; */
+        grid-template-areas:
+          'header header header'
+          'sidebar content content'
+          'sidebar content content';
+        height: 100vh;
+      }
+      header {
+        position: relative;
+        grid-area: header;
+        /* box-shadow:
+          0 2px 8px 2px rgb(0 0 0/10%),
+          0 1px 2px -1px rgb(0 0 0 / 20%);
+        z-index: 1; */
+      }
+      header:after {
+        position: absolute;
+        bottom: 0;
+        content: '';
+        height: 30px;
+        border-top: 1px solid #eee;
+        transform: translate(0, 100%);
+        width: 100%;
+        background: linear-gradient(180deg, #fff 0%, transparent 100%);
+      }
+      aside {
+        grid-area: sidebar;
+        width: 240px;
+      }
+
+      aside nav {
+        padding: 40px 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      aside nav a,
+      aside nav a:hover,
+      aside nav a:visited,
+      aside nav a:active {
+        text-decoration: none;
+        color: inherit;
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 16px 10px 40px;
+      }
+
+      aside nav a:hover {
+        background-color: aliceblue;
+      }
+      aside nav a + a {
+        border-top: 1px solid #eee;
+      }
+
+      article {
+        grid-area: content;
+        padding: 20px 40px 20px 20px;
+        overflow: hidden;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header></header>
+      <aside>
+        <nav>
+          <a href="">메뉴1</a>
+          <a href="">메뉴2</a>
+          <a href="">메뉴3</a>
+          <a href="">메뉴4</a>
+          <a href="">메뉴5</a>
+        </nav>
+      </aside>
+      <article>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+        <p>
+          앞에 HD가 붙었다는 건, 모두 HD 리마스터되었다는 뜻입니다. HD 1.5 ReMIX=킹덤 하츠 Final
+          Mix(1편의 추가 확장판)+킹덤 하츠 Re:Chain of Memories(Chain of Memories의 리메이크)+킹덤
+          하츠 358/2 Days(동명의 NDS 게임을 영상화) HD 2.5 ReMIX=킹덤 하츠 II Final Mix(2편의 추가
+          확장판)+킹덤 하츠 Birth by Sleep Final Mix(Birth by Sleep의 추가 확장판)+킹덤하츠
+          Re:coded(coded의 리마스터인 NDS 게임을 영상화) HD 2.8 Final Chapter Prologue=킹덤하츠
+          Dream Drop Distance HD+킹덤 하츠 0.2 Birth by Sleep A fragmentary passage(3편의
+          프롤로그)+킹덤 하츠 χ Back Cover(모바일 게임인 킹덤 하츠 χ의 스토리를 영상화)
+        </p>
+      </article>
+    </main>
+  </body>
+</html>
