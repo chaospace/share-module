@@ -115,16 +115,17 @@ function InfiniteList({
    */
   useEffect(() => {
     const container = containerRef.current;
+    const listContainer = contentRef.current;
     const fetchingAfterTransition = debounce(() => {
-      if (container) {
+      if (container && listContainer) {
         fetchButtonRef.current.forEach(o => {
           o?.classList.remove('show');
         });
         //추가 목록에서 방향에 따른 스크롤 대상 찾기
         const target =
           apiRef.current.lastFetchingValue === FETCHING_DIR.PREV
-            ? container.children[10]
-            : container.children[container.children.length - 11];
+            ? listContainer.children[10]
+            : listContainer.children[listContainer.children.length - 11];
 
         target.scrollIntoView(apiRef.current.lastFetchingValue === FETCHING_DIR.PREV);
         //scrollIntoView 완료 수신 리스너 등록
