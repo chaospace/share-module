@@ -3,9 +3,9 @@
   "compilerOptions": {
     "preserveSymlinks": false,
     "composite": true,
-    "typeRoots": ["../node_modules/@types", "node_modules/@types", "./@mf-types", "./@types"],
+    "typeRoots": ["../node_modules/@types", "node_modules/@types", "@mf-types", "@types"],
     "paths": {
-      // "/*": ["./@mf-types", "./@types"],
+      "/*": ["./@mf-type/*", "./@types/*"],
       "@/*": ["./src/*", "../src/*"]
     }
   },
@@ -16,6 +16,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "@types/styled.d.ts"
   ]
 }
