@@ -6,10 +6,21 @@ interface FeedList {
   nextCursor: number;
 }
 
+interface Movie {
+  id: number;
+  title: string;
+  year: string;
+}
+
 const getFeedList = async ({ pageParam }: any): Promise<FeedList> => {
   const response = await fetch(`http://api.example.com/infinite/${pageParam}`);
   return response.json();
 };
 
-export type { FeedList };
-export { getFeedList };
+const getMovieList = async (): Promise<Movie[]> => {
+  const response = await fetch('http://api.example.com/movies');
+  return response.json();
+};
+
+export type { FeedList, Movie };
+export { getFeedList, getMovieList };

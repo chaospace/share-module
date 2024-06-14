@@ -10,6 +10,8 @@ import Typography from '@/components/elements/Typography';
 import { countHooks } from 'federation_provider/Store';
 import InputRange from '@/components/range';
 import { HLine, VLine } from '@/components/elements/Line';
+import { useQuery } from '@tanstack/react-query';
+import { getMovieList } from '@/service';
 
 const options = Array.from({ length: 20 }).map((_, i) => `옵션-${i}`);
 const options2 = [
@@ -29,6 +31,15 @@ function UISample() {
   const setCount = countHooks.useSetCount();
 
   const pRef = useRef<HTMLSpanElement>(null);
+
+  const { data: movies } = useQuery({
+    queryKey: ['getMovieList'],
+    queryFn: getMovieList,
+    initialData: [],
+    select: data => {
+      return data;
+    }
+  });
 
   const rederCount = useRef(0);
   const [num, setNum] = useState(0);
@@ -95,7 +106,7 @@ function UISample() {
       </Typography>
       <VBox>
         <Typography variant='title'>검색 가능한 셀렉트</Typography>
-        <AutoComplete options={options} />
+        <AutoComplete options={movies} getLabel={o => o.title} getValue={o => o.title} />
       </VBox>
       <HBox>
         <Button variant='success' onClick={onChangeBoxPadding}>

@@ -14,6 +14,7 @@ import RangeApp from './pages/range';
 import InfiniteApp_Advance from './pages/feed/index_ad';
 import TabApp from './pages/tab';
 import TooltipApp from './pages/tooltip';
+import AutoCompleteApp from './pages/autocomplete';
 
 const ErrorPage = () => {
   const error = useRouteError() as any;
@@ -27,6 +28,10 @@ const ErrorPage = () => {
 };
 
 const routeChildren = [
+  {
+    path: 'autocomplete',
+    element: <AutoCompleteApp />
+  },
   {
     path: 'tooltip',
     element: <TooltipApp />

@@ -1,14 +1,4 @@
-import React, {
-  ChangeEvent,
-  FocusEvent,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
 import { labelGetter, valueGetter } from '@/components/util';
@@ -21,41 +11,22 @@ import SearchInput from '@/components/elements/SearchInput';
 
 //https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-none
 
-/* const OptionContainer = styled.ul<CSSProperties & { open?: boolean }>(
-  {
+const OptionContainer = styled.ul<{ open?: boolean }>(props => {
+  return {
     position: 'absolute',
     zIndex: '100',
-    top: '100%',
-    width: '100%',
-    borderRadius: '0.5rem',
+    top: `100%`,
+    width: `100%`,
+    display: props.open ? 'block' : 'none',
+    borderRadius: `0.5rem`,
     border: `1px solid ${grey[500]}`,
-    padding: '2px',
-    overflow: 'hidden',
-    overflowY: 'auto',
-    maxHeight: '160px',
+    padding: `2px`,
+    overflow: `hidden`,
+    overflowY: `auto`,
+    maxHeight: `160px`,
     backgroundColor: 'white'
-  },
-  () => {
-    return css`
-      display: ${props => }
-    `;
-  }
-); */
-
-const OptionContainer = styled.ul<{ open?: boolean }>`
-  position: absolute;
-  z-index: 100;
-  top: 100%;
-  width: 100%;
-  display: ${({ open }) => (open ? 'block' : 'none')};
-  border-radius: 0.5rem;
-  border: 1px solid ${grey[500]};
-  padding: 2px;
-  overflow: hidden;
-  overflow-y: auto;
-  max-height: 160px;
-  background-color: white;
-`;
+  };
+});
 const OptionItem = styled.li<{ active?: boolean }>`
   padding: 0.5rem 1rem;
   cursor: cursor;
@@ -96,13 +67,30 @@ const isElementInView = (element: HTMLElement, area: HTMLElement) => {
   return true;
 };
 
-const isScrollAble = (element: HTMLElement) => {
+/* const isScrollAble = (element: HTMLElement) => {
   return element && element.clientHeight < element.scrollHeight;
+}; */
+
+const getAriaSelected = (node: HTMLElement[]) => {
+  return node.findIndex(o => o?.ariaSelected === 'true');
+};
+
+const swapElementAriaSelected = (a: HTMLElement, b?: HTMLElement) => {
+  if (a) {
+    a.ariaSelected = 'true';
+    a.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  if (b) {
+    b.ariaSelected = 'false';
+  }
 };
 
 const getSelectOptionLabel = (select: HTMLElement) => select.textContent;
 /**
  * Autocomplete
+ * 키보드 액션 정리
+ *  - keydown으로 쿼리 초기화는 안함.
+ *  - backspace를 누를 경우만 초기화 처리.
  * @returns
  */
 function AutoComplete({
@@ -119,7 +107,6 @@ function AutoComplete({
   const [query, setQuery] = useState('');
   const [select, setSelect] = useState(getValue(defaultValue || value));
 
-  const activeIndexRef = React.useRef(provider.findIndex(o => o.label === select));
   const [openList, setOpenList] = useState(false);
 
   //ref참조 초기화
@@ -137,20 +124,16 @@ function AutoComplete({
   const selectOptionID = `selected-option${uniqueId}`;
 
   const scrollToActiveIndex = useCallback((nIndex: number) => {
-    if (listRef.current && isScrollAble(listRef.current)) {
+    if (listRef.current) {
       const ele = optionItemRef.current[nIndex];
-
       if (ele && !isElementInView(ele, listRef.current)) {
         ele.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
   }, []);
 
-  const onChangeInput = ({ target }: ChangeEvent<HTMLInputElement>) => {
+  const onChangeInput = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(target.value);
-    if (target.value === '') {
-      resetState(); // clear와 동일
-    }
   };
 
   const findSelectIndex = (select: string) => {
@@ -161,20 +144,23 @@ function AutoComplete({
     setOpenList(true);
   };
 
+  const setFocusInput = () => {
+    inputRef.current && inputRef.current.focus();
+  };
+
   const resetState = useCallback(() => {
     setQuery('');
     setSelect('');
-    activeIndexRef.current = -1;
-    inputRef.current && inputRef.current.focus();
+    setFocusInput();
   }, []);
 
   // 결국 open값이 변경되면 sync되야 한다.
-  const onBlur = (e: FocusEvent<HTMLElement>) => {
+  const onBlur = (e: React.FocusEvent<HTMLElement>) => {
     // 옵션 클릭시 리턴처리
     const { relatedTarget } = e;
     if (listRef.current?.contains(relatedTarget)) {
       e.preventDefault();
-      inputRef.current && inputRef.current.focus();
+      setFocusInput();
       return;
     } else if (select) {
       // 이전상태 rollback 처리
@@ -183,8 +169,17 @@ function AutoComplete({
     setOpenList(false);
   };
 
+  const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { key } = e;
+    e.preventDefault();
+    if (key === 'Backspace') {
+      if (e.target === inputRef.current && inputRef.current.value === '') {
+        resetState();
+      }
+    }
+  };
   // openList가 아니어도 문자를 변경하면 검색된 list를 보여준다.
-  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { key } = e;
 
     if (!openList && allowKeys.includes(key)) {
@@ -199,45 +194,37 @@ function AutoComplete({
     }
     //현재 select에서 active값을 가져온다?
     //이렇게 되면 항상 ref가 항상 고정된다.
-    const current = optionItemRef.current.find(o => o?.ariaSelected === 'true');
-    const prevIdx = findSelectIndex(current?.textContent!);
-    let currentIndex = prevIdx;
+
+    let nextIndex = getAriaSelected(optionItemRef.current! as HTMLElement[]);
+    const prevIndex = nextIndex;
+    const current = nextIndex > -1 ? optionItemRef.current![nextIndex]! : undefined;
 
     switch (key) {
       case 'Escape':
-        if (query === '') setOpenList(false);
-        break;
+        setOpenList(false);
+        return;
       case 'ArrowDown':
-        currentIndex = currentIndex + 1 < options.length ? currentIndex + 1 : currentIndex;
-
-        optionItemRef.current[currentIndex]?.setAttribute('aria-selected', 'true');
-        optionItemRef.current[prevIdx]?.setAttribute('aria-selected', 'false');
-        scrollToActiveIndex(currentIndex);
-
+        nextIndex = nextIndex + 1 >= options.length ? nextIndex : nextIndex + 1;
+        if (nextIndex !== prevIndex)
+          swapElementAriaSelected(optionItemRef.current[nextIndex]!, current);
         break;
       case 'ArrowUp':
-        currentIndex = currentIndex - 1 > -1 ? currentIndex - 1 : currentIndex;
-
-        optionItemRef.current[currentIndex]?.setAttribute('aria-selected', 'true');
-        optionItemRef.current[prevIdx]?.setAttribute('aria-selected', 'false');
-        scrollToActiveIndex(currentIndex);
+        nextIndex = nextIndex - 1 == -1 ? nextIndex : nextIndex - 1;
+        if (nextIndex !== prevIndex)
+          swapElementAriaSelected(optionItemRef.current[nextIndex]!, current);
         break;
       case 'Enter':
-        //get 인덱스
-        //e.target
-        onClickOption(currentIndex);
-        break;
+        if (nextIndex >= 0) onClickOption(nextIndex);
+        return;
       default:
         if (!openList) {
           setOpenList(true);
         }
-        break;
+        return;
     }
   };
 
   const onClickOption = (idx: number) => {
-    // setActiveIndex(idx);
-    // activeIndexRef.current = idx;
     const selectLabel = getSelectOptionLabel(optionItemRef.current[idx]!);
     if (selectLabel) {
       setSelect(selectLabel);
@@ -263,18 +250,27 @@ function AutoComplete({
 
   // 목록이 열린상태에서 선택값이 있으면 목록포커싱 처리
   useEffect(() => {
-    if (select && openList) {
-      const nIndex = findSelectIndex(select);
-      const ele = optionItemRef.current[nIndex]!;
-      ele.setAttribute('aria-selected', 'true');
-      if (ele && !isElementInView(ele, listRef.current!)) {
-        scrollToActiveIndex(nIndex);
+    if (openList) {
+      if (select) {
+        const nIndex = findSelectIndex(select);
+        const ele = optionItemRef.current[nIndex]!;
+        ele.ariaSelected = 'true';
+        if (ele && !isElementInView(ele, listRef.current!)) {
+          scrollToActiveIndex(nIndex);
+        }
+      } else {
+        // listRef.current!.scrollTop = 0;
+        optionItemRef.current[0]?.scrollIntoView();
       }
+    } else {
+      //옵션요소 selected속성 초기화
+      optionItemRef.current.forEach(o => {
+        if (o && o.textContent !== select && o.ariaSelected === 'true') {
+          o.ariaSelected = 'false';
+        }
+      });
     }
-    if (select === '') {
-      optionItemRef.current.forEach(o => o?.setAttribute('aria-selected', 'false'));
-    }
-  }, [openList, select]);
+  }, [openList, select, scrollToActiveIndex]);
 
   const renderList = filteredOptions.length ? (
     filteredOptions.map((o, idx) => {
@@ -313,6 +309,7 @@ function AutoComplete({
         onChange={onChangeInput}
         onBlur={onBlur}
         onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
         onFocus={onFocusInput}
         onClickReset={resetState}
       />
