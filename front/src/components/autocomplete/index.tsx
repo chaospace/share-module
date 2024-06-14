@@ -114,6 +114,7 @@ function AutoComplete({
   const scrollToActiveIndex = useCallback((nIndex: number) => {
     if (listRef.current && isScrollAble(listRef.current)) {
       const ele = optionItemRef.current[nIndex];
+
       if (ele && !isElementInView(ele, listRef.current)) {
         ele.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }

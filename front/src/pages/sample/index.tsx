@@ -9,6 +9,7 @@ import Select from '@/components/elements/Select';
 import Typography from '@/components/elements/Typography';
 import { countHooks } from 'federation_provider/Store';
 import InputRange from '@/components/range';
+import { HLine, VLine } from '@/components/elements/Line';
 
 const options = Array.from({ length: 20 }).map((_, i) => `옵션-${i}`);
 const options2 = [
@@ -64,12 +65,14 @@ function UISample() {
 
   return (
     <VBox as='main' p={boxPadding}>
+      <HLine borderWidth='2px' />
       <label htmlFor=''>
         랜더링 카운트
         <span>
           {rederCount.current++} {num} {str}
         </span>
       </label>
+
       <Button onClick={() => onClickMultipleSet()}>여러setState호출</Button>
       <InputRange value={rangeValue} onInput={onInput} />
       <Typography as='span' ref={pRef as any}>
@@ -133,6 +136,7 @@ function UISample() {
       <SearchInput />
 
       <CheckBox variant='primary'>체크박스 스타일</CheckBox>
+      <VLine borderWidth='10px' borderColor='black' height='300px' />
     </VBox>
   );
 }
