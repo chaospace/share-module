@@ -13,6 +13,8 @@ type LineProps = Pick<
   CSSComposerObject,
   'borderWidth' | 'borderStyle' | 'borderColor' | 'my' | 'mx'
 >;
+
+type VLineProp = LineProps & { height?: number | string };
 const propsKeys = ['borderWidth', 'borderColor', 'borderStyle', 'my', 'mx'];
 
 const vBorderComposer = ({
@@ -21,10 +23,11 @@ const vBorderComposer = ({
   borderColor,
   mx,
   my,
-  theme
-}: ExecutionContext & LineProps) => ({
+  theme,
+  height = 'inherit'
+}: ExecutionContext & VLineProp) => ({
   borderLeft: `${borderWidth} ${borderStyle}`,
-  ...composer({ borderColor, mx, my, theme })
+  ...composer({ borderColor, mx, my, height, theme, display: 'inline-flex' })
 });
 
 const initProps = (props: LineProps) => ({
@@ -53,8 +56,8 @@ const HLine = styled.hr.attrs<LineProps>(initProps).withConfig({
   ${hBorderComposer}
 `;
 
-const VLine = styled.span.attrs<LineProps>(initProps).withConfig({
-  shouldForwardProp: shouldForwardCSSProps(propsKeys, false)
+const VLine = styled.span.attrs<VLineProp>(initProps).withConfig({
+  shouldForwardProp: shouldForwardCSSProps([...propsKeys, 'height'], false)
 })`
   ${baseStyle}
   ${vBorderComposer}
