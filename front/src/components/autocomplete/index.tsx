@@ -15,7 +15,32 @@ import { labelGetter, valueGetter } from '@/components/util';
 import { variant, grey } from '@/colors';
 import SearchInput from '@/components/elements/SearchInput';
 
+// activeIndex를 ref를 대체할 때 유의점.
+// 필터 결과에 따라 index가 달라지기 때문에 ref에 index를 기억하는 건 의미가 없다.
+// focus시 현재 select에서 참조를 항상 가져올 수 있어야 한다.
+
 //https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-none
+
+/* const OptionContainer = styled.ul<CSSProperties & { open?: boolean }>(
+  {
+    position: 'absolute',
+    zIndex: '100',
+    top: '100%',
+    width: '100%',
+    borderRadius: '0.5rem',
+    border: `1px solid ${grey[500]}`,
+    padding: '2px',
+    overflow: 'hidden',
+    overflowY: 'auto',
+    maxHeight: '160px',
+    backgroundColor: 'white'
+  },
+  () => {
+    return css`
+      display: ${props => }
+    `;
+  }
+); */
 
 const OptionContainer = styled.ul<{ open?: boolean }>`
   position: absolute;
@@ -48,7 +73,7 @@ const OptionItem = styled.li<{ active?: boolean }>`
   }
 `;
 
-const Container = styled(VBox)``;
+const Container = styled(VBox)({});
 
 interface AutoCompleteProps {
   options?: any[];
@@ -93,14 +118,14 @@ function AutoComplete({
 
   const [query, setQuery] = useState('');
   const [select, setSelect] = useState(getValue(defaultValue || value));
-  const [activeIndex, setActiveIndex] = useState(provider.findIndex(o => o.label === select));
+
+  const activeIndexRef = React.useRef(provider.findIndex(o => o.label === select));
   const [openList, setOpenList] = useState(false);
 
   //ref참조 초기화
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const optionItemRef = useRef<(null | HTMLLIElement)[]>([]);
-  const prevSelectIndex = useRef(-1);
 
   const filteredOptions = useMemo(() => {
     return select === query ? provider : provider.filter(o => o.label.includes(query));
@@ -139,7 +164,7 @@ function AutoComplete({
   const resetState = useCallback(() => {
     setQuery('');
     setSelect('');
-    setActiveIndex(-1);
+    activeIndexRef.current = -1;
     inputRef.current && inputRef.current.focus();
   }, []);
 
@@ -154,7 +179,6 @@ function AutoComplete({
     } else if (select) {
       // 이전상태 rollback 처리
       setQuery(select);
-      setActiveIndex(prevSelectIndex.current);
     }
     setOpenList(false);
   };
@@ -173,29 +197,35 @@ function AutoComplete({
       setOpenList(false);
       return;
     }
+    //현재 select에서 active값을 가져온다?
+    //이렇게 되면 항상 ref가 항상 고정된다.
+    const current = optionItemRef.current.find(o => o?.ariaSelected === 'true');
+    const prevIdx = findSelectIndex(current?.textContent!);
+    let currentIndex = prevIdx;
 
     switch (key) {
       case 'Escape':
         if (query === '') setOpenList(false);
         break;
       case 'ArrowDown':
-        setActiveIndex(prev => {
-          if (prev + 1 < options.length) {
-            return prev + 1;
-          }
-          return prev;
-        });
+        currentIndex = currentIndex + 1 < options.length ? currentIndex + 1 : currentIndex;
+
+        optionItemRef.current[currentIndex]?.setAttribute('aria-selected', 'true');
+        optionItemRef.current[prevIdx]?.setAttribute('aria-selected', 'false');
+        scrollToActiveIndex(currentIndex);
+
         break;
       case 'ArrowUp':
-        setActiveIndex(prev => {
-          if (prev - 1 > -1) {
-            return prev - 1;
-          }
-          return prev;
-        });
+        currentIndex = currentIndex - 1 > -1 ? currentIndex - 1 : currentIndex;
+
+        optionItemRef.current[currentIndex]?.setAttribute('aria-selected', 'true');
+        optionItemRef.current[prevIdx]?.setAttribute('aria-selected', 'false');
+        scrollToActiveIndex(currentIndex);
         break;
       case 'Enter':
-        onClickOption(activeIndex);
+        //get 인덱스
+        //e.target
+        onClickOption(currentIndex);
         break;
       default:
         if (!openList) {
@@ -206,29 +236,27 @@ function AutoComplete({
   };
 
   const onClickOption = (idx: number) => {
-    setActiveIndex(idx);
+    // setActiveIndex(idx);
+    // activeIndexRef.current = idx;
     const selectLabel = getSelectOptionLabel(optionItemRef.current[idx]!);
     if (selectLabel) {
       setSelect(selectLabel);
       setQuery(selectLabel);
-      prevSelectIndex.current = idx;
     }
     setOpenList(false);
   };
 
   //open시 리스트에 시작위치를 결정
   useEffect(() => {
-    if (openList) {
-      if (listRef.current) {
-        //참조를 하기 전에는 항상 초기값으로 복원
-        listRef.current.style.transform = 'translate(0,0)';
-        listRef.current.style.top = '100%';
-        const rect = listRef.current.getBoundingClientRect();
-        //active-option참조
-        if (rect.top + rect.height > document.documentElement.clientHeight) {
-          listRef.current.style.top = '0';
-          listRef.current.style.transform = 'translate(0,-100%)';
-        }
+    if (openList && listRef.current) {
+      //참조를 하기 전에는 항상 초기값으로 복원
+      listRef.current.style.transform = 'translate(0,0)';
+      listRef.current.style.top = '100%';
+      const rect = listRef.current.getBoundingClientRect();
+      //active-option참조
+      if (rect.top + rect.height > document.documentElement.clientHeight) {
+        listRef.current.style.top = '0';
+        listRef.current.style.transform = 'translate(0,-100%)';
       }
     }
   }, [openList]);
@@ -238,26 +266,26 @@ function AutoComplete({
     if (select && openList) {
       const nIndex = findSelectIndex(select);
       const ele = optionItemRef.current[nIndex]!;
+      ele.setAttribute('aria-selected', 'true');
       if (ele && !isElementInView(ele, listRef.current!)) {
         scrollToActiveIndex(nIndex);
       }
     }
+    if (select === '') {
+      optionItemRef.current.forEach(o => o?.setAttribute('aria-selected', 'false'));
+    }
   }, [openList, select]);
-
-  //activeIndex를 sync처리하면 템포가 하나씩 밀리며 역으로 보일 경우 2개의 current가 보이는 문제 발생.
-  useEffect(() => {
-    scrollToActiveIndex(activeIndex);
-  }, [activeIndex, scrollToActiveIndex]);
 
   const renderList = filteredOptions.length ? (
     filteredOptions.map((o, idx) => {
       const selected = select === o.label;
+
       return (
         <OptionItem
           key={o.label}
           role='option'
           id={selected ? selectOptionID : undefined}
-          aria-selected={activeIndex === idx}
+          aria-selected={selected}
           ref={ele => {
             optionItemRef.current[idx] = ele;
           }}
