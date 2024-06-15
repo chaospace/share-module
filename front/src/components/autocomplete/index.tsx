@@ -47,7 +47,12 @@ const OptionItem = styled.li<{ active?: boolean }>`
     background-color: ${variant.default.light};
   }
 
-  &[aria-selected='true'] {
+  &.selected {
+    background-color: ${variant.primary.light};
+  }
+
+  &[aria-selected='true'],
+  &:focus-visible {
     outline: 2px solid ${variant.primary.main};
   }
 `;
@@ -88,10 +93,12 @@ const moveSelected = (node: HTMLElement[], state: 'prev' | 'next' = 'next') => {
   } else {
     nextIndex = nextIndex - 1 < 0 ? nextIndex : nextIndex - 1;
   }
-  if (prevIndex !== nextIndex) {
+  if (prevIndex !== nextIndex && node[nextIndex]) {
     node[nextIndex].ariaSelected = 'true';
     node[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    current && (current.ariaSelected = 'false');
+    if (current) {
+      current.ariaSelected = 'false';
+    }
   }
 };
 
@@ -126,8 +133,6 @@ function AutoComplete({
       : provider.filter(o => o.label.includes(deferredQuery));
   }, [select, deferredQuery, provider]);
 
-  const selectIndex = useDeferredValue(filteredOptions.findIndex(o => o.label === select));
-
   //ref참조 초기화
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -137,11 +142,6 @@ function AutoComplete({
   const uniqueId = useId();
   const listID = `list${uniqueId}`;
   const selectOptionID = `selected-option${uniqueId}`;
-
-  const scrollToActiveIndex = useCallback((nIndex: number) => {
-    const ele = optionItemRef.current[nIndex];
-    ele && ele.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-  }, []);
 
   const onFocusInput = () => {
     setOpenList(true);
@@ -201,6 +201,7 @@ function AutoComplete({
         setOpenList(false);
         return;
       case 'ArrowDown':
+        console.log('optionItem', optionItemRef.current);
         moveSelected(optionItemRef.current as HTMLElement[], 'next');
         break;
       case 'ArrowUp':
@@ -219,12 +220,14 @@ function AutoComplete({
 
   const onClickOption = (idx: number) => {
     const selectLabel = filteredOptions[idx].label;
+    //이전선택제거
+    console.log('click!!', idx);
     setSelect(selectLabel);
     setQuery(selectLabel);
     setOpenList(false);
   };
 
-  //open시 리스트에 시작위치를 결정
+  //open시 리스트에 시작위치 결정
   useEffect(() => {
     if (openList && listRef.current) {
       //참조를 하기 전에는 항상 초기값으로 복원
@@ -238,25 +241,26 @@ function AutoComplete({
       }
     }
   }, [openList]);
-
-  // 목록이 열린상태에서 선택값이 있으면 목록포커싱 처리
+  // 선택옵션 스타일적용
   useEffect(() => {
+    const selectOption = optionItemRef.current.find(o => o?.textContent === select);
+    //옵션요소 selected속성 초기화
+    optionItemRef.current.forEach(o => {
+      if (o && selectOption && selectOption !== o) {
+        o.ariaSelected = 'false';
+        o.classList.remove('selected');
+      }
+    });
     if (openList) {
-      if (selectIndex >= 0) {
-        const ele = optionItemRef.current[selectIndex]!;
-        ele.ariaSelected = 'true';
-        scrollToActiveIndex(selectIndex);
+      if (selectOption) {
+        selectOption.ariaSelected = 'true';
+        selectOption.classList.add('selected');
+        selectOption.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       } else {
-        //옵션요소 selected속성 초기화
-        optionItemRef.current.forEach((o, idx) => {
-          if (o && selectIndex !== idx && o.ariaSelected === 'true') {
-            o.ariaSelected = 'false';
-          }
-        });
-        optionItemRef.current[0]?.scrollIntoView();
+        listRef.current && listRef.current.scrollTo(0, 0);
       }
     }
-  }, [openList, selectIndex, scrollToActiveIndex]);
+  }, [openList, select]);
 
   const renderList = filteredOptions.length ? (
     filteredOptions.map((o, idx) => {
