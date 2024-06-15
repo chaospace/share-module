@@ -6,119 +6,36 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { VBox } from '../elements/Box';
-import Button from '../elements/Button';
-import styled from 'styled-components';
 import Typography from '../elements/Typography';
-import Input from '../elements/Input';
-import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
 import type { StyleVariantProps } from 'styled';
 import { VariantCategory } from 'styled';
 import { debounce } from '../util';
-import { TempTypography } from '@/stories/elements';
-
-const IConDownArrow = styled.i`
-  position: absolute;
-  display: inline-block;
-  border-width: 0 2px 2px 0;
-  border-style: solid;
-  border-color: currentColor;
-  height: 8px;
-  width: 8px;
-`;
-
-const AccordionContentBody = styled.div`
-  position: relative;
-  display: block;
-  padding: 20px;
-`;
-
-const AccordionContent = styled('div')
-  .attrs<CSSComposerObject>({
-    position: 'relative',
-    overflow: 'hidden',
-    overflowY: 'auto',
-    display: 'block'
-  })
-  .withConfig({ shouldForwardProp: shouldForwardAllProps })`
-  ${composer}
-  transition: all 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-`;
-
-const AccordionButton = styled(Button).attrs(_ => ({
-  gap: 2,
-  px: 24,
-  py: 16,
-  width: '100%',
-  display: 'block',
-  borderRadius: 0,
-  border: 'none',
-  variant: _.variant ?? 'info'
-}))`
-  ${Typography} {
-    position: relative;
-    pointer-events: none;
-    display: block;
-    width: 100%;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    text-align: left;
-    padding: 4px;
-    ${IConDownArrow} {
-      right: 0;
-      top: 58%;
-      transform-origin: center;
-      pointer-events: none;
-      transform: translate(-100%, -100%) rotate(45deg);
-    }
-  }
-  &[aria-expanded='true'] {
-    ${IConDownArrow} {
-      transform: translate(-100%, -50%) rotate(224deg);
-    }
-  }
-
-  &:focus,
-  &:focus-within {
-    outline: none;
-    ${Typography} {
-      border-color: hsl(216deg 94% 43%);
-      border-radius: 4px;
-    }
-  }
-`;
-
-const Container = styled(VBox).attrs({
-  gap: 0
-})`
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 50%),
-    1px 2px 6px 2px rgb(0 0 0 / 20%);
-  // 두번째 요소부터 상단보더 적용
-  * + ${AccordionButton} {
-    border-top: 1px solid;
-    border-color: currentColor;
-  }
-`;
+import { getValidChildren } from '@/styles/utils';
+import {
+  AccordionButton,
+  AccordionContainer,
+  AccordionContent,
+  IConDownArrow
+} from './elements.style';
 
 const _Handler = (_: React.MouseEvent<HTMLButtonElement>) => {};
-// maxHeight={getMaxHeight(selected)}
+
+interface AccordionItemProps {
+  label: string;
+  selected?: boolean;
+  contentMaxHeight?: number;
+  variant?: VariantCategory;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
 function AccordionItem({
   label,
   selected = false,
   children,
   variant = 'default',
-  contentMaxHeight,
+  contentMaxHeight = 300,
   onClick = _Handler
-}: PropsWithChildren<{
-  label: string;
-  selected?: boolean;
-  contentMaxHeight: number;
-  variant?: VariantCategory;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}>) {
+}: PropsWithChildren<AccordionItemProps>) {
   const itemID = `acc-ins-${useId()}`;
   const contentID = `acc-content-${useId()}`;
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -181,7 +98,7 @@ function AccordionItem({
         aria-labelledby={itemID}
         aria-hidden={!selected}
         maxHeight={contentMaxHeight}>
-        <AccordionContentBody>{children}</AccordionContentBody>
+        {children}
       </AccordionContent>
     </React.Fragment>
   );
@@ -190,6 +107,7 @@ function AccordionItem({
 interface AccordionProps extends StyleVariantProps {
   /** 아코디언 컨텐츠 maxHeight설정 기본값은 300px */
   contentMaxHeight?: number;
+  select?: string;
 }
 
 /**
@@ -198,8 +116,13 @@ interface AccordionProps extends StyleVariantProps {
  *
  * @param  {AccordionProps} {variant?:VariantCategory}
  */
-function Accordion({ variant = 'default', contentMaxHeight = 300 }: AccordionProps) {
-  const [selected, setSelected] = useState('');
+function Accordion({
+  select = '',
+  variant = 'default',
+  contentMaxHeight = 300,
+  children
+}: PropsWithChildren<AccordionProps>) {
+  const [selected, setSelected] = useState(select);
   const onClickItem = (e: React.MouseEvent<HTMLButtonElement>) => {
     const ele = e.target as HTMLElement;
     const text = ele.textContent!;
@@ -208,51 +131,21 @@ function Accordion({ variant = 'default', contentMaxHeight = 300 }: AccordionPro
 
   return (
     <React.Fragment>
-      <Container>
-        <AccordionItem
-          variant={variant}
-          contentMaxHeight={contentMaxHeight}
-          label='아코디언 라벨'
-          selected={selected === '아코디언 라벨'}
-          onClick={onClickItem}>
-          <Input type='text' />
-
-          <Input type='tel' />
-
-          <Input type='url' />
-
-          <Input type='search' />
-          <Input type='text' />
-
-          <Input type='tel' />
-
-          <Input type='url' />
-
-          <Input type='search' />
-        </AccordionItem>
-        <AccordionItem
-          variant={variant}
-          contentMaxHeight={contentMaxHeight}
-          label='아코디언 라벨2'
-          selected={selected === '아코디언 라벨2'}
-          onClick={onClickItem}>
-          <TempTypography />
-        </AccordionItem>
-        <AccordionItem
-          label='아코디언4'
-          variant={variant}
-          contentMaxHeight={contentMaxHeight}
-          selected={selected === '아코디언4'}
-          onClick={onClickItem}>
-          <Input type='text' />
-          <br />
-          <Input type='tel' />
-          <br />
-          <Input type='url' />
-          <br />
-          <Input type='search' />
-        </AccordionItem>
-      </Container>
+      <AccordionContainer>
+        {getValidChildren(children).map((o: any) => {
+          return (
+            <AccordionItem
+              key={o.props.label}
+              label={o.props.label}
+              variant={variant}
+              contentMaxHeight={contentMaxHeight}
+              selected={o.props.label === selected}
+              onClick={onClickItem}>
+              {React.cloneElement(<React.Fragment></React.Fragment>, {}, o.props.children)}
+            </AccordionItem>
+          );
+        })}
+      </AccordionContainer>
     </React.Fragment>
   );
 }
