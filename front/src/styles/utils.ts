@@ -51,9 +51,9 @@ const getCustomVariant =
 
 const isArray = (value: unknown): value is any[] => Array.isArray(value) === true;
 const isObject = (value: unknown): value is object => typeof value === 'object';
-const toReactElement = (o: any) =>
+const toReactElement = <T extends object = {}>(o: any) =>
   o as React.ReactElement<
-    React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & StyleVariantProps, HTMLElement>
+    React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & StyleVariantProps & T, HTMLElement>
   >;
 const toParams = (value: unknown) => {
   return isArray(value) ? value : [value];

@@ -107,14 +107,15 @@ function AccordionItem({
 interface AccordionProps extends StyleVariantProps {
   /** 아코디언 컨텐츠 maxHeight설정 기본값은 300px */
   contentMaxHeight?: number;
+  /** 초기 확장 아코디언패널 설정변수 label값 */
   select?: string;
 }
 
 /**
- * 아코디언 컴포넌트
+ * 아코디언 컴포넌트<br/>
  * 세부 내용은 데이터 연동보다 직접구성 방식을 적용.
  *
- * @param  {AccordionProps} {variant?:VariantCategory}
+ * @param  {AccordionProps} params
  */
 function Accordion({
   select = '',

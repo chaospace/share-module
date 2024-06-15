@@ -4,9 +4,9 @@ import { VBox, HBox } from '@/components/elements/Box';
 import Typography from '@/components/elements/Typography';
 import Button from '@/components/elements/Button';
 
-const TempTypography = () => {
+const TempTypography = ({ p }: any) => {
   return (
-    <VBox>
+    <VBox p={p}>
       <Typography variant='title'>Accordion Component Example</Typography>
       <Typography variant='subTitle1'>
         Next, we wrap our definition using the utility types that React provides to complete the

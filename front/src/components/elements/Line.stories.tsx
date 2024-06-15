@@ -5,6 +5,7 @@ import { HLine, VLine } from './Line';
 const meta = {
   title: 'elements/Line',
   component: HLine,
+  // @ts-ignore
   subcomponents: [VLine],
   parameters: {
     layout: 'centered'
@@ -12,7 +13,8 @@ const meta = {
   args: {
     borderColor: '#ababab',
     borderStyle: 'solid',
-    borderWidth: '2px'
+    borderWidth: '2px',
+    size: 40
   },
   argTypes: {
     borderStyle: {
@@ -31,7 +33,7 @@ const HLineBasic: Story = {};
 
 const VLineBasic: Story = {
   args: {
-    height: '300px'
+    size: '300px'
   },
   render(args) {
     return <VLine {...args} />;

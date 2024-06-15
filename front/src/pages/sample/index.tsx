@@ -147,7 +147,7 @@ function UISample() {
       <SearchInput />
 
       <CheckBox variant='primary'>체크박스 스타일</CheckBox>
-      <VLine borderWidth='10px' borderColor='black' height='300px' />
+      <VLine borderWidth='10px' borderColor='black' size='300px' />
     </VBox>
   );
 }

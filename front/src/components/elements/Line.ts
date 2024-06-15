@@ -12,9 +12,9 @@ const baseStyle = css`
 type LineProps = Pick<
   CSSComposerObject,
   'borderWidth' | 'borderStyle' | 'borderColor' | 'my' | 'mx'
->;
+> & { size?: string | number };
 
-type VLineProp = LineProps & { height?: number | string };
+type VLineProp = LineProps;
 const propsKeys = ['borderWidth', 'borderColor', 'borderStyle', 'my', 'mx'];
 
 const vBorderComposer = ({
@@ -24,16 +24,17 @@ const vBorderComposer = ({
   mx,
   my,
   theme,
-  height = 'inherit'
+  size = 30
 }: ExecutionContext & VLineProp) => ({
   borderLeft: `${borderWidth} ${borderStyle}`,
-  ...composer({ borderColor, mx, my, height, theme, display: 'inline-flex' })
+  ...composer({ borderColor, mx, my, height: size, theme, display: 'inline-flex' })
 });
 
 const initProps = (props: LineProps) => ({
   borderWidth: props.borderWidth ?? '1px',
   borderColor: props.borderColor ?? 'black',
   borderStyle: props.borderStyle ?? 'solid',
+  size: props.size ?? 'inherit',
   role: 'separator'
 });
 
@@ -41,12 +42,13 @@ const hBorderComposer = ({
   borderWidth,
   borderStyle,
   borderColor,
+  size,
   mx,
   my,
   theme
 }: ExecutionContext & LineProps) => ({
   borderTop: `${borderWidth} ${borderStyle}`,
-  ...composer({ borderColor, mx, my, theme })
+  ...composer({ borderColor, mx, my, theme, width: size })
 });
 
 const HLine = styled.hr.attrs<LineProps>(initProps).withConfig({
