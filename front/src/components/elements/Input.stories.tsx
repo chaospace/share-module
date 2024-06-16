@@ -1,6 +1,9 @@
+import React from 'react';
 import type { StoryObj, Meta } from '@storybook/react';
 import Input, { InputProps } from './Input';
 import { within, expect, userEvent } from '@storybook/test';
+import { VBox } from './Box';
+import Label from './Label';
 
 const meta = {
   title: 'elements/Input',
@@ -37,5 +40,25 @@ export const InputBasic: Story = {
     input.focus();
     expect(input).toHaveFocus();
     await ue.type(input, 'chaospace');
+  }
+};
+
+export const InputVariant: Story = {
+  args: {
+    placeholder: 'input-variant',
+    type: 'text'
+  },
+  render: ({ type, placeholder }) => {
+    return (
+      <VBox>
+        <Label>default</Label>
+        <Input type={type} placeholder={placeholder} />
+
+        <Label>invalid</Label>
+        <Input type={type} placeholder={placeholder} className='invalid' />
+        <Label>disable</Label>
+        <Input type={type} placeholder={placeholder} disabled />
+      </VBox>
+    );
   }
 };

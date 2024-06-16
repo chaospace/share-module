@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Input from './Input';
 import { useId } from 'react';
 import { PropsWithHTMLAttributes } from '../types';
@@ -7,17 +7,15 @@ import { CSSComposerObject } from 'styled-composer';
 import Typography from './Typography';
 import { CheckmarkOutline } from '@styled-icons/evaicons-outline';
 import { VariantCategory } from 'styled';
-import { parseVariantColor } from '@/styles/utils';
+import {
+  getVariantColorLight,
+  getVariantColorMain,
+  shouldForwardVariantProps
+} from '@/styles/utils';
 
 interface CheckBoxProps extends PropsWithHTMLAttributes<'input', CSSComposerObject> {
   variant?: VariantCategory;
 }
-const getBackGroundColor = parseVariantColor(c => {
-  return c.main;
-});
-const getCheckIConColor = parseVariantColor(c => {
-  return c.light;
-});
 
 const CheckIcon = styled(CheckmarkOutline)``;
 
@@ -47,27 +45,29 @@ const Container = styled('label')
   .attrs<{ variant?: VariantCategory }>(_ => ({
     variant: _.variant ?? 'default'
   }))
-  .withConfig({ shouldForwardProp: (prop: string) => !['variant'].includes(prop) })`
-  position: relative;
-  display: inline-flex;
-  vertical-align: middle;
-  align-items: center;
-  white-space: nowrap;
-  width: min-content;
-  height: min-content;
-  cursor: pointer;
-  user-select: none;
-  padding: 8px 4px;
-  gap: 0.25rem;
-  //체크마크 다음 인풋이 check상태일 경우 스타일 지정.
-  ${CheckMark}:has(input[type='checkbox']:checked) {
-    background-color: ${getBackGroundColor};
-    ${CheckIcon} {
-      opacity: 1;
-      fill: ${getCheckIConColor};
+  .withConfig({ shouldForwardProp: shouldForwardVariantProps() })(
+  () => css`
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+    align-items: center;
+    white-space: nowrap;
+    width: min-content;
+    height: min-content;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 4px;
+    gap: 0.25rem;
+    //체크마크 다음 인풋이 check상태일 경우 스타일 지정.
+    ${CheckMark}:has(input[type='checkbox']:checked) {
+      background-color: ${getVariantColorMain};
+      ${CheckIcon} {
+        opacity: 1;
+        fill: ${getVariantColorLight};
+      }
     }
-  }
-`;
+  `
+);
 
 function CheckBox({
   children,
@@ -78,7 +78,6 @@ function CheckBox({
   onChange,
   ...rest
 }: CheckBoxProps) {
-  // const {} = rest;
   const labelId = `ck-label-${useId()}`;
   return (
     <Container id={labelId} variant={variant}>

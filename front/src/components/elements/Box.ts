@@ -15,12 +15,12 @@ const Box = styled('div')
     shouldForwardProp: shouldForwardAllProps
   })(composer);
 
-const VBox = styled(Box).attrs(() => ({
+const VBox = styled(Box).attrs({
   flexDirection: 'column'
-}))``;
+})``;
 
-const HBox = styled(Box).attrs(() => ({
+const HBox = styled(Box).attrs({
   flexDirection: 'row'
-}))``;
+})``;
 
 export { Box, VBox, HBox };

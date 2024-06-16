@@ -94,48 +94,48 @@ const TooltipPlacement: Story = {
       <VBox>
         <Typography variant='subTitle1'>툴팁 placement</Typography>
         <HBox justifyContent='space-between'>
-          <Tooltip title={title} {...rest}>
+          <Tooltip title={title} {...rest} placement='top-start'>
             <Button>top-start</Button>
           </Tooltip>
-          <Tooltip title={title} {...rest}>
+          <Tooltip title={title} {...rest} placement='top'>
             <Button>top</Button>
           </Tooltip>
-          <Tooltip title={title} {...rest}>
+          <Tooltip title={title} {...rest} placement='top-end'>
             <Button>top-end</Button>
           </Tooltip>
         </HBox>
         <HBox justifyContent='space-between'>
           <VBox>
-            <Tooltip title={title} {...rest}>
+            <Tooltip title={title} {...rest} placement='left-start'>
               <Button>left-start</Button>
             </Tooltip>
-            <Tooltip title={title} {...rest}>
+            <Tooltip title={title} {...rest} placement='left'>
               <Button>left</Button>
             </Tooltip>
-            <Tooltip title={title} {...rest}>
+            <Tooltip title={title} {...rest} placement='left-end'>
               <Button>left-end</Button>
             </Tooltip>
           </VBox>
           <VBox alignItems='end'>
-            <Tooltip title='right-start' {...rest}>
+            <Tooltip title='right-start' {...rest} placement='right-start'>
               <Button>right-start</Button>
             </Tooltip>
-            <Tooltip title='right' {...rest}>
+            <Tooltip title='right' {...rest} placement='right'>
               <Button>right</Button>
             </Tooltip>
-            <Tooltip title='right-end' {...rest}>
+            <Tooltip title='right-end' {...rest} placement='right-end'>
               <Button>right-end</Button>
             </Tooltip>
           </VBox>
         </HBox>
         <HBox>
-          <Tooltip title='bottom-start' {...rest}>
+          <Tooltip title='bottom-start' {...rest} placement='bottom-start'>
             <Button>bottom-start</Button>
           </Tooltip>
-          <Tooltip title='bottom' {...rest}>
+          <Tooltip title='bottom' {...rest} placement='bottom'>
             <Button>bottom</Button>
           </Tooltip>
-          <Tooltip title='bottom-end' {...rest}>
+          <Tooltip title='bottom-end' {...rest} placement='bottom-end'>
             <Button>bottom-end</Button>
           </Tooltip>
         </HBox>

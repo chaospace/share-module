@@ -1,30 +1,46 @@
-import { PropsWithHTMLAttributes } from '@/components/types';
 import styled from 'styled-components';
-import { CSSComposerObject, composer, shouldForwardAllProps } from 'styled-composer';
+import { CSSComposerObject, composer } from 'styled-composer';
 import { VariantCategory } from 'styled';
-import { parseVariantColor } from '@/styles/utils';
+import { parseStyleProps, shouldForwardCSSProps } from '@/styles/utils';
 
-type ButtonProps = PropsWithHTMLAttributes<
-  'button',
-  { variant?: VariantCategory } & CSSComposerObject
->;
+interface ButtonProps extends CSSComposerObject {
+  variant?: VariantCategory;
+  /** 배경컬러를 transparent 설정여부 */
+  disableBackground?: boolean;
+}
 
-const vriantHoverComposer = parseVariantColor(c => {
-  return {
-    color: c.light,
-    backgroundColor: c.main,
-    borderColor: c.dark,
-    '&:hover': {
-      backgroundColor: c.dark
-    }
-  };
-});
+const vriantHoverComposer = parseStyleProps(
+  ({ theme, variant = 'default', disableBackground = false }) => {
+    const c = theme.variant[variant];
+
+    return disableBackground
+      ? {
+          color: c.main,
+          backgroundColor: 'transparent',
+          borderColor: c.main,
+          '&:hover': {
+            borderColor: c.dark,
+            color: c.dark
+          }
+        }
+      : {
+          color: c.light,
+          backgroundColor: c.main,
+          borderColor: c.dark,
+          '&:hover': {
+            backgroundColor: c.dark
+          }
+        };
+  }
+);
 // variant를 이용한 컬러 제어
-const Button = styled.button.withConfig({ shouldForwardProp: shouldForwardAllProps })<ButtonProps>`
+const Button = styled('button').withConfig({
+  shouldForwardProp: shouldForwardCSSProps(['disableBackground'])
+})<ButtonProps>`
   ${vriantHoverComposer}
   ${composer}
 `;
-Button.defaultProps = {
-  variant: 'default'
-};
+// Button.defaultProps = {
+//   variant: 'default'
+// };
 export default Button;

@@ -34,7 +34,8 @@ const variantComposr = (props: ExecutionContext & InputProps) => {
   const variant = inputVariant[props.theme.mode];
   return {
     '&:focus': variant?.focus,
-    '&.invalid': variant?.invalid
+    '&.invalid': variant?.invalid,
+    '&:invalid': variant?.invalid
   };
 };
 
