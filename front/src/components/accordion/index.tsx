@@ -38,18 +38,18 @@ function AccordionItem({
 }: PropsWithChildren<AccordionItemProps>) {
   const itemID = `acc-ins-${useId()}`;
   const contentID = `acc-content-${useId()}`;
-  const nodeRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const boundingRef = useRef<{ [key: string]: number }>({ normal: 0, expanded: 0, init: -1 });
   const getMaxHeight = (bSelect: boolean) => {
-    return bSelect ? boundingRef.current.expanded : boundingRef.current.normal; //nodeRef.current?.firstElementChild?.clientHeight : 0;
+    return bSelect ? boundingRef.current.expanded : boundingRef.current.normal; //contentRef.current?.firstElementChild?.clientHeight : 0;
   };
   useLayoutEffect(() => {
     //컨텐츠 크기 참조 후 hidden설정
-    if (boundingRef.current.init < 0) {
+    if (boundingRef.current.init < 0 && contentRef.current) {
       boundingRef.current.init = 0;
-      const rect = nodeRef.current?.firstElementChild?.getBoundingClientRect();
+      const rect = contentRef.current.firstElementChild?.getBoundingClientRect();
       boundingRef.current.expanded = rect?.height ?? 0;
-      nodeRef.current?.setAttribute('hidden', 'true');
+      contentRef.current.hidden = true;
     }
   }, []);
 
@@ -58,10 +58,10 @@ function AccordionItem({
     let debounceID: any;
     if (selected) {
       //등장 전 hidden 제거
-      nodeRef.current?.removeAttribute('hidden');
+      contentRef.current && (contentRef.current.hidden = false);
     }
     debounceID = debounce(() => {
-      nodeRef.current!.style.height = `${getMaxHeight(selected)}px`;
+      contentRef.current && (contentRef.current.style.height = `${getMaxHeight(selected)}px`);
     }, 0)();
     return () => clearTimeout(debounceID);
   }, [selected]);
@@ -70,12 +70,12 @@ function AccordionItem({
     const transitionOutHandler = (e: TransitionEvent) => {
       const ele = e.target! as HTMLElement;
       if (ele.getBoundingClientRect().height <= 1) {
-        ele.setAttribute('hidden', 'true');
+        ele.hidden = true;
       }
     };
-    nodeRef.current?.addEventListener('transitionend', transitionOutHandler);
+    contentRef.current?.addEventListener('transitionend', transitionOutHandler);
     return () => {
-      nodeRef.current?.removeEventListener('transitionend', transitionOutHandler);
+      contentRef.current?.removeEventListener('transitionend', transitionOutHandler);
     };
   }, []);
   return (
@@ -93,7 +93,7 @@ function AccordionItem({
       </AccordionButton>
       <AccordionContent
         id={contentID}
-        ref={nodeRef}
+        ref={contentRef}
         role='region'
         aria-labelledby={itemID}
         aria-hidden={!selected}

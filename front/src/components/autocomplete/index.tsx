@@ -12,6 +12,7 @@ import { VBox } from '@/components/elements/Box';
 import { labelGetter, valueGetter } from '@/components/util';
 import { variant, grey } from '@/colors';
 import SearchInput from '@/components/elements/SearchInput';
+import { useListProvider } from '../hooks';
 
 // activeIndex를 ref를 대체할 때 유의점.
 // 필터 결과에 따라 index가 달라지기 때문에 ref에 index를 기억하는 건 의미가 없다.
@@ -122,9 +123,7 @@ function AutoComplete({
   const [select, setSelect] = useState(getValue(defaultValue || value));
   const deferredQuery = useDeferredValue(query);
   //
-  const provider = useMemo(() => {
-    return options.map(o => ({ label: getLabel(o), value: getValue(o) }));
-  }, [options, getLabel, getValue]);
+  const provider = useListProvider(options, getLabel, getValue);
 
   // query값이 적용된 옵션목록
   const filteredOptions = useMemo(() => {
@@ -220,8 +219,6 @@ function AutoComplete({
 
   const onClickOption = (idx: number) => {
     const selectLabel = filteredOptions[idx].label;
-    //이전선택제거
-    console.log('click!!', idx);
     setSelect(selectLabel);
     setQuery(selectLabel);
     setOpenList(false);
@@ -255,7 +252,7 @@ function AutoComplete({
       if (selectOption) {
         selectOption.ariaSelected = 'true';
         selectOption.classList.add('selected');
-        selectOption.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+        selectOption.scrollIntoView({ behavior: 'auto', block: 'center' });
       } else {
         listRef.current && listRef.current.scrollTo(0, 0);
       }

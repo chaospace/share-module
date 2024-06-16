@@ -44,18 +44,12 @@ const AccordionBasic: Story = {
         <AccordionPanel label='테스트'>
           <VBox p={20}>
             <Input type='text' />
-
             <Input type='tel' />
-
             <Input type='url' />
-
             <Input type='search' />
             <Input type='text' />
-
             <Input type='tel' />
-
             <Input type='url' />
-
             <Input type='search' />
           </VBox>
         </AccordionPanel>

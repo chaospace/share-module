@@ -15,6 +15,7 @@ import InfiniteApp_Advance from './pages/feed/index_ad';
 import TabApp from './pages/tab';
 import TooltipApp from './pages/tooltip';
 import AutoCompleteApp from './pages/autocomplete';
+import TypoApp from './pages/typo';
 
 const ErrorPage = () => {
   const error = useRouteError() as any;
@@ -28,6 +29,10 @@ const ErrorPage = () => {
 };
 
 const routeChildren = [
+  {
+    path: 'typo',
+    element: <TypoApp />
+  },
   {
     path: 'autocomplete',
     element: <AutoCompleteApp />

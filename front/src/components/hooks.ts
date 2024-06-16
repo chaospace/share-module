@@ -29,35 +29,10 @@ function useRefForward<T extends any>(refs: React.ForwardedRef<T>[]) {
   }, [refs]);
 }
 
-interface FeedObservable {
-  getListener: () => Element[];
-  callback: (o: IntersectionObserverEntry, ...rest: any) => void;
-  getOption: () => IntersectionObserverInit;
-  deps?: readonly any[];
-}
-
-function useFeedObserver({ getListener, getOption, callback, deps }: FeedObservable) {
-  useEffect(() => {
-    const ob = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
-      entries.forEach(o => {
-        if (o.isIntersecting) {
-          // ... processing
-          callback.apply(null, [o, ...(deps ?? [])]);
-        }
-      });
-    }, getOption());
-    getListener().forEach(o => ob.observe(o));
-    return () => {
-      ob.disconnect();
-    };
-    // eslint-disable-next-line
-  }, [deps]);
-}
-
 function useListProvider<T>(source: T[], getLabel = labelGetter, getValue = valueGetter) {
   return useMemo(() => {
     return source.map(o => composeOptionItem(o, getLabel, getValue));
   }, [source, getLabel, getValue]);
 }
 
-export { useRefSync, useFeedObserver, useRefForward, useListProvider };
+export { useRefSync, useRefForward, useListProvider };
