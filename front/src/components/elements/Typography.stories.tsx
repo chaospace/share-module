@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import Typography from './Typography';
 import { HBox, VBox } from './Box';
 
+//
 const meta = {
   title: 'elements/Typography',
   component: Typography,
@@ -28,7 +29,7 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<Meta>;
 
 const TypoTitle: Story = {
   args: {

@@ -56,4 +56,22 @@ const Typography = styled('p')
     shouldForwardProp: shouldForwardCSSProps(['variant'])
   })(composer);
 
+const initVariantProps = (variant: TypoVariant) => typoVariant[variant];
+
+const P = styled.p.withConfig({
+  shouldForwardProp: shouldForwardCSSProps(['variant'])
+})<TypographyProps>(typoVariant.body, composer);
+
+//하나의 컴포넌트에서 항상 variant를 주면서 사용하거나 미리 고정값을 해서 사용해야 한다.
+//단 override를 할 경우 셀렉터가 중복되므로 중복을 없애려면 분리는 필요하다.
+
+const Span = styled(P).attrs({ as: 'span' })``;
+const Caption = styled('span')(typoVariant.caption, composer);
+const H = styled('h1').attrs((_: any) => ({ as: _.as ?? 'h1' }))<TypographyProps>(
+  _ => initVariantProps(_.variant ?? 'title'),
+  composer
+);
+
+export { Caption, Span, P, H };
+export type { TypographyProps };
 export default Typography;
