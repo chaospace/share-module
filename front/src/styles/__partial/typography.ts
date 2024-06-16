@@ -4,7 +4,7 @@ const typographyStyle = css`
     line-height: 2;
   }
   p {
-    line-height: 1.5;
+    line-height: 1;
   }
 `;
 
