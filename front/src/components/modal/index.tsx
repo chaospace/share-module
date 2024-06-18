@@ -7,6 +7,8 @@ import { grey } from '@/colors';
 import IconButton from '@/components/elements/IconButton';
 import Button from '@/components/elements/Button';
 import Grid from '@/components/elements/Grid';
+import { Container } from '@/components/elements/Container';
+import { useActiveIndex, useModalRegist, useModalRemove } from './modalStore';
 
 const layerBaseStyle = css`
   position: fixed;
@@ -17,14 +19,14 @@ const layerBaseStyle = css`
   bottom: 0;
 `;
 
-const ModalContainer = styled.div`
+const ModalContainer = styled(Container)`
   position: fixed;
   display: flex;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: ${({ theme }) => theme.zIndices.modal};
+  z-index: ${({ theme, zIndex }) => zIndex ?? theme.zIndices.modal};
   align-items: center;
   justify-content: center;
 `;
@@ -34,7 +36,7 @@ const DimLayer = styled('div')`
   width: 100%;
   height: 100%;
   backdrop-filter: blur(2px);
-  pointer-events: none;
+  /* pointer-events: none; */
 `;
 
 const Modal = styled(Grid).attrs(props => ({
@@ -100,7 +102,7 @@ const Footer = styled(HBox).attrs(props => ({
 
 type ModalFooterProps = {
   onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
-  onSubmit?: () => void;
+  onSubmit?: (e?: React.MouseEvent<HTMLElement>) => void;
 };
 
 type ModalProps = {
@@ -157,9 +159,12 @@ const getFirstFocusElement = (candidate: HTMLElement[]) =>
   candidate.find(o => o.ariaLabel !== 'close');
 
 /**
- * 모달컴포넌트
- * 헤더와 풋더는 고정
+ * 모달컴포넌트<br/>
+ * 헤더와 풋더는 고정<br/>
  * body는 유동이며 minContentHeight로 최소높이만 제어.
+ *
+ * 멀티모달을 탭제어하고 싶은 경우
+ * 최상위 모달이 아닌 경우 모든 요소에 포커스 이벤트를 막아야 window에 걸어둔 전역 이벤트 에러가 발생하지 않는다.
  */
 function SimpleModal({
   title = '알림',
@@ -169,49 +174,47 @@ function SimpleModal({
   cancelLabel = '취소',
   okLabel = '확인',
   footerAlign = 'center',
-  FooterContent
+  FooterContent = undefined
 }: PropsWithChildren<ModalProps>) {
   const modalRef = useRef<HTMLDivElement>(null);
   const focusableNodes = useRef<HTMLElement[]>([]);
   const dialogLabelId = `dl-${useId()}`;
+  const registModal = useModalRegist();
+  const removeModal = useModalRemove();
+  const modalIndexRef = useRef(-1);
+  const isActiveIndex = useActiveIndex() === modalIndexRef.current;
+
+  useEffect(() => {
+    modalIndexRef.current = registModal();
+    return removeModal;
+  }, []);
 
   const onCloseHandler = (e?: React.MouseEvent<HTMLButtonElement>) => {
-    if (e) {
-      e.stopPropagation();
-    }
+    e && e.preventDefault();
     onClose && onClose();
   };
 
-  const onSubmit = () => {
+  const onSubmit = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     onClose && onClose(true);
   };
 
-  // eslint react-hooks/exhaustive-deps: 0
-  useEffect(() => {
-    const onClickDocument = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onCloseHandler();
-      }
-    };
-    //click을 이용하면 up순간 이벤트가 발생해 등장과 함께 사라지게 된다.
-    document.documentElement.addEventListener('mousedown', onClickDocument);
-    return () => {
-      document.documentElement.removeEventListener('mousedown', onClickDocument);
-    };
-  }, []);
-  // eslint react-hooks/exhaustive-deps: 2
+  const onClickOutSideModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onCloseHandler();
+  };
 
   //초기 포커스적용.
   useEffect(() => {
-    focusableNodes.current = findFocusableChildNode(modalRef.current!, []);
-    const ele = getFirstFocusElement(focusableNodes.current);
-    ele?.focus();
-  }, []);
-
-  // 포커스 이동 처리
-  useEffect(() => {
     let lastFocus: Element | null;
+    focusableNodes.current = findFocusableChildNode(modalRef.current!, []);
     const onFocusDocument = (_: FocusEvent) => {
+      if (!isActiveIndex) return;
       const eles = focusableNodes.current;
       //포커스가 모달 밖으로 이동하면 다시 모달로 지정한다.
       if (!modalRef.current?.contains(document.activeElement)) {
@@ -223,16 +226,29 @@ function SimpleModal({
       }
       lastFocus = document.activeElement;
     };
-    //click을 이용하면 up순간 이벤트가 발생해 등장과 함께 사라지게 된다.
-    window.addEventListener('focus', onFocusDocument, true);
+    /**
+     * TODO 멀티 모달 컨트롤 시 isActiveIndex로 구분하지 않으면
+     * clear 처리에서 참조에러가 발생해서 isActiveIndex를 체크해
+     * 최상위 모달에만 이벤트를 등록도록 처리.
+     * effect에 clear처리가 생각과 다르게 동작하는 것 같음.
+     */
+    if (isActiveIndex) {
+      focusableNodes.current.forEach(o => {
+        o.removeAttribute('tabIndex');
+      });
+      const ele = getFirstFocusElement(focusableNodes.current);
+      ele?.focus();
+      window.addEventListener('focus', onFocusDocument, true);
+    }
     return () => {
+      focusableNodes.current = [];
       window.removeEventListener('focus', onFocusDocument, true);
     };
-  }, []);
+  }, [isActiveIndex]);
 
   return (
-    <ModalContainer>
-      <DimLayer tabIndex={0} />
+    <ModalContainer zIndex={modalIndexRef.current}>
+      <DimLayer tabIndex={0} onClick={onClickOutSideModal} />
       <Modal role='dialog' aria-modal='true' aria-labelledby={dialogLabelId} ref={modalRef}>
         <Header>
           <Typography id={dialogLabelId} variant='subTitle1'>

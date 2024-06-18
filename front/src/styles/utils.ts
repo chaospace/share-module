@@ -96,6 +96,9 @@ const parseVariant = (callback: (props: ThemeVariantProps) => StyleReturnType) =
 const parseVariantColor = (callback: (color: VariantColorType) => StyleReturnType) =>
   pipe(forwardComponentVariant, callback);
 
+const parseStyleProps = (callback: (props: ExecutionContext & any) => StyleReturnType) =>
+  pipe(forwardStyleProps, callback);
+
 /**
  * getValue에 키를 커링으로 기억해서 사용하는 함수.
  * @param key    :object속성 키
@@ -162,5 +165,6 @@ export {
   isArray,
   isObject,
   toReactElement,
+  parseStyleProps,
   pipe
 };
