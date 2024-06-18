@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { CSSComposerObject, composer } from 'styled-composer';
-import { shouldForwardCSSProps } from '@/styles/utils';
+import { shouldForwardCSSProps, shouldForwardVariantProps } from '@/styles/utils';
 import { KnownTarget } from 'styled-components/dist/types';
 
 const typoVariant = {
@@ -64,7 +64,9 @@ const P = styled.p.withConfig({
 
 const Span = styled(P).attrs({ as: 'span' })``;
 const Caption = styled('span')(typoVariant.caption, composer);
-const H = styled('h1').attrs((_: any) => ({ as: _.as ?? 'h1' }))<TypographyProps>(
+const H = styled('h1')
+  .withConfig({ shouldForwardProp: shouldForwardVariantProps() })
+  .attrs((_: any) => ({ as: _.as ?? 'h1' }))<TypographyProps>(
   _ => initVariantProps(_.variant ?? 'title'),
   composer
 );
