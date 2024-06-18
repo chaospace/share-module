@@ -1,4 +1,11 @@
-import React, { FunctionComponent, PropsWithChildren, useEffect, useId, useRef } from 'react';
+import React, {
+  FunctionComponent,
+  PropsWithChildren,
+  useEffect,
+  useId,
+  useMemo,
+  useRef
+} from 'react';
 import styled, { css } from 'styled-components';
 import { Box, HBox, VBox } from '@/components/elements/Box';
 import Typography from '../elements/Typography';
@@ -8,7 +15,7 @@ import IconButton from '@/components/elements/IconButton';
 import Button from '@/components/elements/Button';
 import Grid from '@/components/elements/Grid';
 import { Container } from '@/components/elements/Container';
-import { useActiveIndex, useModalRegist, useModalRemove } from './modalStore';
+import useModalStore, { useActiveIndex } from './modalStore';
 
 const layerBaseStyle = css`
   position: fixed;
@@ -179,14 +186,18 @@ function SimpleModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const focusableNodes = useRef<HTMLElement[]>([]);
   const dialogLabelId = `dl-${useId()}`;
-  const registModal = useModalRegist();
-  const removeModal = useModalRemove();
-  const modalIndexRef = useRef(-1);
-  const isActiveIndex = useActiveIndex() === modalIndexRef.current;
+
+  const { regist, nextHighestIndex } = useModalStore();
+
+  const modalIndex = useMemo(() => {
+    return nextHighestIndex();
+  }, [nextHighestIndex]);
+  const activeIndex = useActiveIndex();
+  const isActiveModal = useMemo(() => activeIndex === modalIndex, [activeIndex]);
 
   useEffect(() => {
-    modalIndexRef.current = registModal();
-    return removeModal;
+    const clearModal = regist(modalIndex);
+    return clearModal;
   }, []);
 
   const onCloseHandler = (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -199,7 +210,6 @@ function SimpleModal({
       e.preventDefault();
       e.stopPropagation();
     }
-
     onClose && onClose(true);
   };
 
@@ -214,7 +224,6 @@ function SimpleModal({
     let lastFocus: Element | null;
     focusableNodes.current = findFocusableChildNode(modalRef.current!, []);
     const onFocusDocument = (_: FocusEvent) => {
-      if (!isActiveIndex) return;
       const eles = focusableNodes.current;
       //포커스가 모달 밖으로 이동하면 다시 모달로 지정한다.
       if (!modalRef.current?.contains(document.activeElement)) {
@@ -232,7 +241,7 @@ function SimpleModal({
      * 최상위 모달에만 이벤트를 등록도록 처리.
      * effect에 clear처리가 생각과 다르게 동작하는 것 같음.
      */
-    if (isActiveIndex) {
+    if (isActiveModal) {
       focusableNodes.current.forEach(o => {
         o.removeAttribute('tabIndex');
       });
@@ -244,10 +253,10 @@ function SimpleModal({
       focusableNodes.current = [];
       window.removeEventListener('focus', onFocusDocument, true);
     };
-  }, [isActiveIndex]);
+  }, [isActiveModal]);
 
   return (
-    <ModalContainer zIndex={modalIndexRef.current}>
+    <ModalContainer zIndex={modalIndex}>
       <DimLayer tabIndex={0} onClick={onClickOutSideModal} />
       <Modal role='dialog' aria-modal='true' aria-labelledby={dialogLabelId} ref={modalRef}>
         <Header>

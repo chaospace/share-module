@@ -6,12 +6,12 @@ import { devtools } from 'zustand/middleware';
 interface ModalStore {
   modalList: number[];
   active: number;
-  regist(): number;
-  remove(): void;
+  regist(depthIndex: number): () => void;
+  nextHighestIndex: () => number;
 }
 
 const BASE_DPETH = 1000;
-const getNextHighstIndex = (source: unknown[]) => {
+const getNextHighestIndex = (source: unknown[]) => {
   return source.length + BASE_DPETH;
 };
 
@@ -19,20 +19,18 @@ const modalStore: StoreApi<ModalStore> = createStore<ModalStore>()(
   devtools((set, get) => ({
     modalList: [],
     active: -1,
-    regist() {
-      const current = get().modalList;
-      const active = getNextHighstIndex(current);
-      set({ modalList: [...current, active], active }, undefined, { type: 'modal/regist' });
-      return active;
+    nextHighestIndex() {
+      return getNextHighestIndex(get().modalList);
     },
-    remove() {
+    regist(depthIndex: number) {
       const current = get().modalList;
-      if (current.length) {
-        current.pop();
-      }
-      set({ modalList: [...current], active: current[current.length - 1] }, undefined, {
-        type: 'modal/remove'
-      });
+      const active = depthIndex;
+      set({ modalList: [...current, active], active }, undefined, { type: 'modal/regist' });
+      return () => {
+        set({ modalList: [...current], active: current[current.length - 1] }, undefined, {
+          type: 'modal/remove'
+        });
+      };
     }
   }))
 );
@@ -51,9 +49,9 @@ const useModalRegist = () => {
   return useModalStore(s => s.regist);
 };
 
-const useModalRemove = () => {
-  return useModalStore(s => s.remove);
+const useNextHigtestIndex = () => {
+  return useModalStore(s => s.nextHighestIndex);
 };
 
-export { useActiveIndex, useModalRegist, useModalRemove };
+export { useActiveIndex, useModalRegist, useNextHigtestIndex };
 export default useModalStore;

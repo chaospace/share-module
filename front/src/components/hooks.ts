@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { composeOptionItem, labelGetter, valueGetter } from './util';
 
 const setRef = <T extends any = any>(ref: React.ForwardedRef<T>, instance: T) => {
@@ -35,4 +35,14 @@ function useListProvider<T>(source: T[], getLabel = labelGetter, getValue = valu
   }, [source, getLabel, getValue]);
 }
 
-export { useRefSync, useRefForward, useListProvider };
+function useInit() {
+  const initRef = useRef(false);
+  if (!initRef.current) {
+    initRef.current = true;
+    return false;
+  }
+
+  return initRef.current;
+}
+
+export { useRefSync, useRefForward, useListProvider, useInit };
