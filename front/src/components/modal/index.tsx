@@ -188,12 +188,9 @@ function SimpleModal({
   const dialogLabelId = `dl-${useId()}`;
 
   const { regist, nextHighestIndex } = useModalStore();
-
-  const modalIndex = useMemo(() => {
-    return nextHighestIndex();
-  }, [nextHighestIndex]);
   const activeIndex = useActiveIndex();
-  const isActiveModal = useMemo(() => activeIndex === modalIndex, [activeIndex]);
+  const modalIndex = useMemo(() => nextHighestIndex(), [nextHighestIndex]);
+  const isActiveModal = useMemo(() => activeIndex === modalIndex, [activeIndex, modalIndex]);
 
   useEffect(() => {
     const clearModal = regist(modalIndex);
@@ -245,9 +242,10 @@ function SimpleModal({
       focusableNodes.current.forEach(o => {
         o.removeAttribute('tabIndex');
       });
+
+      window.addEventListener('focus', onFocusDocument, true);
       const ele = getFirstFocusElement(focusableNodes.current);
       ele?.focus();
-      window.addEventListener('focus', onFocusDocument, true);
     }
     return () => {
       focusableNodes.current = [];
