@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div></div>
+    <script>
+      const customPartition = preciate => (left, right, source) => {
+        let q = left;
+        for (let i = left; i < right; i++) {
+          if (preciate(source[i], source[right])) {
+            [source[i], source[q]] = [source[q], source[i]];
+            q++;
+          }
+        }
+        [source[right], source[q]] = [source[q], source[right]];
+        return q;
+      };
+
+      //quick정렬
+      //sorting 숫자만 가능하지만 predicate를 넣으면 원하는 방법으로 정렬 처리가 가능.
+      function partition(left, right, source, predicate = undefined) {
+        let q = left;
+        for (let i = left; i < right; i++) {
+          if (predicate ? predicate(source[i], source[right]) : source[i] < source[right]) {
+            [source[i], source[q]] = [source[q], source[i]];
+            q++;
+          }
+        }
+        //축으로 사용한 값(right)과 q인덱스를 swap처리
+        //변경 이유는 q를 다음 비교에서 제외처리
+        [source[right], source[q]] = [source[q], source[right]];
+        return q;
+      }
+
+      function quickSort(left, right, source, predicate = undefined) {
+        if (left < right) {
+          // 분할처리
+          const q = partition(left, right, source, predicate);
+          quickSort(left, q - 1, source, predicate);
+          quickSort(q + 1, right, source, predicate);
+        }
+      }
+      const arr = [10, 2, 4, 29, 1, 5, 9];
+      quickSort(0, arr.length - 1, arr);
+      alert(arr.toString());
+
+      const foo = [
+        {
+          name: 'ccdd',
+          age: 1
+        },
+        {
+          name: 'eeee',
+          age: 320
+        },
+        {
+          name: 'fafe',
+          age: 3
+        },
+        {
+          name: 'chaos',
+          age: 10
+        }
+      ];
+      //quick정렬에 축을 기준으로 비교한다. right를 기준으로 체크해야 되기 때문에
+      quickSort(0, foo.length - 1, foo, (a, b) => {
+        return a.age < b.age;
+      });
+
+      alert(foo.map(o => o.age).toString());
+    </script>
+  </body>
+</html>

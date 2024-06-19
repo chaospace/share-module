@@ -7,7 +7,7 @@ import { routeChildren } from './router';
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
 import ErrorBoundary from './components/ErrorBoundary';
 import Button from './components/elements/Button';
-import Typography from './components/elements/Typography';
+import Typography, { H } from './components/elements/Typography';
 
 const queryClient = new QueryClient();
 
@@ -16,7 +16,8 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={appTheme}>
         <VBox p={5}>
-          <HBox>
+          <H>개인 스터디 내용 정리 페이지</H>
+          <HBox overflow='hidden' overflowX='auto' height={40}>
             {routeChildren.map(o => {
               const path = `/${o.path}`;
               return (
