@@ -20,14 +20,15 @@ const TooltipWrapper = styled.div
     pointerEvents: 'none',
     borderRadius: 's',
     px: 4,
-    py: 2,
+    py: 3,
     color: grey[50],
-    boxShadow: 's'
+    boxShadow: 's',
+    zIndex: '1000'
   })(
   composer,
   css`
     --offset: 5;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     background-color: ${getVariantColorDark};
     visibility: hidden;
 
@@ -102,18 +103,23 @@ const TooltipPopover = React.forwardRef<HTMLDivElement, PropsWithChildren<Toolti
     const syncRef = useRefForward([ref, nodeRef].filter(v => v));
 
     useEffect(() => {
-      if (nodeRef.current && area) {
-        const boundingRect = nodeRef.current.getBoundingClientRect();
+      let timerID: ReturnType<typeof setTimeout>;
+      const node = nodeRef.current;
+      if (node && area) {
+        const boundingRect = node.getBoundingClientRect();
         const { px, py } = getPosition(area, boundingRect, placement);
-        nodeRef.current.style.left = `${px}px`;
-        nodeRef.current.style.top = `${py}px`;
+        node.style.left = `${~~px}px`;
+        node.style.top = `${~~py}px`;
         //get direction from placement
-        nodeRef.current.classList.add('prepare');
-        setTimeout(() => {
-          nodeRef.current!.classList.add('show');
+        node.classList.add('prepare');
+        timerID = setTimeout(() => {
+          node.classList.add('show');
         }, 0);
       }
-    }, [area]);
+      return () => {
+        timerID && clearTimeout(timerID);
+      };
+    }, [area, placement]);
     return (
       <TooltipWrapper role='tooltip' id={id} data-placement={placement} ref={syncRef} {...rest}>
         {children}
@@ -196,7 +202,7 @@ const Tooltip = ({
 
   //children에 ref와 내부 가로채기용 ref를 싱크처리.
   //@ts-ignore
-  const syncRefs = useRefForward<HTMLElement>([childrenProps.ref, nodeRef]);
+  const syncRefs = useRefForward<HTMLElement>([childrenProps.ref, nodeRef].filter(v => v));
 
   const children = getValidChildren(childrenProps);
 
@@ -215,38 +221,40 @@ const Tooltip = ({
       handler.in = 'click';
       handler.out = 'click';
     }
-
-    const onInHandler = (_: Event) => {
-      if (nodeRef.current) {
-        const elementBoudingRect = nodeRef.current.getBoundingClientRect();
-        setBoundingRect(elementBoudingRect);
-      }
-    };
-    const onOutHandler = (e: Event) => {
-      if (clickTrigger) {
-        if ('composedPath' in e && !e.composedPath().includes(nodeRef.current!)) {
+    const node = nodeRef.current;
+    if (node) {
+      const onInHandler = (_: Event) => {
+        if (node) {
+          const elementBoudingRect = node.getBoundingClientRect();
+          setBoundingRect(elementBoudingRect);
+        }
+      };
+      const onOutHandler = (e: Event) => {
+        if (clickTrigger) {
+          if ('composedPath' in e && !e.composedPath().includes(node)) {
+            setBoundingRect(null);
+          }
+        } else {
           setBoundingRect(null);
         }
-      } else {
-        setBoundingRect(null);
-      }
-    };
+      };
 
-    nodeRef.current?.addEventListener(handler.in, onInHandler);
-    if (clickTrigger) {
-      nodeRef.current?.ownerDocument.addEventListener(handler.out, onOutHandler);
-    } else {
-      nodeRef.current?.addEventListener(handler.out, onOutHandler);
-    }
-
-    return () => {
-      nodeRef.current?.removeEventListener(handler.in, onInHandler);
+      node.addEventListener(handler.in, onInHandler);
       if (clickTrigger) {
-        nodeRef.current?.ownerDocument.removeEventListener(handler.out, onOutHandler);
+        node.ownerDocument.addEventListener(handler.out, onOutHandler);
       } else {
-        nodeRef.current?.removeEventListener(handler.out, onOutHandler);
+        node.addEventListener(handler.out, onOutHandler);
       }
-    };
+
+      return () => {
+        node.removeEventListener(handler.in, onInHandler);
+        if (clickTrigger) {
+          node.ownerDocument.removeEventListener(handler.out, onOutHandler);
+        } else {
+          node.removeEventListener(handler.out, onOutHandler);
+        }
+      };
+    }
   }, [trigger]);
 
   const popoverId = `tooltip-${useId()}`;

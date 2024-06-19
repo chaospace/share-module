@@ -1,6 +1,6 @@
 import Button from '@/components/elements/Button';
 import { Container } from '@/components/elements/Container';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 interface PuzzleProps {
@@ -12,7 +12,9 @@ const Piece = styled(Container).attrs(_ => ({
   position: 'absolute',
   left: _.left ?? undefined,
   top: _.top ?? undefined
-}))``;
+}))`
+  transition: all 100ms linear;
+`;
 
 const PuzzleContainer = styled(Container)`
   --blockSize: 80px;
@@ -30,6 +32,7 @@ const PuzzleContainer = styled(Container)`
     height: calc(var(--blockSize) - 1px);
     background-color: #eee;
     font-weight: bold;
+    user-select: none;
     &.space {
       color: white;
       background-color: white;
@@ -43,6 +46,18 @@ interface PuzzleVO {
   isSpace: boolean;
   label: number;
 }
+
+const PieceItem = React.memo(
+  ({ x, y, label, isSpace, onClick }: PuzzleVO & { onClick: React.MouseEventHandler }) => {
+    const className = isSpace ? 'space' : '';
+    return (
+      <Piece className={className} left={`${x}px`} top={`${y}px`} onClick={onClick}>
+        {label}
+      </Piece>
+    );
+  },
+  (prev, next) => prev.x === next.x && prev.y === next.y && prev.isSpace === next.isSpace
+);
 
 const createPieces = (blockSize: number, rows: number) => {
   const max = rows * rows;
@@ -59,36 +74,40 @@ const createPieces = (blockSize: number, rows: number) => {
   });
 };
 
-function SlidingPuzzle({ blockSize = 40, rows = 4 }: PuzzleProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function SlidingPuzzle({ blockSize = 80, rows = 4 }: PuzzleProps) {
+  // const containerRef = useRef<HTMLDivElement>(null);
   const [pieces, setPieces] = useState<PuzzleVO[]>(createPieces(blockSize, rows));
+  // const deferredPieces = useDeferredValue(pieces);
   const [complete, setComplete] = useState(false);
   const reset = () => {
     setPieces(createPieces(blockSize, rows));
   };
 
+  /**
+   * 여기서 선택할 사항은 2가지
+   * pos만 변경해 애니메이션을 적용.
+   * pieces를 갱신해 리랜더링을 적용.
+   * @param selectIdx
+   */
   const onClickPiece = (selectIdx: number) => {
-    if (containerRef.current) {
-      const current = pieces[selectIdx];
-      const ty = current.y;
-      const tx = current.x;
-      const spaceIndex = pieces.findIndex(o => o.isSpace === true)!;
-      const spaceBlock = pieces[spaceIndex];
-      const cx = spaceBlock.x;
-      const cy = spaceBlock.y;
-      //상하좌우 체크
-      if (
-        ((cx - blockSize === tx || cx + blockSize === tx) && ty === cy) ||
-        ((cy - blockSize === ty || cy + blockSize === ty) && tx === cx)
-      ) {
-        const temp = pieces.concat();
-
-        temp[selectIdx].x = cx;
-        temp[selectIdx].y = cy;
-        temp[spaceIndex].x = tx;
-        temp[spaceIndex].y = ty;
-        setPieces(temp);
-      }
+    const current = pieces[selectIdx];
+    const ty = current.y;
+    const tx = current.x;
+    const spaceIndex = pieces.findIndex(o => o.isSpace === true)!;
+    const spaceBlock = pieces[spaceIndex];
+    const cx = spaceBlock.x;
+    const cy = spaceBlock.y;
+    //상하좌우 체크
+    if (
+      ((cx - blockSize === tx || cx + blockSize === tx) && ty === cy) ||
+      ((cy - blockSize === ty || cy + blockSize === ty) && tx === cx)
+    ) {
+      const temp = pieces.concat();
+      temp[selectIdx].x = cx;
+      temp[selectIdx].y = cy;
+      temp[spaceIndex].x = tx;
+      temp[spaceIndex].y = ty;
+      setPieces(temp);
     }
   };
 
@@ -118,29 +137,29 @@ function SlidingPuzzle({ blockSize = 40, rows = 4 }: PuzzleProps) {
     }
   }, [pieces]);
 
-  if (complete) {
-    alert('성공!');
-  }
+  useEffect(() => {
+    if (complete) {
+      alert('성공!');
+    }
+  }, [complete]);
 
   return (
     <React.Fragment>
       <PuzzleContainer
-        ref={containerRef}
         // @ts-ignore
         style={{ '--blockSize': `${blockSize}px`, '--rows': rows }}>
         {pieces.map((o, idx) => {
-          const { x, y, isSpace, label } = o;
-          const className = isSpace ? 'space' : '';
+          const { x, y, label, isSpace } = o;
           const key = `${x}-${y}-${label}`;
           return (
-            <Piece
+            <PieceItem
               key={key}
-              className={className}
-              left={`${x}px`}
-              top={`${y}px`}
-              onClick={() => onClickPiece(idx)}>
-              {label}
-            </Piece>
+              x={x}
+              y={y}
+              label={label}
+              isSpace={isSpace}
+              onClick={() => onClickPiece(idx)}
+            />
           );
         })}
       </PuzzleContainer>

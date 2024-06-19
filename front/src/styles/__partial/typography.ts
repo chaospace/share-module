@@ -3,9 +3,6 @@ const typographyStyle = css`
   h1 {
     line-height: 2;
   }
-  p {
-    line-height: 1;
-  }
 `;
 
 export default typographyStyle;

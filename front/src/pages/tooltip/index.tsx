@@ -52,6 +52,7 @@ function TooltipApp() {
 
           <Tooltip
             placement='left-start'
+            disableHover
             title={
               <React.Fragment>
                 <Typography>툴팁 컨텐츠</Typography>
