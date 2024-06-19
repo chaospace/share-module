@@ -5,7 +5,6 @@ import React, {
   PropsWithChildren,
   useCallback,
   useImperativeHandle,
-  useLayoutEffect,
   useRef,
   useState
 } from 'react';
@@ -28,7 +27,7 @@ import {
   ArrowIcon
 } from './elements.style';
 import { VariantCategory } from 'styled';
-import { useRefSync } from '../hooks';
+import { useRefSync, useWatch } from '../hooks';
 
 const KeyAction = {
   NEXT: 'NEXT',
@@ -280,13 +279,12 @@ const MenuWrapper = ({
   const popOverable = role === 'menubar';
 
   //초기화
-  useLayoutEffect(() => {
+  useWatch(() => {
     //하위메뉴 참조 초기화
     menus[ariaLabelledBy || role] = menuItems;
-    // eslint-disable-next-line
   }, [ariaLabelledBy, role]);
 
-  useLayoutEffect(() => {
+  useWatch(() => {
     //시작메뉴 탭 인덱스 적용
     if (role === 'menubar' && !selected.length) {
       menuItems.current[provider[0].label].setTabEnable(true);

@@ -1,18 +1,10 @@
-import React, {
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useDeferredValue, useId, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { VBox } from '@/components/elements/Box';
 import { labelGetter, valueGetter } from '@/components/util';
 import { variant, grey } from '@/colors';
 import SearchInput from '@/components/elements/SearchInput';
-import { useListProvider } from '../hooks';
+import { useListProvider, useWatch } from '../hooks';
 
 // activeIndex를 ref를 대체할 때 유의점.
 // 필터 결과에 따라 index가 달라지기 때문에 ref에 index를 기억하는 건 의미가 없다.
@@ -225,7 +217,7 @@ function AutoComplete({
   };
 
   //open시 리스트에 시작위치 결정
-  useEffect(() => {
+  useWatch(() => {
     if (openList && listRef.current) {
       //참조를 하기 전에는 항상 초기값으로 복원
       listRef.current.style.transform = 'translate(0,0)';
@@ -239,11 +231,11 @@ function AutoComplete({
     }
   }, [openList]);
   // 선택옵션 스타일적용
-  useEffect(() => {
+  useWatch(() => {
     const selectOption = optionItemRef.current.find(o => o?.textContent === select);
     //옵션요소 selected속성 초기화
     optionItemRef.current.forEach(o => {
-      if (o && selectOption && selectOption !== o) {
+      if (o && selectOption !== o) {
         o.ariaSelected = 'false';
         o.classList.remove('selected');
       }

@@ -1,5 +1,7 @@
 import React from 'react';
 import BoundingRectListener from '@/components/listener/BoundingRectListener';
+import { VBox } from '@/components/elements/Box';
+import { H } from '@/components/elements/Typography';
 
 function ChildrenApp() {
   const onClick = (_: React.MouseEvent<HTMLParagraphElement>) => {
@@ -7,23 +9,27 @@ function ChildrenApp() {
   };
 
   const onClickOutSideChildElement = (_: MouseEvent | TouchEvent) => {
-    console.log('out-side-click');
+    alert('out-side-click');
   };
 
   return (
-    <BoundingRectListener onClickOutSide={onClickOutSideChildElement}>
-      <span style={{ width: 'min-content' }} onClick={onClick}>
-        <div
-          style={{
-            position: 'relative',
-            height: '40px',
-            width: '100px',
-            backgroundColor: 'aqua'
-          }}>
-          <p>카오스</p>
-        </div>
-      </span>
-    </BoundingRectListener>
+    <VBox>
+      <H>요소 이외의 영역을 클릭 시 이벤트 발생!</H>
+      <BoundingRectListener onClickOutSide={onClickOutSideChildElement}>
+        <span style={{ width: 'min-content' }} onClick={onClick}>
+          <div
+            style={{
+              position: 'relative',
+              height: '80px',
+              width: '140px',
+              wordBreak: 'word-break',
+              backgroundColor: 'aqua'
+            }}>
+            <p>여기를 클릭하면 이벤트 발생 안함</p>
+          </div>
+        </span>
+      </BoundingRectListener>
+    </VBox>
   );
 }
 

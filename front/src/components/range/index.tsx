@@ -13,30 +13,31 @@ const Container = styled('div')
   .withConfig({
     shouldForwardProp: (prop: string) => !['variant', 'progress'].includes(prop)
   })`
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  ${Input}[type='range'] {
-    appearance: none;
-    height: 6px;  
-    border-radius: 3px;
-    width: 100%;
-    border:1px solid #ababab;
-    background:${({ theme, progress, variant }) => `linear-gradient(to right, ${theme.variant[variant!].main} ${progress}%, ${theme.variant[variant!].light} 0%)`};
-    &:focus-within, &:focus{
-      outline:none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    ${Input}[type='range'] {
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      width: 100%;
+      border: 1px solid #ababab;
+      background: ${({ theme, progress, variant }) =>
+        `linear-gradient(to right, ${theme.variant[variant!].main} ${progress}%, ${theme.variant[variant!].light} 0%)`};
+      &:focus-within,
+      &:focus {
+        outline: none;
+      }
     }
-  }
-  ${Input}[type='range']::-webkit-slider-thumb {
-    appearance: none;
-    box-shadow: ${({ theme, variant }) => `0 0 0 2px inset ${theme.variant[variant!].main};`};
-    width: 16px;
-    height: 16px;
-    background-color: ${({ theme, variant }) => theme.variant[variant!].light};
-    border-radius: 50%;
-  }
-`;
+    ${Input}[type='range']::-webkit-slider-thumb {
+      appearance: none;
+      box-shadow: ${({ theme, variant }) => `0 0 0 2px inset ${theme.variant[variant!].main};`};
+      width: 16px;
+      height: 16px;
+      background-color: ${({ theme, variant }) => theme.variant[variant!].light};
+      border-radius: 50%;
+    }    
+  `;
 
 /**
  * input[type='range'] 컴포넌트 커스텀 스타일적용을 위해 div로 한번 감싼형태.

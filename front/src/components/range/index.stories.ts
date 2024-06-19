@@ -15,6 +15,7 @@ const meta = {
     onInput: fn(),
     onChange: fn()
   },
+  // @ts-ignore
   argTypes: {
     ...variantArgTypes
   }

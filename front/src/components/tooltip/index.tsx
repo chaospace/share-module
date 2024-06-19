@@ -1,6 +1,6 @@
-import React, { PropsWithChildren, useEffect, useId, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useId, useMemo, useState } from 'react';
 import { grey } from '@/colors';
-import { useRefForward } from '@/components/hooks';
+import { useRefForward, useWatch } from '@/components/hooks';
 import { getValidChildren, getVariantColorDark, toReactElement } from '@/styles/utils';
 import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
@@ -102,7 +102,7 @@ const TooltipPopover = React.forwardRef<HTMLDivElement, PropsWithChildren<Toolti
     const nodeRef = React.useRef<HTMLDivElement>(null);
     const syncRef = useRefForward([ref, nodeRef].filter(v => v));
 
-    useEffect(() => {
+    useWatch(() => {
       let timerID: ReturnType<typeof setTimeout>;
       const node = nodeRef.current;
       if (node && area) {
@@ -211,7 +211,7 @@ const Tooltip = ({
   }, [disableHover]);
 
   // click이벤트 처리
-  useEffect(() => {
+  useWatch(() => {
     const handler = {
       in: 'pointerover',
       out: 'pointerout'

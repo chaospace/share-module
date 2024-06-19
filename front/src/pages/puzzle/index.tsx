@@ -1,6 +1,7 @@
 import Button from '@/components/elements/Button';
 import { Container } from '@/components/elements/Container';
-import React, { useEffect, useState } from 'react';
+import { useWatch } from '@/components/hooks';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 interface PuzzleProps {
@@ -75,9 +76,7 @@ const createPieces = (blockSize: number, rows: number) => {
 };
 
 function SlidingPuzzle({ blockSize = 80, rows = 4 }: PuzzleProps) {
-  // const containerRef = useRef<HTMLDivElement>(null);
   const [pieces, setPieces] = useState<PuzzleVO[]>(createPieces(blockSize, rows));
-  // const deferredPieces = useDeferredValue(pieces);
   const [complete, setComplete] = useState(false);
   const reset = () => {
     setPieces(createPieces(blockSize, rows));
@@ -112,7 +111,7 @@ function SlidingPuzzle({ blockSize = 80, rows = 4 }: PuzzleProps) {
   };
 
   //변경 후 완료여부 체크
-  useEffect(() => {
+  useWatch(() => {
     //내용을 x, y순으로 정렬 후 확인해봐야 한다.
     const gridList = [...pieces].sort((a, b) => {
       if (a.y < b.y) {
@@ -137,7 +136,7 @@ function SlidingPuzzle({ blockSize = 80, rows = 4 }: PuzzleProps) {
     }
   }, [pieces]);
 
-  useEffect(() => {
+  useWatch(() => {
     if (complete) {
       alert('성공!');
     }

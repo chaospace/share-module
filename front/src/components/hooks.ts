@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { composeOptionItem, labelGetter, valueGetter } from './util';
 
 const setRef = <T extends any = any>(ref: React.ForwardedRef<T>, instance: T) => {
@@ -45,4 +45,27 @@ function useInit() {
   return initRef.current;
 }
 
-export { useRefSync, useRefForward, useListProvider, useInit };
+const useIsomorphicLayoutEffect = window === undefined ? useLayoutEffect : useEffect;
+
+function useMount(handler: React.EffectCallback) {
+  useIsomorphicLayoutEffect(handler, []);
+}
+
+function useWatch(handler: React.EffectCallback, deps?: React.DependencyList) {
+  useIsomorphicLayoutEffect(handler, deps);
+}
+
+function useUnMount(handler: () => any) {
+  useIsomorphicLayoutEffect(() => handler, []);
+}
+
+export {
+  useRefSync,
+  useRefForward,
+  useListProvider,
+  useInit,
+  useIsomorphicLayoutEffect,
+  useMount,
+  useUnMount,
+  useWatch
+};

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useRef } from 'react';
+import React, { PropsWithChildren, useRef } from 'react';
 import { FetchNextPageOptions, FetchPreviousPageOptions } from '@tanstack/react-query';
 
 import styled from 'styled-components';
@@ -7,6 +7,7 @@ import { ArrowCircleDownOutline } from '@styled-icons/evaicons-outline/ArrowCirc
 import { ArrowCircleUpOutline } from '@styled-icons/evaicons-outline/ArrowCircleUpOutline';
 import ListRenderer, { ListRenderProps } from '@/components/list/ListRenderer';
 import { debounce } from '@/components/util';
+import { useMount } from '../hooks';
 
 const FetchButton = styled('div')`
   position: relative;
@@ -113,7 +114,7 @@ function InfiniteList({
    * scrollend이벤트 처리
    * 컨테이너의 scrollTop값을 체크해 이전 다음 페이지를 불러온다.
    */
-  useEffect(() => {
+  useMount(() => {
     const container = containerRef.current;
     const listContainer = contentRef.current;
     const fetchingAfterTransition = debounce(() => {
@@ -160,7 +161,7 @@ function InfiniteList({
     return () => {
       container?.removeEventListener('scroll', onScroll);
     };
-  }, []);
+  });
 
   return (
     <ListContainer ref={containerRef} $pending={isFetching} $height={height}>

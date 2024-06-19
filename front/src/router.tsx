@@ -67,7 +67,7 @@ const routeChildren = [
     element: <AccordionApp />
   },
   {
-    path: 'children',
+    path: 'BoundingRectListener',
     element: <ChildrenApp />
   },
   {
