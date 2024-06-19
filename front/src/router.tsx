@@ -16,6 +16,7 @@ import TabApp from './pages/tab';
 import TooltipApp from './pages/tooltip';
 import AutoCompleteApp from './pages/autocomplete';
 import TypoApp from './pages/typo';
+import SlidingPuzzle from './pages/puzzle';
 
 const ErrorPage = () => {
   const error = useRouteError() as any;
@@ -29,6 +30,10 @@ const ErrorPage = () => {
 };
 
 const routeChildren = [
+  {
+    path: 'slidingPuzzle',
+    element: <SlidingPuzzle />
+  },
   {
     path: 'typo',
     element: <TypoApp />
