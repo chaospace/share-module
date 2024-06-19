@@ -2,12 +2,12 @@ import { createBrowserRouter, useRouteError } from 'react-router-dom';
 import App from './App';
 import { VBox } from './components/elements/Box';
 import Typography from './components/elements/Typography';
-import TutorialApp from './tutorial';
+import ModalApp from './tutorial';
 import UISample from './pages/sample';
 import CheckBoxApp from './pages/checkbox';
 import RadioApp from './pages/radio';
 import MenuBarApp from './pages/menubar';
-import ChildrenApp from './pages/children';
+import BoundingRectListenerApp from './pages/boundingRectListener';
 import AccordionApp from './pages/accordion';
 import GridApp from './pages/grid';
 import RangeApp from './pages/range';
@@ -68,7 +68,7 @@ const routeChildren = [
   },
   {
     path: 'BoundingRectListener',
-    element: <ChildrenApp />
+    element: <BoundingRectListenerApp />
   },
   {
     path: 'menubar',
@@ -87,8 +87,8 @@ const routeChildren = [
     element: <CheckBoxApp />
   },
   {
-    path: 'tutorial',
-    element: <TutorialApp />
+    path: 'modal',
+    element: <ModalApp />
   }
 ];
 

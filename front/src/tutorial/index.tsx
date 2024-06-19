@@ -5,7 +5,7 @@ import SimpleModal from '@/components/modal';
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
-function TutorialApp() {
+function ModalApp() {
   const [portaOpen, setPortalOpen] = useState(false);
   const [secondOpen, setSecondOpen] = useState(false);
 
@@ -80,4 +80,4 @@ function TutorialApp() {
   );
 }
 
-export default TutorialApp;
+export default ModalApp;

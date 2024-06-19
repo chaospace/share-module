@@ -3,7 +3,7 @@ import BoundingRectListener from '@/components/listener/BoundingRectListener';
 import { VBox } from '@/components/elements/Box';
 import { H } from '@/components/elements/Typography';
 
-function ChildrenApp() {
+function BoundingRectListenerApp() {
   const onClick = (_: React.MouseEvent<HTMLParagraphElement>) => {
     console.log('click', _);
   };
@@ -33,4 +33,4 @@ function ChildrenApp() {
   );
 }
 
-export default ChildrenApp;
+export default BoundingRectListenerApp;
