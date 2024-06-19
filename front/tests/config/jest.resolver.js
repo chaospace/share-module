@@ -11,9 +11,7 @@ module.exports = (path, options) => {
   if (/^(msw|@mswjs\/interceptors)(\/|$)/.test(path)) {
     return options.defaultResolver(path, {
       ...options,
-      conditions: options.conditions.filter(
-        (condition) => condition !== "browser"
-      ),
+      conditions: options.conditions.filter(condition => condition !== 'browser')
     });
   }
 

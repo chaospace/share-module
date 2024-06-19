@@ -12,17 +12,17 @@
  * msw/node 모듈 참조 에러 폴리필..
  */
 
-const { TextDecoder, TextEncoder } = require("node:util");
-const { ReadableStream } = require("node:stream/web");
+const { TextDecoder, TextEncoder } = require('node:util');
+const { ReadableStream } = require('node:stream/web');
 
 Object.defineProperties(globalThis, {
   TextDecoder: { value: TextDecoder },
   TextEncoder: { value: TextEncoder },
-  ReadableStream: { value: ReadableStream },
+  ReadableStream: { value: ReadableStream }
 });
 
-const { Blob, File } = require("node:buffer");
-const { fetch, Headers, FormData, Request, Response } = require("undici");
+const { Blob, File } = require('node:buffer');
+const { fetch, Headers, FormData, Request, Response } = require('undici');
 
 Object.defineProperties(globalThis, {
   fetch: { value: fetch, writable: true },
@@ -31,5 +31,5 @@ Object.defineProperties(globalThis, {
   Headers: { value: Headers },
   FormData: { value: FormData },
   Request: { value: Request },
-  Response: { value: Response },
+  Response: { value: Response }
 });
