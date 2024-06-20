@@ -37,7 +37,7 @@ function useListProvider<T>(source: T[], getLabel = labelGetter, getValue = valu
 
 function useInit() {
   const initRef = useRef(false);
-  if (!initRef.current) {
+  if (initRef.current === false) {
     initRef.current = true;
     return false;
   }
@@ -48,15 +48,15 @@ function useInit() {
 const useIsomorphicLayoutEffect = window === undefined ? useLayoutEffect : useEffect;
 
 function useMount(handler: React.EffectCallback) {
-  useIsomorphicLayoutEffect(handler, []);
+  useEffect(handler, []);
 }
 
 function useWatch(handler: React.EffectCallback, deps?: React.DependencyList) {
-  useIsomorphicLayoutEffect(handler, deps);
+  useEffect(handler, deps);
 }
 
 function useUnMount(handler: () => any) {
-  useIsomorphicLayoutEffect(() => handler, []);
+  useEffect(() => handler, []);
 }
 
 export {

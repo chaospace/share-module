@@ -74,6 +74,36 @@ interface RadioGroupProps {
   labelId?: string;
 }
 
+const MemoedRadio = React.memo(
+  ({
+    name = undefined,
+    value,
+    checked,
+    variant,
+    onChange,
+    children
+  }: {
+    variant: VariantCategory;
+    name?: string;
+    value: string;
+    checked: boolean;
+    children: React.ReactNode;
+    onChange: React.ChangeEventHandler<HTMLInputElement>;
+  }) => {
+    return (
+      <Radio variant={variant}>
+        <CheckMark>
+          <Input name={name} type='radio' value={value} checked={checked} onChange={onChange} />
+        </CheckMark>
+        <Typography as='span' mt={1}>
+          {children}
+        </Typography>
+      </Radio>
+    );
+  },
+  (prev, next) => prev.checked === next.checked
+);
+
 function RadioGroup({
   options,
   name,
@@ -89,20 +119,15 @@ function RadioGroup({
       <Box aria-labelledby={labelId} flexDirection={direction}>
         {options?.map(o => {
           return (
-            <Radio key={o} variant={variant}>
-              <CheckMark>
-                <Input
-                  name={name}
-                  type='radio'
-                  value={o}
-                  checked={o === value}
-                  onChange={e => setValue(e.target.value)}
-                />
-              </CheckMark>
-              <Typography as='span' mt={1}>
-                {o}
-              </Typography>
-            </Radio>
+            <MemoedRadio
+              key={o}
+              name={name}
+              variant={variant}
+              value={o}
+              checked={o === value}
+              onChange={e => setValue(e.target.value)}>
+              {o}
+            </MemoedRadio>
           );
         })}
       </Box>

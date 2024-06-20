@@ -69,35 +69,38 @@ const Container = styled('label')
   `
 );
 
-function CheckBox({
-  children,
-  ref: _ref,
-  variant = 'default',
-  value,
-  checked,
-  onChange,
-  ...rest
-}: CheckBoxProps) {
-  const labelId = `ck-label-${useId()}`;
-  return (
-    <Container id={labelId} variant={variant}>
-      <CheckMark>
-        <CheckIcon opacity={0} size={18} />
-        <Input
-          type='checkbox'
-          aria-labelledby={labelId}
-          checked={checked}
-          value={value}
-          onChange={onChange}
-          {...rest}
-        />
-      </CheckMark>
-      <Typography as='span' mt={1}>
-        {children}
-      </Typography>
-    </Container>
-  );
-}
+const CheckBox = React.memo(
+  ({
+    children,
+    ref: _ref,
+    variant = 'default',
+    value,
+    checked,
+    onChange,
+    ...rest
+  }: CheckBoxProps) => {
+    const labelId = `ck-label-${useId()}`;
+    return (
+      <Container id={labelId} variant={variant}>
+        <CheckMark>
+          <CheckIcon opacity={0} size={18} />
+          <Input
+            type='checkbox'
+            aria-labelledby={labelId}
+            checked={checked}
+            value={value}
+            onChange={onChange}
+            {...rest}
+          />
+        </CheckMark>
+        <Typography as='span' mt={1}>
+          {children}
+        </Typography>
+      </Container>
+    );
+  },
+  (prev, next) => prev.checked === next.checked
+);
 
 export type { CheckBoxProps };
 export default CheckBox;
