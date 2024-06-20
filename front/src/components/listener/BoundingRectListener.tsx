@@ -1,4 +1,5 @@
-import React, { useLayoutEffect, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useMount, useWatch } from '../hooks';
 
 type EventName<T extends string[]> = T[number] extends `on${infer R}`
   ? T[number] | Lowercase<R>
@@ -60,6 +61,9 @@ function BoundingRectListener({
 }: BoundingRectListener) {
   const nodeRef = React.useRef<Element>(null);
   const movedRef = React.useRef(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // console.log('listener', isMounted);
 
   const syncRefs = useSyncRefGroup([
     //@ts-ignore
@@ -67,10 +71,10 @@ function BoundingRectListener({
     nodeRef // 마우스이벤트 인터셉트용 ref
   ]);
 
-  // eslint-disable-next-line
   const clickOutSideHandle = (e: MouseEvent | TouchEvent) => {
+    console.log('outside', isMounted);
     if (!nodeRef.current) return;
-
+    if (!isMounted) return;
     const node = e.target as Node;
     const doc = ownerDocument(nodeRef.current)!;
     //스크롤바 영역 클릭시 예외적용
@@ -101,7 +105,11 @@ function BoundingRectListener({
     ref: syncRefs
   };
 
-  useLayoutEffect(() => {
+  useMount(() => {
+    setIsMounted(true);
+  });
+
+  useWatch(() => {
     if (touchEvent !== false && nodeRef.current) {
       const event = converToEventName(touchEvent);
       const doc = ownerDocument(nodeRef.current)!;
@@ -119,7 +127,7 @@ function BoundingRectListener({
     }
   }, [touchEvent, clickOutSideHandle]);
 
-  useLayoutEffect(() => {
+  useWatch(() => {
     if (mouseEvent !== false && nodeRef.current) {
       const event = converToEventName(mouseEvent);
       const doc = ownerDocument(nodeRef.current)!;

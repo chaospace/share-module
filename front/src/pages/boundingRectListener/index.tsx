@@ -2,6 +2,7 @@ import React from 'react';
 import BoundingRectListener from '@/components/listener/BoundingRectListener';
 import { VBox } from '@/components/elements/Box';
 import { H } from '@/components/elements/Typography';
+import { useMount, useUnMount } from '@/components/hooks';
 
 function BoundingRectListenerApp() {
   const onClick = (_: React.MouseEvent<HTMLParagraphElement>) => {
@@ -11,6 +12,14 @@ function BoundingRectListenerApp() {
   const onClickOutSideChildElement = (_: MouseEvent | TouchEvent) => {
     alert('out-side-click');
   };
+
+  useMount(() => {
+    console.log('페이지 로드!!');
+  });
+
+  useUnMount(() => {
+    console.log('페이지 언로드!');
+  });
 
   return (
     <VBox>
@@ -22,7 +31,7 @@ function BoundingRectListenerApp() {
               position: 'relative',
               height: '80px',
               width: '140px',
-              wordBreak: 'word-break',
+              wordBreak: 'break-word',
               backgroundColor: 'aqua'
             }}>
             <p>여기를 클릭하면 이벤트 발생 안함</p>
