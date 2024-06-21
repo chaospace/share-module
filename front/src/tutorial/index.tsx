@@ -1,3 +1,4 @@
+import Cursor from '@/components/cursor/Cursor';
 import { VBox } from '@/components/elements/Box';
 import Button from '@/components/elements/Button';
 import Typography from '@/components/elements/Typography';
@@ -19,8 +20,7 @@ function ModalApp() {
     setPortalOpen(false);
   };
 
-  const secondModalClose = (info?: boolean) => {
-    console.log('close-test', info);
+  const secondModalClose = (_?: boolean) => {
     setSecondOpen(false);
   };
 
@@ -76,6 +76,7 @@ function ModalApp() {
           </SimpleModal>,
           document.body
         )}
+      <Cursor />
     </React.Fragment>
   );
 }
