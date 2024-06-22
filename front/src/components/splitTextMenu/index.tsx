@@ -41,7 +41,7 @@ const Container = styled('a')`
 `;
 
 interface SplitTextMenuProps {
-  link?: string;
+  link: string;
   selected?: boolean;
   onClick?: (link: string) => void;
 }
