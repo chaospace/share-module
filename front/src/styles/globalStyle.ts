@@ -11,7 +11,9 @@ const GlobalStyle = createGlobalStyle`
         margin:0;
         padding:0;
         line-height:normal;
-        font-size: 16px;
+        font-size: 1rem;
+        font-family: "Noto Sans KR", sans-serif, 'Apple SD Gothic Neo';
+        font-optical-sizing: auto;
     }
     ${buttonStyles}
     ${formStyles}

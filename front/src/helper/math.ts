@@ -1,11 +1,13 @@
 /**
- * v에서 t값으로 부드러운 전환 linear전환 처리
+ * v에서 t값으로 부드러운 전환 처리
  * @param t : 목표 값
  * @param v : 현재 값
  * @param r : 비율
  * @returns
  */
 const lerp = (t: number, v: number, r: number = 0.82) => (1 - r) * t + v * r;
+
+//순정은 (t-v)*r + v;
 
 /**
  * min~max구간에 v가 가지는 비율 반환

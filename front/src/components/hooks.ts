@@ -1,6 +1,43 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { composeOptionItem, labelGetter, valueGetter } from './util';
 
+const getPointDirection = (point: { x: number; y: number }, prev: { x: number; y: number }) => {
+  const dx = point.x - prev.x;
+  const dy = point.y - prev.y;
+
+  const v = Math.max(Math.abs(dx), Math.abs(dy));
+  const answer = { x: 0, y: 0 };
+  if (v === Math.abs(dx)) {
+    answer.x = dx > 0 ? -1 : 1;
+  } else {
+    answer.y = dy > 0 ? -1 : 1;
+  }
+  return answer;
+};
+
+const useMouseInfo = () => {
+  const info = useRef({
+    mouse: { x: 0, y: 0 },
+    getPointDirection,
+    direction: { x: 0, y: 0 }
+  });
+  useIsomorphicLayoutEffect(() => {
+    const props = info.current;
+    const onMove = (e: MouseEvent) => {
+      if (props.mouse.x !== e.clientX || props.mouse.y !== e.clientY) {
+        props.mouse.x = e.clientX;
+        props.mouse.y = e.clientY;
+      }
+    };
+    document.addEventListener('mousemove', onMove);
+    return () => {
+      document.removeEventListener('mousemove', onMove);
+    };
+  }, []);
+
+  return info.current;
+};
+
 const setRef = <T extends any = any>(ref: React.ForwardedRef<T>, instance: T) => {
   if (!ref) return;
   if (typeof ref === 'function') {
@@ -67,5 +104,6 @@ export {
   useIsomorphicLayoutEffect,
   useMount,
   useUnMount,
-  useWatch
+  useWatch,
+  useMouseInfo
 };
