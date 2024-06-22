@@ -1,9 +1,8 @@
-import React, { Suspense, useTransition } from 'react';
+import React from 'react';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
 import styled from 'styled-components';
 import { getFeedList } from '@/service';
-import Typography from '@/components/elements/Typography';
 
 import InfiniteList from '@/components/list/InfiniteList';
 
@@ -67,20 +66,16 @@ function InfiniteApp_Advance() {
 
   const { pages } = feedList;
 
-  const [isPending, _] = useTransition();
-  if (isPending) return null;
   return (
-    <Suspense fallback={<Typography>로딩!</Typography>}>
-      <InfiniteList
-        options={pages}
-        ItemRenderer={SimpleItemRenderer}
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        isFetching={isFetching}
-        fetchNextPage={fetchNextPage}
-        fetchPreviousPage={fetchPreviousPage}
-      />
-    </Suspense>
+    <InfiniteList
+      options={pages}
+      ItemRenderer={SimpleItemRenderer}
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      isFetching={isFetching}
+      fetchNextPage={fetchNextPage}
+      fetchPreviousPage={fetchPreviousPage}
+    />
   );
 }
 

@@ -26,7 +26,7 @@ const TempTypography = ({ p }: any) => {
         React.ComponentPropsWithoutRef , but since we are dealing with a dynamic tag, we pass the E
         type.
       </Typography>
-      <HBox>
+      <HBox flexWrap='wrap'>
         <Button variant='success'>success</Button>
         <Button>default</Button>
         <Button variant='warning'>warning</Button>

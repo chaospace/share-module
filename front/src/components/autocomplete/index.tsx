@@ -62,16 +62,6 @@ interface AutoCompleteProps {
 }
 
 const allowKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
-/* 
-const isElementInView = (element: HTMLElement, area: HTMLElement) => {
-  const optionBound = element.getBoundingClientRect();
-  const areaBound = area.getBoundingClientRect();
-  // 화면에 걸치는 경우는 이 두가지
-  if (areaBound.top > optionBound.top || areaBound.bottom < optionBound.bottom) {
-    return false;
-  }
-  return true;
-}; */
 
 const getAriaSelectedIndex = (node: HTMLElement[]) => {
   return node.findIndex(o => o?.ariaSelected === 'true');
@@ -119,9 +109,10 @@ function AutoComplete({
 
   // query값이 적용된 옵션목록
   const filteredOptions = useMemo(() => {
+    const q = deferredQuery.toLowerCase();
     return select === deferredQuery
       ? provider
-      : provider.filter(o => o.label.includes(deferredQuery));
+      : provider.filter(o => o.label.toLowerCase().includes(q));
   }, [select, deferredQuery, provider]);
 
   //ref참조 초기화
