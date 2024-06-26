@@ -17,6 +17,7 @@ import TooltipApp from './pages/tooltip';
 import AutoCompleteApp from './pages/autocomplete';
 import TypoApp from './pages/typo';
 import SlidingPuzzle from './pages/puzzle';
+import OPenTypeApp from './pages/openType';
 
 const ErrorPage = () => {
   const error = useRouteError() as any;
@@ -30,6 +31,10 @@ const ErrorPage = () => {
 };
 
 const routeChildren = [
+  {
+    path: 'openType',
+    element: <OPenTypeApp />
+  },
   {
     path: 'slidingPuzzle',
     element: <SlidingPuzzle />

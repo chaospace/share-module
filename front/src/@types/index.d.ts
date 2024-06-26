@@ -1,5 +1,9 @@
 import type { CSSProp } from 'styled-components';
 
+declare global {
+  var Warp: any;
+}
+
 //
 declare module 'react' {
   export interface Attributes {

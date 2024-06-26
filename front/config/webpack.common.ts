@@ -1,10 +1,13 @@
 import path from 'path';
-import { appDir, publicDir, srcDir, workspaceDir } from './webpack.path';
+import { outDir, publicDir, srcDir, workspaceDir } from './webpack.path';
 import webpack from 'webpack';
 import 'webpack-dev-server';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import { ModuleFederationPlugin } from '@module-federation/enhanced';
-
+import CopyPlugin from 'copy-webpack-plugin';
+// import Dotenv from 'dotenv-webpack';
+// const isProduction = process.env.NODE_ENV === 'production';
+// const envFilename = isProduction ? '.env.production' : '.env.development';
 const commonConfig: webpack.Configuration = {
   entry: path.resolve(srcDir, 'index.ts'),
   resolve: {
@@ -16,7 +19,11 @@ const commonConfig: webpack.Configuration = {
   },
   output: {
     clean: true,
+    path: outDir,
     publicPath: 'auto'
+  },
+  externals: {
+    Warp: 'Warp'
   },
   module: {
     rules: [
@@ -66,6 +73,14 @@ const commonConfig: webpack.Configuration = {
         'react-dom': { singleton: true, version: '0', requiredVersion: false },
         zustand: { singleton: true }
       }
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: `${publicDir}/assets/**/*`,
+          to: `${outDir}/[name][ext]`
+        }
+      ]
     })
   ]
 };
