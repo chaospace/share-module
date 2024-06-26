@@ -1,8 +1,10 @@
 import Cursor from '@/components/cursor/Cursor';
 import { VBox } from '@/components/elements/Box';
 import Button from '@/components/elements/Button';
+import HambugerMenu from '@/components/elements/HambugerMenu';
 import Typography from '@/components/elements/Typography';
 import SimpleModal from '@/components/modal';
+import SplitTextMenu from '@/components/splitTextMenu';
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -26,8 +28,12 @@ function ModalApp() {
 
   return (
     <React.Fragment>
+      <HambugerMenu />
+
       <VBox width='500px' height='400px' overflow='hidden' clipPath='inset(0)'>
+        <SplitTextMenu link='/'>한글메뉴는</SplitTextMenu>
         <Typography variant='title'>포탈을 이용한 모달생성 비교</Typography>
+
         <Typography>
           position fixed를 적용한 모달인 경우 컨테이너에 clip-path를 설정해야 overflow가 동작한다.
         </Typography>

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { composeOptionItem, labelGetter, valueGetter } from './util';
 
 const getPointDirection = (point: { x: number; y: number }, prev: { x: number; y: number }) => {
@@ -96,6 +96,36 @@ function useUnMount(handler: () => any) {
   useEffect(() => handler, []);
 }
 
+/**
+ * prefers-color-scheme 테마 컬러 훅
+ */
+const PREFERS_COLOR = {
+  DARK: 'dark',
+  LIGHT: 'light'
+};
+
+const initializeThemeValue = () => {
+  const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let value = isDarkMode ? PREFERS_COLOR.DARK : PREFERS_COLOR.LIGHT;
+  //스토리지에 저장 값 확인
+  const storedTheme = localStorage.getItem('theme');
+  if (storedTheme) {
+    value = storedTheme;
+  }
+  return value;
+};
+
+function useTheme() {
+  const [theme, setThemeMode] = useState(initializeThemeValue());
+  const toggleTheme = () => {
+    const next = theme === PREFERS_COLOR.LIGHT ? PREFERS_COLOR.DARK : PREFERS_COLOR.LIGHT;
+    localStorage.setItem('theme', next);
+    setThemeMode(next);
+  };
+
+  return [theme, toggleTheme];
+}
+
 export {
   useRefSync,
   useRefForward,
@@ -105,5 +135,6 @@ export {
   useMount,
   useUnMount,
   useWatch,
-  useMouseInfo
+  useMouseInfo,
+  useTheme
 };

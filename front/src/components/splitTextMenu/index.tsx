@@ -5,7 +5,7 @@ import { useGSAP } from '@gsap/react';
 import SplitType from 'split-type';
 import gsap from 'gsap';
 import { mockHandler } from '../util';
-
+//scale로 접근해 보자.
 const Container = styled('a')`
   position: relative;
   display: inline-block;
@@ -34,9 +34,19 @@ const Container = styled('a')`
     left: 0;
     width: 100%;
     height: 100%;
+    min-width: max-content;
     background-color: aquamarine;
     mix-blend-mode: difference;
     transform: translate(var(--dx), var(--dy));
+  }
+  &::after {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: calc(100% - 1px);
+    height: 100%;
+    background-color: rgb(0 0 0 /10%);
   }
 `;
 
