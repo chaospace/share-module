@@ -43,6 +43,26 @@ const commonConfig: webpack.Configuration = {
         }
       },
       {
+        test: /\.mdx?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              configFile: path.resolve(workspaceDir, 'babel.config.json'),
+              exclude: ['/node_modules/']
+            }
+          },
+          {
+            loader: '@mdx-js/loader',
+            /** @type {import('@mdx-js/loader').Options} */
+            options: {
+              format: 'mdx'
+            }
+          }
+        ]
+      },
+      {
         test: /\.css$/i,
         use: [
           'style-loader',

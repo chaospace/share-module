@@ -18,6 +18,7 @@ import AutoCompleteApp from './pages/autocomplete';
 import TypoApp from './pages/typo';
 import SlidingPuzzle from './pages/puzzle';
 import OPenTypeApp from './pages/openType';
+import MDXApp from './pages/mdx';
 
 const ErrorPage = () => {
   const error = useRouteError() as any;
@@ -30,7 +31,15 @@ const ErrorPage = () => {
   );
 };
 
+// 라우터가 그룹핑 되면 어떻게 표현해야 할까
+// 그냥 뎁스메뉴로 표현하면 된다.
+// 그룹메뉴만 노출하고 세부메뉴는 더 하위에서 보이도록 하려면..
+
 const routeChildren = [
+  {
+    path: 'mdx',
+    element: <MDXApp />
+  },
   {
     path: 'openType',
     element: <OPenTypeApp />
