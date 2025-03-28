@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="../assets/js/warp.js"></script>
+  </head>
+  <body>
+    <svg id="svg" width="500" height="500" viewBox="0 0 500 500">
+      <g id="line1">
+        <line x1="0" y1="0" x2="500" y2="0" fill="none" stroke="black" stroke-width="10" />
+      </g>
+      <g id="line2">
+        <line x1="0" y1="0" x2="500" y2="0" fill="none" stroke="black" stroke-width="10" />
+      </g>
+    </svg>
+    <script>
+      const radius = 100;
+      const period = 4;
+      const amplitude = 20;
+      const width = 500;
+      const height = 500;
+
+      const line1 = document.getElementById('line1');
+      const warp1 = new Warp(line1);
+
+      warp1.interpolate(5);
+
+      warp1.transform(([x, y]) => {
+        return [x, y + Math.sin((x / width) * Math.PI * period * 2) * amplitude];
+      });
+      // warp1.transform(([x, y]) => {
+      //   const phi = (x / width) * Math.PI * 2;
+      //   const r = radius + y;
+      //   return [r * Math.cos(phi) + width / 2, r * Math.sin(phi) + height / 2];
+      // });
+    </script>
+  </body>
+</html>

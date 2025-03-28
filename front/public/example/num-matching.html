@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .container {
+        --size: 80px;
+        --rows: 6;
+        position: relative;
+        background-color: #333;
+        width: 481px;
+        height: 481px;
+      }
+      .piece {
+        position: absolute;
+        text-align: center;
+        display: flex;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        background-color: #eee;
+        width: calc(var(--size) - 1px);
+        height: calc(var(--size) - 1px);
+      }
+      .piece.space {
+        color: white;
+        background-color: white;
+      }
+      .piece:not(.piece[data-col='1']):not([data-row='1']) {
+        border-top: none;
+        border-left: none;
+      }
+      .piece[data-col='1']:not(:first-child) {
+        border-top: none;
+      }
+
+      .piece[data-row='1']:not(:first-child) {
+        border-left: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container"></div>
+    <script>
+      /**
+       * 영역 배경을 채우고 블록 사이 공백을 넣으면 라인처리는 해결된다.
+       * 80*rows
+       * 라인에 들어가는 너비제거..
+       * 라인두께=1
+       * 블럭사이즈 = 80 - (2*2) = 78이면된다
+       * 하지만 사이에간격은 1만 있으면 된다. 중복이 있으니.
+       * 160
+       * 1+78+1=80,
+       * 0+78+1=79
+       *       =159;
+       */
+
+      const rows = 6;
+      const blockSize = 80;
+      const container = document.querySelector('.container');
+      const pieces = Array.from({ length: rows * rows }).map((_, i) => i + 1);
+      //섞기
+      // pieces.sort((a, b) => (Math.random() >= 0.4 ? 1 : -1));
+      //투명 블록 인덱스 정하기
+      const whiteIndex = ~~(Math.random() * (rows * rows));
+
+      //공백을 두는게 아니라 하나는 투명하게 넣어두고 항상 투명블럭 주변만 체크하는 것도 좋은 방법일듯.
+      pieces.forEach((o, idx) => {
+        const piece = document.createElement('div');
+        piece.classList.add('piece');
+        const isSpace = idx === whiteIndex;
+        if (isSpace) {
+          piece.classList.add('space');
+        }
+        piece.textContent = idx > whiteIndex ? o - 1 : o;
+        const col = Math.floor(idx % rows);
+        const row = Math.floor(idx / rows);
+        piece.setAttribute('data-row', row + 1);
+        piece.setAttribute('data-col', col + 1);
+        piece.style.top = `${1 + row * blockSize}px`;
+        piece.style.left = `${1 + col * blockSize}px`;
+        piece.addEventListener('click', onClickPiece);
+        container.append(piece);
+      });
+      /**
+       * 클릭 시 빈 곳을 찾아 이동해야 한다.
+       */
+      const whiteBlock = document.querySelector('.space');
+
+      //클릭 시 이동
+      function onClickPiece(e) {
+        const tx = e.target.offsetLeft;
+        const ty = e.target.offsetTop;
+
+        const cx = whiteBlock.offsetLeft;
+        const cy = whiteBlock.offsetTop;
+        /**
+         * 상하좌우 이동가능 영역체크
+         * space를 기준으로 상우좌하만 이동가능.
+         * 배열에서 스위치를 하는게 더 좋은게 아닐까?
+         */
+        if (
+          ((cy - blockSize === ty || cy + blockSize === ty) && tx === cx) ||
+          ((cx - blockSize === tx || cx + blockSize === tx) && ty === cy)
+        ) {
+          //swap처리
+          whiteBlock.style.top = ty + 'px';
+          whiteBlock.style.left = tx + 'px';
+          e.target.style.top = cy + 'px';
+          e.target.style.left = cx + 'px';
+        }
+      }
+    </script>
+  </body>
+</html>

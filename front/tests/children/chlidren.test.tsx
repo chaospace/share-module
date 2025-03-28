@@ -3,7 +3,7 @@
  */
 
 import { sleep } from '@/components/util';
-import ChildrenApp from '@/pages/children';
+import ChildrenApp from '../../src/pages/boundingRectListener';
 import { fireEvent, getByTestId, getByText, render } from '@testing-library/react';
 import { useCallback, useRef, useState } from 'react';
 

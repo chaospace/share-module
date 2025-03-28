@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: lightblue;
+      }
+      .cursor {
+        position: absolute;
+        pointer-events: none;
+        user-select: none;
+        transform-origin: center;
+      }
+      .h-box {
+        position: relative;
+        display: flex;
+        gap: 8px;
+        padding: 200px;
+      }
+
+      .h-box span {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="h-box">
+      <span>텍스트2</span>
+      <span>텍스트1</span>
+      <span>텍스트3</span>
+    </div>
+    <svg class="cursor" width="30" height="30" viewBox="0 0 30 30" fill="none">
+      <circle class="cursor__inner" cx="15" cy="15" r="7.5" stroke="green" stroke-width="1" />
+    </svg>
+
+    <script>
+      const cursor = document.querySelector('.cursor');
+      const animateProps = { x: 0, y: 0, scale: 1 };
+      const currentProps = { x: 0, y: 0, scale: 1 };
+      const render = () => {
+        for (let prop in currentProps) {
+          currentProps[prop] = lerp(animateProps[prop], currentProps[prop], 0.8);
+        }
+        const transformStyle = `translate( ${currentProps.x - 15}px, ${currentProps.y - 15}px ) scale(${currentProps.scale})`;
+        cursor.style.transform = transformStyle;
+
+        requestAnimationFrame(render);
+      };
+
+      const onMouseMove = e => {
+        const { pageX, clientY } = e;
+        animateProps.x = pageX;
+        animateProps.y = clientY;
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      //-마이너스 범위가 주어지면
+
+      const rate = (v, min, max) => {
+        return (v - min) / (max - min);
+      };
+
+      const map = (current, from, to, mapFrom, mapTo) => {
+        const r = Math.max(0, Math.min(rate(current, from, to), 1));
+        return r * (mapTo - mapFrom) + mapFrom;
+      };
+
+      const lerp = (target, current, speed = 0.2) => {
+        return (1 - speed) * target + current * speed;
+      };
+
+      const onOver = e => {
+        animateProps.scale = 2;
+      };
+      const onOut = e => {
+        animateProps.scale = 1;
+      };
+      const container = document.querySelector('.h-box');
+      container.childNodes.forEach(o => {
+        o.addEventListener('pointerover', onOver);
+        o.addEventListener('pointerout', onOut);
+      });
+
+      // render();
+
+      console.log(map(50, 0, 100, 200, 400));
+    </script>
+  </body>
+</html>

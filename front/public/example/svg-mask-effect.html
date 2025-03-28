@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+      :root {
+        font-size: 16px;
+      }
+
+      html,
+      body {
+        height: 100%;
+        padding: 2em;
+      }
+
+      body {
+        margin: 0;
+        --color-text: #fef5e7;
+        --color-link: #f2a37c;
+        --color-link-hover: #fef5e7;
+        color: var(--color-text);
+        background: radial-gradient(at top, #5e4082, #3a124d);
+      }
+      a {
+        text-decoration: none;
+        color: var(--color-link);
+        outline: none;
+      }
+      a:hover {
+        color: var(--color-link-hover);
+        outline: none;
+      }
+      a:focus {
+        outline: none;
+        background: lightgray;
+      }
+
+      main {
+        display: grid;
+      }
+
+      .picture {
+        place-self: center;
+        max-width: 100%;
+        height: 80vh;
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <svg
+        class="picture"
+        viewBox="0 0 196 296"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+          <filter id="disort">
+            <feTurbulence
+              type="turbulence"
+              baseFrequency="0.08"
+              numOctaves="2"
+              result="turbulence" />
+            <feDisplacementMap
+              in2="turbulence"
+              in="SourceGraphic"
+              scale="50"
+              xChannelSelector="R"
+              yChannelSelector="G" />
+          </filter>
+          <mask id="mask_mystique">
+            <g filter="url(#disort)">
+              <rect class="mask" x="0" y="-100%" width="100%" height="100%" fill="white" />
+            </g>
+          </mask>
+          <mask id="mask_transformed">
+            <g filter="url(#disort)">
+              <rect class="mask" x="0" y="0" width="100%" height="100%" fill="white" />
+            </g>
+          </mask>
+        </defs>
+        <rect id="bg-color" x="0" y="0" width="100%" height="100%" fill="#4a5eb2" />
+        <image
+          id="background"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          xlink:href="../assets/svg/background.svg" />
+        <image
+          id="transformed"
+          mask="url(#mask_transformed)"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          xlink:href="../assets/svg/transformed.svg" />
+        <image
+          id="mystique"
+          mask="url(#mask_mystique)"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          xlink:href="../assets/svg/mystique.svg" />
+        <image
+          id="foreground"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          xlink:href="../assets/svg/foreground.svg" />
+      </svg>
+    </main>
+    <script>
+      const tl = gsap.timeline({
+        paused: true,
+        defaults: {
+          ease: 'none'
+        }
+      });
+
+      tl.to('.mask', {
+        translateY: 296,
+        duration: 3
+      }).to(
+        '#bg-color',
+        {
+          attr: {
+            fill: '#ffd11b'
+          },
+          duration: 2
+        },
+        '<+=1'
+      );
+
+      const $picture = document.querySelector('.picture');
+      $picture.addEventListener('mousemove', e => {
+        const rect = $picture.getBoundingClientRect();
+        const relPos = (e.clientY - rect.top) / (rect.bottom - rect.top);
+        tl.progress(relPos);
+      });
+    </script>
+  </body>
+</html>

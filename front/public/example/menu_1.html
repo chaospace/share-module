@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-controls="colormenu"
+        tabindex="0"
+        aria-label="Text Color: purple">
+        Purple
+        <span></span>
+      </button>
+      <ul role="menu" id="colormenu" aria-label="Color Options" tabindex="-1">
+        <li role="menuitemradio" aria-checked="true" style="color: purple" tabindex="-1">Purple</li>
+        <li role="menuitemradio" aria-checked="false" style="color: magenta" tabindex="-1">
+          Magenta
+        </li>
+        <li role="menuitemradio" aria-checked="false" style="color: black" tabindex="-1">Black</li>
+      </ul>
+    </div>
+  </body>
+</html>

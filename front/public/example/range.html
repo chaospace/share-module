@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>rang custom</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        position: relative;
+        display: grid;
+        place-content: center;
+        height: 100vh;
+        gap: 24px;
+      }
+
+      input.temp[type='range'] {
+        --thumb-height: 16px;
+        --track-height: 4px;
+        --track-color: rgba(0, 0, 0, 0.2);
+        --brightness-hover: 180%;
+        --brightness-down: 80%;
+        --clip-edges: 4px;
+        appearance: none;
+        overflow: hidden;
+        border-radius: 2px;
+      }
+
+      input.temp[type='range']::-webkit-slider-runnable-track,
+      input.temp[type='range']::-webkit-slider-thumb {
+        position: relative;
+        appearance: none;
+        transition: all ease 100ms;
+        height: var(--thumb-height);
+      }
+
+      /* input.temp[type='range']::-webkit-slider-runnable-track {
+      } */
+      input.temp[type='range']::-webkit-slider-thumb {
+        --thumb-radius: calc((var(--thumb-height) * 0.5) - 1px);
+        --clip-top: calc((var(--thumb-height) - var(--track-height)) * 0.5 - 0.5px);
+        --clip-bottom: calc(var(--thumb-height) - var(--clip-top));
+        --clip-further: calc(100% + 1px);
+        width: var(--thumb-height);
+        background-color: currentColor;
+        border-radius: var(--thumb-height);
+        box-shadow: calc(-100vmax - var(--thumb-height)) 0 0 100vmax currentColor;
+        filter: brightness(100%);
+        clip-path: polygon(
+          100% -1px,
+          var(--clip-edges) -1px,
+          0 var(--clip-top),
+          -100vmax var(--clip-top),
+          -100vmax var(--clip-bottom),
+          0 var(--clip-bottom),
+          var(--clip-edges) 100%,
+          var(--clip-further) var(--clip-further)
+        );
+      }
+      input.temp[type='range']::-webkit-slider-runnable-track {
+        background: linear-gradient(var(--track-color) 0 0) scroll no-repeat center / 100%
+          calc(var(--track-height) + 1px);
+      }
+
+      input.foo[type='range'] {
+        appearance: none;
+      }
+      input.foo[type='range']::-webkit-slider-thumb {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: red;
+      }
+      input.foo[type='range']::-webkit-slider-runnable-track {
+        position: relative;
+        background-color: #ababab;
+        height: 16px;
+        clip-path: inset(4px 0 4px 0 round 4px);
+      }
+
+      .path-test {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        background-color: magenta;
+        clip-path: polygon(100%, 100%, 50%, 50%, 100%, 0%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="path-test"></div>
+      <div>
+        <input type="range" value="10" min="0" max="100" step="1" onchange="onChangeRange(event)" />
+        <span id="range-value">0</span>
+      </div>
+      <input class="temp" type="range" value="2" min="0" max="100" step="1" />
+
+      <input class="foo" type="range" min="0" max="100" step="1" />
+    </div>
+    <script>
+      /**
+       * oninput, onchange이벤트로 value변경 감지.
+       * value설정으로 초기값 사용.
+       */
+      const valueEle = document.querySelector('#range-value');
+      const onChangeRange = e => {
+        valueEle.textContent = e.target.value;
+        // console.log(e.target.value);
+      };
+    </script>
+  </body>
+</html>

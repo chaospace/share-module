@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@100..900&display=swap"
+      rel="stylesheet" />
+    <!-- Minified UMD bundle -->
+    <script src="https://unpkg.com/split-type"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
+    <style>
+      /*
+            https://tympanus.net/codrops/2021/05/04/dynamic-css-masks-with-custom-properties-and-gsap/
+          */
+      * {
+        box-sizing: border-box;
+      }
+      :root {
+        --bg: rgb(9, 14, 23);
+        --gradientBg: linear-gradient(45deg, #40e0d0, #9932cc, #ff1493, orange);
+      }
+      html,
+      body {
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg);
+      }
+      a {
+        color: inherit;
+      }
+      ul {
+        list-style: none;
+      }
+      button {
+        border-radius: 0.4em;
+        background-color: var(--bg);
+        color: white;
+        border: none;
+        font-size: inherit;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+      .wrapper {
+        position: relative;
+      }
+
+      /* text */
+      .hero__heading {
+        font-size: clamp(2rem, 5vw, 8rem);
+        text-transform: uppercase;
+        margin: 0;
+        font-weight: bold;
+      }
+
+      /* menu */
+      .menu {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: fixed;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        background: var(--gradientBg);
+        /* 0은 크기 at뒤에 정보는 위치를 나타냄 */
+        clip-path: circle(0 at calc(100% - 2rem) 2rem);
+        transition: clip-path 500ms;
+        z-index: 1;
+        font-size: clamp(1rem, 2vw, 4rem);
+      }
+
+      .menu.is-open {
+        /* clip-path: circle(200% at calc(100% - 2rem) 2rem); */
+        clip-path: circle(200% at calc(100% - 2rem) 2rem);
+        pointer-events: auto;
+      }
+
+      .menu a {
+        display: block;
+        padding: 0.5rem;
+      }
+
+      .menu-button {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+      }
+
+      .menu-button span:last-child,
+      .menu-button.is-active span:first-child {
+        display: none;
+      }
+      .menu-button.is-active span:last-child {
+        display: inline;
+      }
+
+      .hero {
+        min-height: 100vh;
+        padding: clamp(1rem, 2vw, 5rem);
+        display: flex;
+        align-items: center;
+      }
+
+      .hero--secondary {
+        --mask: radial-gradient(
+          circle at var(--x, 50%) var(--y, 50%),
+          black var(--maskSize1, 0),
+          transparent 0,
+          transparent var(--maskSize2, 0),
+          black var(--maskSize2, 0),
+          black var(--maskSize3, 0),
+          transparent 0
+        );
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--gradientBg);
+        color: rgb(9, 14, 23);
+        -webkit-mask-image: var(--mask);
+        mask-image: var(--mask);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button class="menu-button" data-btn="menu">
+        <span>Menu</span>
+        <span>Close</span>
+      </button>
+      <nav class="menu" data-menu>
+        <ul>
+          <li>
+            <a href="">About Me</a>
+          </li>
+          <li>
+            <a href="">Projects</a>
+          </li>
+          <li>
+            <a href="">Writing</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div class="wrapper">
+      <div class="hero">
+        <h1 class="hero__heading">Welcome to my website</h1>
+      </div>
+      <div class="hero hero--secondary" aria-hidden="true" data-hero>
+        <p class="hero__heading">Welcome to my website</p>
+      </div>
+    </div>
+    <script>
+      const hero = document.querySelector('[data-hero]');
+      const menuButton = document.querySelector('[data-btn="menu"]');
+      const menu = document.querySelector('[data-menu]');
+
+      menuButton.addEventListener('click', () => {
+        menu.classList.toggle('is-open');
+        menuButton.classList.toggle('is-active');
+      });
+
+      const tl = gsap.timeline();
+
+      tl.to(hero, {
+        '--maskSize1': '10%',
+        duration: 0.3,
+        ease: 'back.out(2)'
+      }).to(hero, {
+        '--maskSize2': '20%',
+        '--maskSize3': 'calc(20% + 0.1rem)',
+        duration: 0.3,
+        delay: 0.3,
+        ease: 'back.out(2)'
+      });
+
+      window.addEventListener('mousemove', e => {
+        const { clientX, clientY } = e;
+        const x = Math.round((clientX / window.innerWidth) * 100);
+        const y = Math.round((clientY / window.innerHeight) * 100);
+        gsap.to(hero, {
+          '--x': `${x}%`,
+          '--y': `${y}%`,
+          duration: 0.3,
+          ease: 'sine.out'
+        });
+      });
+    </script>
+  </body>
+</html>

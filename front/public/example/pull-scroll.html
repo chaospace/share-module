@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @keyframes rotate-in {
+        to {
+          transform: rotateZ(0.5turn);
+        }
+      }
+
+      @keyframes fade-out {
+        to {
+          opacity: 0;
+        }
+      }
+
+      #refresh > svg {
+        animation: linear rotate-in;
+        animation-timeline: view();
+        animation-range: exit 0% exit 100%;
+      }
+
+      #refresh > span {
+        animation: linear fade-out;
+        animation-timeline: view();
+        animation-range: exit -200% exit 100%;
+      }
+
+      /* DEMO SUPPORT */
+      #refresh {
+        block-size: 150px;
+        inline-size: 100%;
+        background: hsl(0 0% 50% / 10%);
+        display: grid;
+        gap: 1ch;
+        align-content: center;
+        justify-items: center;
+        position: relative;
+      }
+
+      #refresh::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        block-size: 10px;
+        animation: delayed-snap-point 2ms forwards;
+      }
+
+      #refresh::after {
+        content: '';
+        position: absolute;
+        inset: auto 0 0;
+        block-size: 5px;
+        background: deeppink;
+        opacity: 0;
+      }
+
+      #refresh[loading-state='loading']::after {
+        animation: indeterminate-loading 1s ease infinite;
+      }
+
+      @keyframes delayed-snap-point {
+        to {
+          scroll-snap-align: start;
+        }
+      }
+
+      @keyframes indeterminate-loading {
+        50% {
+          opacity: 1;
+        }
+      }
+
+      #refresh > svg {
+        --size: 4ch;
+        fill: none;
+        stroke: currentColor;
+        inline-size: var(--size);
+        block-size: var(--size);
+      }
+
+      html {
+        scroll-snap-type: y mandatory;
+        overscroll-behavior: contain;
+        scroll-behavior: smooth;
+        color-scheme: dark light;
+      }
+
+      main {
+        padding: 2ch;
+        /*  the only child with snap alignment is "scroll start"  */
+        scroll-snap-align: start;
+        /*  it's not "toss to refresh"  */
+        scroll-snap-stop: normal;
+        min-block-size: 200vh;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui;
+        display: grid;
+        justify-items: center;
+        overscroll-behavior: none;
+      }
+
+      p {
+        max-inline-size: 40ch;
+        font-size: 1.25rem;
+        font-weight: 200;
+        line-height: 1.5;
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale3d(0, 0, 0);
+        }
+        to {
+          transform: scale3d(1, 1, 1);
+        }
+      }
+
+      @keyframes loading {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .ani {
+        position: relative;
+        block-size: 100px;
+        background-color: antiquewhite;
+        /* animation-name: scaleIn, loading;
+        animation-duration: 800ms, 800ms;
+        animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1) linear;
+        animation-iteration-count: 1, infinite; */
+      }
+    </style>
+  </head>
+  <body>
+    <header id="refresh">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      <span>Pull to refresh</span>
+    </header>
+    <main id="refresh-main">
+      <h1>Header</h1>
+      <div class="ani"></div>
+      <p class="text">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora laborum illo autem
+        asperiores. Numquam voluptate facilis odit impedit non autem magni architecto, placeat
+        voluptatum dolorem nemo doloremque velit, iure id.
+      </p>
+    </main>
+    <script>
+      // import { scrollend } from 'https://cdn.jsdelivr.net/gh/argyleink/scrollyfills@latest/dist/scrollyfills.modern.js';
+
+      const ptr_scrollport = document.querySelector('html');
+      const ptr = document.querySelector('#refresh');
+      const main = document.querySelector('#refresh-main');
+
+      const determinePTR = event => {
+        console.log('ptr', ptr.scrollTop, 'main', main.scrollTop, 'html', ptr_scrollport.scrollTop);
+        if (event.target.scrollTop <= 0) {
+          // fetch()
+          ptr.querySelector('span').textContent = 'refreshing...';
+          ptr.setAttribute('loading-state', 'loading');
+
+          // sim response
+          setTimeout(() => {
+            ptr.querySelector('span').textContent = 'done!';
+
+            setTimeout(() => {
+              ptr.removeAttribute('loading-state');
+              main.scrollIntoView({ behavior: 'smooth' });
+
+              /* window.addEventListener(
+                'scrollend',
+                e => {
+                  ptr.querySelector('span').textContent = 'Pull to refresh';
+                },
+                { once: true }
+              ); */
+            }, 500);
+          }, 2000);
+        }
+      };
+
+      window.addEventListener('scrollend', e => {
+        determinePTR({ target: ptr_scrollport });
+      });
+    </script>
+  </body>
+</html>

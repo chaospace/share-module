@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+
+      :root {
+        font-size: 15px;
+        --color-text: #a6a6ab;
+        --color-bg: #030014;
+        --color-link: rgb(142, 100, 255);
+        --color-link-hover: rgb(249, 38, 114);
+      }
+
+      body {
+        margin: 0;
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .grid {
+        display: grid;
+        margin: 10vh 0;
+        grid-template-columns: 1fr;
+        border: 1px solid #2a2b3a;
+        background: #2a2b3a;
+        gap: 1px;
+      }
+
+      .grid__item {
+        display: grid;
+        padding: 1.5rem 1.5rem 2rem;
+        gap: 1.5rem;
+        background: var(--color-bg);
+        align-content: start;
+        grid-template-rows: auto 1fr auto;
+      }
+
+      .grid__item-img {
+        position: relative;
+        display: grid;
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 1.6rem;
+        overflow: hidden;
+        place-items: center;
+        --x: 0px;
+        --y: 0px;
+      }
+
+      .grid__item-img::after {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          rgb(23, 24, 37) 40%,
+          rgb(102, 51, 238) 50%,
+          rgb(142, 100, 255),
+          rgb(249, 38, 114)
+        );
+        mix-blend-mode: darken;
+      }
+      .grid__item-img-deco {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 0.85rem;
+        word-wrap: break-word;
+        line-height: 1.15;
+        color: #fff;
+        opacity: 0;
+        mask-image: radial-gradient(
+          300px circle at var(--x) var(--y),
+          black 20%,
+          rgba(0, 0, 0, 0.25)
+        );
+      }
+
+      .grid__item-img svg {
+        width: 75%;
+        max-width: 180px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .grid__item-label {
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      .grid__item-tag {
+        align-self: end;
+        justify-self: start;
+        border: 1px solid #2a2b3a;
+        border-radius: 1em;
+        line-height: 0.75;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+      }
+
+      @media screen and (min-width: 53em) {
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
+  </head>
+  <body>
+    <div class="grid">
+      <div class="grid__item">
+        <a href="" class="grid__item-img">
+          <div class="grid__item-img-deco"></div>
+          <svg
+            id="logo-85"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M10 0C15.5228 0 20 4.47715 20 10V0H30C35.5228 0 40 4.47715 40 10C40 15.5228 35.5228 20 30 20C35.5228 20 40 24.4772 40 30C40 32.7423 38.8961 35.2268 37.1085 37.0334L37.0711 37.0711L37.0379 37.1041C35.2309 38.8943 32.7446 40 30 40C27.2741 40 24.8029 38.9093 22.999 37.1405C22.9756 37.1175 22.9522 37.0943 22.9289 37.0711C22.907 37.0492 22.8852 37.0272 22.8635 37.0051C21.0924 35.2009 20 32.728 20 30C20 35.5228 15.5228 40 10 40C4.47715 40 0 35.5228 0 30V20H10C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0ZM18 10C18 14.4183 14.4183 18 10 18V2C14.4183 2 18 5.58172 18 10ZM38 30C38 25.5817 34.4183 22 30 22C25.5817 22 22 25.5817 22 30H38ZM2 22V30C2 34.4183 5.58172 38 10 38C14.4183 38 18 34.4183 18 30V22H2ZM22 18V2L30 2C34.4183 2 38 5.58172 38 10C38 14.4183 34.4183 18 30 18H22Z"
+              fill="#ffffff"
+              stop-color="#ffffff"></path>
+          </svg>
+        </a>
+        <p class="grid__item-label">
+          We assisted CloudMasters in creating a modern and scalable website, optimizing speed,
+          integrating cloud-based hosting solutions.
+        </p>
+        <span class="grid__item-tag">Web Development</span>
+      </div>
+      <div class="grid__item">
+        <a href="" class="grid__item-img">
+          <div class="grid__item-img-deco"></div>
+          <svg
+            id="logo-85"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M10 0C15.5228 0 20 4.47715 20 10V0H30C35.5228 0 40 4.47715 40 10C40 15.5228 35.5228 20 30 20C35.5228 20 40 24.4772 40 30C40 32.7423 38.8961 35.2268 37.1085 37.0334L37.0711 37.0711L37.0379 37.1041C35.2309 38.8943 32.7446 40 30 40C27.2741 40 24.8029 38.9093 22.999 37.1405C22.9756 37.1175 22.9522 37.0943 22.9289 37.0711C22.907 37.0492 22.8852 37.0272 22.8635 37.0051C21.0924 35.2009 20 32.728 20 30C20 35.5228 15.5228 40 10 40C4.47715 40 0 35.5228 0 30V20H10C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0ZM18 10C18 14.4183 14.4183 18 10 18V2C14.4183 2 18 5.58172 18 10ZM38 30C38 25.5817 34.4183 22 30 22C25.5817 22 22 25.5817 22 30H38ZM2 22V30C2 34.4183 5.58172 38 10 38C14.4183 38 18 34.4183 18 30V22H2ZM22 18V2L30 2C34.4183 2 38 5.58172 38 10C38 14.4183 34.4183 18 30 18H22Z"
+              fill="#ffffff"
+              stop-color="#ffffff"></path>
+          </svg>
+        </a>
+        <p class="grid__item-label">
+          We assisted CloudMasters in creating a modern and scalable website, optimizing speed,
+          integrating cloud-based hosting solutions.
+        </p>
+        <span class="grid__item-tag">Web Development</span>
+      </div>
+      <div class="grid__item">
+        <a href="" class="grid__item-img">
+          <div class="grid__item-img-deco"></div>
+          <svg
+            id="logo-85"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M10 0C15.5228 0 20 4.47715 20 10V0H30C35.5228 0 40 4.47715 40 10C40 15.5228 35.5228 20 30 20C35.5228 20 40 24.4772 40 30C40 32.7423 38.8961 35.2268 37.1085 37.0334L37.0711 37.0711L37.0379 37.1041C35.2309 38.8943 32.7446 40 30 40C27.2741 40 24.8029 38.9093 22.999 37.1405C22.9756 37.1175 22.9522 37.0943 22.9289 37.0711C22.907 37.0492 22.8852 37.0272 22.8635 37.0051C21.0924 35.2009 20 32.728 20 30C20 35.5228 15.5228 40 10 40C4.47715 40 0 35.5228 0 30V20H10C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0ZM18 10C18 14.4183 14.4183 18 10 18V2C14.4183 2 18 5.58172 18 10ZM38 30C38 25.5817 34.4183 22 30 22C25.5817 22 22 25.5817 22 30H38ZM2 22V30C2 34.4183 5.58172 38 10 38C14.4183 38 18 34.4183 18 30V22H2ZM22 18V2L30 2C34.4183 2 38 5.58172 38 10C38 14.4183 34.4183 18 30 18H22Z"
+              fill="#ffffff"
+              stop-color="#ffffff"></path>
+          </svg>
+        </a>
+        <p class="grid__item-label">
+          We assisted CloudMasters in creating a modern and scalable website, optimizing speed,
+          integrating cloud-based hosting solutions.
+        </p>
+        <span class="grid__item-tag">Web Development</span>
+      </div>
+    </div>
+    <script>
+      const lerp = (a, b, n) => (1 - n) * a + n * b;
+      const getMousePos = e => ({ x: e.clientX, y: e.clientY });
+
+      const getRandomString = length => {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(~~(Math.random() * characters.length));
+        }
+        return result;
+      };
+
+      //전역변수
+      let mousepos = { x: 0, y: 0 };
+      window.addEventListener('mousemove', e => {
+        mousepos = getMousePos(e);
+      });
+
+      /**
+       * 그리드아이템 클래스
+       */
+      class Item {
+        DOM = {
+          el: null,
+          deco: null
+        };
+        renderedStyles = {
+          x: { previous: 0, current: 0, amt: 0.1 },
+          y: { previous: 0, current: 0, amt: 0.1 }
+        };
+        randomString = getRandomString(2000);
+        scrollVar;
+        rect;
+
+        constructor(DOM_el) {
+          this.DOM.el = DOM_el;
+          this.DOM.deco = this.DOM.el.querySelector('.grid__item-img-deco');
+          this.calculateSizePosition();
+          this.initEvents();
+        }
+
+        calculateSizePosition() {
+          this.scrollVar = { x: window.scrollX, y: window.scrollY };
+          this.rect = this.DOM.el.getBoundingClientRect();
+        }
+
+        initEvents() {
+          window.addEventListener('resize', () => this.calculateSizePosition());
+
+          this.DOM.el.addEventListener('mousemove', () => {
+            this.randomString = getRandomString(2000);
+          });
+
+          this.DOM.el.addEventListener('mouseenter', () => {
+            gsap.to(this.DOM.deco, {
+              duration: 0.5,
+              ease: 'power3',
+              opacity: 1
+            });
+            this.loopRender(true);
+          });
+
+          this.DOM.el.addEventListener('mouseleave', () => {
+            this.stopRendering();
+            gsap.to(this.DOM.deco, {
+              duration: 0.5,
+              ease: 'power3',
+              opacity: 0
+            });
+          });
+        }
+
+        loopRender(isFirstTick = false) {
+          if (!this.requestId) {
+            this.requestId = requestAnimationFrame(() => this.render(isFirstTick));
+          }
+        }
+
+        stopRendering() {
+          if (this.requestId) {
+            window.cancelAnimationFrame(this.requestId);
+            this.requestId = undefined;
+          }
+        }
+
+        render(isFirstTick) {
+          this.requestId = undefined;
+
+          const scrollDiff = {
+            x: this.scrollVar.x - window.scrollX,
+            y: this.scrollVar.y - window.scrollY
+          };
+          this.renderedStyles['x'].current = mousepos.x - (scrollDiff.x + this.rect.left);
+          this.renderedStyles['y'].current = mousepos.y - (scrollDiff.y + this.rect.top);
+
+          if (isFirstTick) {
+            this.renderedStyles['x'].previous = this.renderedStyles['x'].current;
+            this.renderedStyles['y'].previous = this.renderedStyles['y'].current;
+          }
+
+          for (const key in this.renderedStyles) {
+            this.renderedStyles[key].previous = lerp(
+              this.renderedStyles[key].previous,
+              this.renderedStyles[key].current,
+              this.renderedStyles[key].amt
+            );
+          }
+
+          gsap.set(this.DOM.el, {
+            '--x': this.renderedStyles['x'].previous,
+            '--y': this.renderedStyles['y'].previous
+          });
+
+          this.DOM.deco.innerHTML = this.randomString;
+
+          this.loopRender();
+        }
+      }
+
+      [...document.querySelectorAll('.grid__item > .grid__item-img')].forEach(img => {
+        console.log('img', img);
+        new Item(img);
+      });
+    </script>
+  </body>
+</html>

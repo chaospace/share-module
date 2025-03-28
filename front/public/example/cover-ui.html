@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+
+      @keyframes adjust-z-index {
+        0% {
+          z-index: 1;
+        }
+        50% {
+          z-index: 100;
+        }
+        100% {
+          z-index: 1;
+        }
+      }
+
+      @keyframes rotate-cover {
+        0% {
+          transform: translateX(-100%) rotateY(-45deg);
+        }
+        35% {
+          transform: translateX(0%) rotateY(-45deg);
+        }
+        50% {
+          transform: rotateY(0deg) translateZ(1em) scale(1.5);
+        }
+        75% {
+          transform: translateX(0) rotateY(45deg);
+        }
+        100% {
+          transform: translateX(100%) rotateY(45deg);
+        }
+      }
+
+      html,
+      body {
+        --cover-size: 300px;
+        --li-in-and-out-of-view: scroll;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+      }
+
+      .cards {
+        position: relative;
+
+        list-style: none;
+        white-space: nowrap;
+        padding: calc(var(--cover-size) / 3 * 2) 0;
+        width: calc(var(--cover-size) * 6);
+        max-width: 90vw;
+        min-height: calc(var(--cover-size) * 2.5);
+        margin: 0 auto;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        outline: 1px solid #333;
+      }
+      .cards li {
+        position: relative;
+
+        display: inline-block;
+        width: var(--cover-size);
+        aspect-ratio: 1;
+        scroll-snap-align: center;
+        user-select: none;
+        z-index: 1;
+        will-change: z-index;
+        perspective: 600px;
+        view-timeline-axis: inline;
+        view-timeline-name: --li-in-and-out-of-view;
+        animation: linear adjust-z-index both;
+        animation-timeline: --li-in-and-out-of-view;
+      }
+
+      .cards li:first-of-type {
+        margin-left: calc(50% - (var(--cover-size) / 2));
+      }
+      .cards li:last-of-type {
+        margin-right: calc(50% - (var(--cover-size) / 2));
+      }
+
+      .cards li img {
+        display: block;
+        width: 100%;
+        height: auto;
+        -webkit-box-reflect: below 0.5em linear-gradient(rgb(0 0 0/0), rgb(0 0 0/0.25));
+        animation: linear rotate-cover both;
+        animation-timeline: --li-in-and-out-of-view;
+        will-change: transform;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="cards">
+      <li><img src="../assets/images/cover_1.webp" alt="" /></li>
+      <li><img src="../assets/images/cover_2.webp" alt="" /></li>
+      <li><img src="../assets/images/cover_3.webp" alt="" /></li>
+      <li><img src="../assets/images/cover_4.webp" alt="" /></li>
+      <li><img src="../assets/images/cover_5.webp" alt="" /></li>
+      <li><img src="../assets/images/cover_6.webp" alt="" /></li>
+      <!-- <li><img src="../assets/images/cover_7.webp" alt="" /></li> -->
+    </ul>
+  </body>
+</html>

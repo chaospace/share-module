@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @property --hue {
+        syntax: '<angle>';
+        initial-value: 0turn;
+        inherits: false;
+      }
+
+      @keyframes hue-cycle {
+        to {
+          --hue: 1turn;
+        }
+      }
+
+      body {
+        display: grid;
+        place-content: center;
+        padding-block: 4rem;
+        padding-inline: 2rem;
+        font-family: system-ui;
+
+        background-color: oklch(40% 50% var(--hue));
+      }
+      /* 
+      oklch(밝기, 채도, hue angle)
+      */
+
+      body,
+      h1,
+      h2,
+      h3,
+      p,
+      a {
+        animation: hue-cycle 1s linear both;
+        animation-timeline: scroll();
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: oklch(98% 40% var(--hue));
+        max-inline-size: 20ch;
+      }
+
+      p {
+        color: oklch(90% 25% var(--hue));
+        max-inline-size: 40ch;
+        font-size: 1.1rem;
+        line-height: 1.5;
+      }
+
+      a {
+        color: oklch(94% 35% var(--hue));
+      }
+    </style>
+  </head>
+  <body>
+    <h1>#PrideMonth</h1>
+    <a href="https://www.charities.org/news/lgbtq-pride-month-2020">LGBTQ Charities</a>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+
+    <h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</h2>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+
+    <h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</h2>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+
+    <h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</h2>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+
+    <h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</h2>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+
+    <h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</h2>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+
+    <h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</h2>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque magni accusantium quos
+      voluptatum nam repudiandae et aliquam beatae praesentium necessitatibus vel similique facilis
+      nulla dicta, saepe ipsam hic tempora cumque?
+    </p>
+  </body>
+</html>

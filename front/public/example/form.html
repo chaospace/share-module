@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form name="main-form">
+        <fieldset>
+          <legend>섹션1</legend>
+          <label for="example">search</label>
+          <input id="example" type="text" />
+          <button type="reset">reset</button>
+        </fieldset>
+        <fieldset>
+          <legend>섹션2</legend>
+          <label for="name">
+            이름
+            <input type="text" id="name" />
+          </label>
+          <button type="reset">reset name</button>
+        </fieldset>
+      </form>
+      <ul>
+        <li>aa</li>
+        <li data-current="true">bb</li>
+        <li data-current="false">cc</li>
+      </ul>
+    </div>
+  </body>
+</html>

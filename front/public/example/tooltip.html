@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        padding: 40px;
+      }
+      .tooltip {
+        position: relative;
+        border-radius: 8px;
+        padding: 12px;
+        background-color: beige;
+        border: 1px solid;
+        box-shadow:
+          0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1),
+          11px 6px rgb(0 0 0 / 20%);
+      }
+      .tooltip:after {
+        position: absolute;
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: beige;
+        border-width: 1px 1px 0 0;
+        border-style: solid;
+        border-color: black;
+        box-shadow:
+          0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1),
+          11px 6px rgb(0 0 0 / 20%);
+      }
+
+      .tooltip.left:after {
+        transform: translate(-50%, -50%) rotate(225deg);
+        left: -1px;
+        top: 50%;
+      }
+
+      .tooltip.right:after {
+        transform: translate(-50%, -50%) rotate(45deg);
+        right: -10px;
+        top: 50%;
+      }
+
+      .tooltip.bottom:after {
+        transform: translate(-50%, -50%) rotate(135deg);
+        left: 50%;
+        bottom: -10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>다른 요소가 있을 경우</div>
+    <div class="tooltip right">
+      <span>텍스트!!!</span>
+    </div>
+    <div>다른 요소가 있을 경우</div>
+    <div class="tooltip left">
+      <span>텍스트!!!</span>
+    </div>
+    <div class="tooltip bottom">
+      <span>텍스트!!!</span>
+    </div>
+  </body>
+</html>

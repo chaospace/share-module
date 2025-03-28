@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      .container {
+        position: relative;
+        display: block;
+      }
+      .content-body {
+        position: relative;
+        display: block;
+        border: 1px solid;
+        height: 500px;
+        overflow: hidden;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="content-body"></div>
+    </div>
+
+    <script>
+      const contentBody = document.querySelector('.content-body');
+      function onScrollContentBody(e) {
+        console.log('e', e);
+      }
+      const maxItems = 299;
+      function createItem(){
+        return (
+
+        )
+      }
+      contentBody.addEventListener('scroll', onScrollContentBody);
+    </script>
+  </body>
+</html>

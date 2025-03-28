@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        --border-color: #ababab;
+        position: relative;
+      }
+
+      .h-box {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+      }
+
+      .tab-button {
+        appearance: none;
+        border-radius: 4px 4px 0 0;
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        border-top-color: var(--border-color);
+        border-top-width: 4px;
+        min-width: 100px;
+        padding: 8px 10px;
+        text-align: center;
+        align-items: center;
+      }
+      .tab-button:first-child {
+        border-right: none;
+      }
+
+      .tab-button:focus,
+      .tab-button:focus-visible {
+        outline: none;
+      }
+      .tab-button:focus > span,
+      .tab-button:focus-visible > span {
+        border: 1px solid blue;
+        border-radius: 3px;
+        padding: 2px 4px;
+      }
+
+      .tab-button:hover {
+        background-color: white;
+        border-top-color: blue;
+      }
+
+      div[role='tabpanel'] {
+        padding: 10px 12px;
+        margin-top: -1px;
+        background-color: white;
+        border: 1px solid var(--border-color);
+        /* border-top-color: transparent; */
+        border-radius: 0 0 4px 4px;
+      }
+
+      div[role='tabpanel']:focs,
+      div[role='tabpanel']:focus-visible {
+        outline: 1px solid blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h3 id="tab-title">타이틀</h3>
+      <div class="h-box" role="tablist" aria-labelledby="tab-title">
+        <button
+          id="tab-1"
+          class="tab-button"
+          role="tab"
+          aria-controls="tabpanel-1"
+          aria-selected="true">
+          <span>연예정보</span>
+        </button>
+        <button
+          id="tab-2"
+          class="tab-button"
+          role="tab"
+          aria-controls="tabpanel-2"
+          tabindex="-1"
+          aria-selected="false">
+          <span>경제</span>
+        </button>
+        <button
+          id="tab-3"
+          class="tab-button"
+          role="tab"
+          aria-controls="tabpanel-3"
+          tabindex="-1"
+          aria-selected="false">
+          <span>요약보기</span>
+        </button>
+      </div>
+      <div id="tabpanel-1" role="tabpanel" aria-labelledby="tab-1" tabindex="0">
+        It is a long established fact that a reader will be distracted by the readable content of a
+        page when looking at its layout. The point of using Lorem Ipsum is that it has a
+        more-or-less normal distribution of letters, as opposed to using 'Content here, content
+        here', making it look like readable English. Many desktop publishing packages and web page
+        editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will
+        uncover many web sites still in their infancy. Various versions have evolved over the years,
+        sometimes by accident, sometimes on purpose (injected humour and the like).
+      </div>
+      <div id="tabpanel-2" hidden role="tabpanel" aria-labelledby="tab-2">
+        It is a long established fact that a reader will be distracted by the readable content of a
+        page when looking at its layout. The point of using Lorem Ipsum is that it has a
+        more-or-less normal distribution of letters, as opposed to using 'Content here, content
+        here', making it look like readable English. Many desktop publishing packages and web page
+        editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will
+        uncover many web sites still in their infancy. Various versions have evolved over the years,
+        sometimes by accident, sometimes on purpose (injected humour and the like).
+      </div>
+      <div id="tabpanel-3" hidden role="tabpanel" aria-labelledby="tab-3">
+        It is a long established fact that a reader will be distracted by the readable content of a
+        page when looking at its layout. The point of using Lorem Ipsum is that it has a
+        more-or-less normal distribution of letters, as opposed to using 'Content here, content
+        here', making it look like readable English. Many desktop publishing packages and web page
+        editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will
+        uncover many web sites still in their infancy. Various versions have evolved over the years,
+        sometimes by accident, sometimes on purpose (injected humour and the like).
+      </div>
+    </div>
+
+    <!-- <div class="tabs">
+      <h3 id="tablist-1">Danish Composers</h3>
+      <div role="tablist" aria-labelledby="tablist-1" class="automatic">
+        <button id="tab-1" type="button" role="tab" aria-selected="true" aria-controls="tabpanel-1">
+          <span class="focus"> Maria Ahlefeldt </span>
+        </button>
+        <button
+          id="tab-2"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="tabpanel-2"
+          tabindex="-1">
+          <span class="focus"> Carl Andersen </span>
+        </button>
+        <button
+          id="tab-3"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="tabpanel-3"
+          tabindex="-1">
+          <span class="focus"> Ida da Fonseca </span>
+        </button>
+        <button
+          id="tab-4"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="tabpanel-4"
+          tabindex="-1">
+          <span class="focus"> Peter Müller </span>
+        </button>
+      </div>
+      <div id="tabpanel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1">
+        <p>
+          Maria Theresia Ahlefeldt (16 January 1755 – 20 December 1810) was a Danish, (originally
+          German), composer. She is known as the first female composer in Denmark. Maria Theresia
+          composed music for several ballets, operas, and plays of the royal theatre. She was given
+          good critic as a composer and described as a “
+          <span lang="da"> virkelig Tonekunstnerinde </span>
+          ” ('a True Artist of Music').
+        </p>
+      </div>
+      <div id="tabpanel-2" role="tabpanel" tabindex="0" aria-labelledby="tab-2" class="is-hidden">
+        <p>
+          Carl Joachim Andersen (29 April 1847 – 7 May 1909) was a Danish flutist, conductor and
+          composer born in Copenhagen, son of the flutist Christian Joachim Andersen. Both as a
+          virtuoso and as composer of flute music, he is considered one of the best of his time. He
+          was considered to be a tough leader and teacher and demanded as such a lot from his
+          orchestras but through that style he reached a high level.
+        </p>
+      </div>
+      <div id="tabpanel-3" role="tabpanel" tabindex="0" aria-labelledby="tab-3" class="is-hidden">
+        <p>
+          Ida Henriette da Fonseca (July 27, 1802 – July 6, 1858) was a Danish opera singer and
+          composer. Ida Henriette da Fonseca was the daughter of Abraham da Fonseca (1776–1849) and
+          Marie Sofie Kiærskou (1784–1863). She and her sister Emilie da Fonseca were students of
+          Giuseppe Siboni, choir master of the Opera in Copenhagen. She was given a place at the
+          royal Opera alongside her sister the same year she debuted in 1827.
+        </p>
+      </div>
+      <div id="tabpanel-4" role="tabpanel" tabindex="0" aria-labelledby="tab-4" class="is-hidden">
+        <p>
+          Peter Erasmus Lange-Müller (1 December 1850 – 26 February 1926) was a Danish composer and
+          pianist. His compositional style was influenced by Danish folk music and by the work of
+          Robert Schumann; Johannes Brahms; and his Danish countrymen, including J.P.E. Hartmann.
+        </p>
+      </div>
+    </div> -->
+  </body>
+</html>

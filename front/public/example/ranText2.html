@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap"
+      rel="stylesheet" />
+  </head>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Nanum Gothic Coding', monospace;
+    }
+    html,
+    body {
+      margin: 0;
+      padding: 20px;
+    }
+
+    button {
+      appearance: none;
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid;
+      background-color: transparent;
+      width: 140px;
+      cursor: pointer;
+    }
+  </style>
+  <body>
+    <button>CHAOSPACE</button>
+
+    <script>
+      const button = document.querySelector('button');
+      const ori = button.textContent;
+      const range = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
+      let isOver;
+
+      const textInstance = o => {
+        const max = ori.length;
+        const instance = {
+          text: o,
+          count: 30,
+          animate(isShow = false) {
+            let life = this.count;
+            const loop = () => {
+              const current = life--;
+              this.text = current >= 1 ? range[~~(Math.random() * range.length)] : isShow ? '' : o;
+              if (current >= 0) {
+                requestAnimationFrame(() => loop());
+              }
+            };
+            loop();
+          }
+        };
+        return instance;
+      };
+
+      //
+      /**
+       * step 2 - 텍스트 하나를 애니메이션 처리 가능하게
+       * text하나를 instance화 시킨다.
+       * 각 text는 button에 직접 text를 설정할 수 있으면 더 좋을거 같다.
+       * 아니 그냥 버튼에서 항상 인스턴스에 텍스트를 보여주는게 더 편리하다.
+       *
+       * hover시 뒤에서 부터 텍스트가 변경되며 없어진다.
+       * 0이 되는 순간 원래 텍스트를 다시 보여주며 하나씩 노출한다.
+       */
+      animates = [];
+      const createAnimateInstance = str => {
+        const max = str.length;
+        //문자열도 구조분해 할당 가능
+        [...str].forEach(o => {
+          animates.push(textInstance(o));
+        });
+      };
+      createAnimateInstance(ori);
+
+      //-진행 위한 queue관리
+      const counterQueue = max => {
+        let index = max;
+        let timerId = -1;
+
+        const next = () => {
+          let current = isOver ? index - 1 : index + 1;
+          if (current >= 0 && current <= max - 1) {
+            index = current;
+            animates[index].animate(isOver);
+            setTimeout(next, 100);
+          } else {
+            index = isOver ? -1 : max;
+          }
+        };
+
+        const start = () => {
+          clearTimeout(timerId);
+          next();
+        };
+
+        return {
+          getIndex() {
+            return index;
+          },
+          start
+        };
+      };
+
+      const counter = counterQueue(ori.length);
+
+      const onOver = () => {
+        isOver = true;
+        counter.start();
+      };
+
+      const onOut = () => {
+        isOver = false;
+        counter.start();
+      };
+
+      const render = () => {
+        const to = counter.getIndex();
+        const max = ori.length;
+        let msg = '';
+        for (let i = 0; i < max; i++) {
+          msg += animates[i].text;
+        }
+
+        button.textContent = msg;
+
+        requestAnimationFrame(render);
+      };
+
+      render();
+
+      button.addEventListener('pointerover', onOver);
+      button.addEventListener('pointerout', onOut);
+    </script>
+  </body>
+</html>

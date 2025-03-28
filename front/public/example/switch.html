@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      fieldset {
+        width: 22em;
+      }
+
+      legend {
+        font-size: 110%;
+      }
+
+      label {
+        display: block;
+        margin: 0.5em;
+        padding: 4px 4px 6px 6px;
+        border: 0 solid #005a9c;
+        border-radius: 5px;
+        width: 16em;
+      }
+
+      label .label {
+        display: inline-block;
+        width: 9em;
+        user-select: none;
+      }
+
+      label input[role='switch'] {
+        opacity: 0;
+      }
+
+      label input[role='switch'] ~ .state {
+        display: inline-block;
+        user-select: none;
+      }
+
+      label input[role='switch'] ~ .state > .container {
+        position: relative;
+        top: 2px;
+        display: inline-block;
+        border: 2px solid black;
+        width: 40px;
+        height: 20px;
+        border-radius: 11px;
+      }
+
+      label input[role='switch'] ~ .state > .container > .position {
+        position: relative;
+        top: 1px;
+        left: 2px;
+        display: inline-block;
+        border: 2px solid black;
+        border-radius: 9px;
+        width: 14px;
+        height: 14px;
+        background: black;
+        opacity: 0.6;
+      }
+
+      label input[role='switch']:not(:checked) ~ .state span.on {
+        display: none;
+      }
+
+      label input[role='switch']:checked ~ .state > span.off {
+        display: none;
+      }
+
+      label input[role='switch']:checked ~ .state > .container > .position {
+        left: 20px;
+        border-color: green;
+        background: green;
+        opacity: 1;
+      }
+
+      label.focus,
+      label:hover {
+        padding: 2px 2px 4px 4px;
+        border-width: 2px;
+        outline: none;
+        background-color: #def;
+        cursor: pointer;
+      }
+
+      label.focus span.container,
+      label:hover span.container {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <fieldset>
+      <legend>Accessibility Preferences</legend>
+      <label>
+        <span class="label">Reduced motion</span>
+        <input id="id-switch-1" type="checkbox" role="switch" />
+        <span class="state">
+          <span class="container">
+            <span class="position"> </span>
+          </span>
+          <span class="on" aria-hidden="true">On</span>
+          <span class="off" aria-hidden="true">Off</span>
+        </span>
+      </label>
+
+      <label>
+        <span class="label">Show captions</span>
+        <input id="id-switch-2" type="checkbox" role="switch" />
+        <span class="state">
+          <span class="container">
+            <span class="position"> </span>
+          </span>
+          <span class="on" aria-hidden="true">On</span>
+          <span class="off" aria-hidden="true">Off</span>
+        </span>
+      </label>
+    </fieldset>
+    <script>
+      /*
+       *   This content is licensed according to the W3C Software License at
+       *   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+       *
+       *   File:  switch-checkbox.js
+       *
+       *   Desc:  Switch widget using input[type=checkbox] that implements ARIA Authoring Practices
+       */
+
+      'use strict';
+
+      class CheckboxSwitch {
+        constructor(domNode) {
+          this.switchNode = domNode;
+          this.switchNode.addEventListener('focus', () => this.onFocus(event));
+          this.switchNode.addEventListener('blur', () => this.onBlur(event));
+        }
+
+        onFocus(event) {
+          event.currentTarget.parentNode.classList.add('focus');
+        }
+
+        onBlur(event) {
+          event.currentTarget.parentNode.classList.remove('focus');
+        }
+      }
+
+      // Initialize switches
+      window.addEventListener('load', function () {
+        // Initialize the Switch component on all matching DOM nodes
+        Array.from(document.querySelectorAll('input[type=checkbox][role^=switch]')).forEach(
+          element => new CheckboxSwitch(element)
+        );
+      });
+    </script>
+  </body>
+</html>

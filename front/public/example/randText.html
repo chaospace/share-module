@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap"
+      rel="stylesheet" />
+  </head>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Nanum Gothic Coding', monospace;
+    }
+    html,
+    body {
+      margin: 0;
+      padding: 20px;
+    }
+
+    button {
+      appearance: none;
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid;
+      background-color: transparent;
+      width: 140px;
+      cursor: pointer;
+    }
+  </style>
+  <body>
+    <button>CHAOSPACE</button>
+
+    <script>
+      const button = document.querySelector('button');
+      const ori = button.textContent;
+      const range = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
+      let isOver;
+      //
+      let animateID;
+      let timerID;
+      /**
+       * step 1 - 호버 시 뒤에서 부터 랜덤하게 변경되고 아웃 시 다시 제 자리로 돌아오는 처리.
+       */
+      const max = ori.length;
+      let index = 0;
+      const couter = () => {
+        if (isOver) {
+          if (index + 1 <= max) {
+            index += 1;
+          }
+        } else {
+          if (index - 1 >= 0) {
+            index -= 1;
+          }
+        }
+      };
+
+      const render = () => {
+        let char = '';
+        for (let i = 0; i < index; i++) {
+          char += range[~~(Math.random() * range.length)];
+        }
+        button.textContent = ori.substring(0, max - index) + (char ?? '');
+        animateID = requestAnimationFrame(render);
+      };
+
+      render();
+      setInterval(couter, 140);
+
+      const onOver = e => {
+        isOver = true;
+      };
+      const onOut = e => {
+        isOver = false;
+      };
+      button.addEventListener('pointerover', onOver);
+      button.addEventListener('pointerout', onOut);
+    </script>
+  </body>
+</html>

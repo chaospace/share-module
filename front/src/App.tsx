@@ -37,7 +37,6 @@ const App = () => {
       <ThemeProvider theme={appTheme}>
         <VBox p={5}>
           <H>개인 스터디 내용 정리 페이지</H>
-
           <HBox overflow='hidden' overflowX='auto' height={40}>
             {routeChildren.map(o => {
               const path = `/${o.path}`;

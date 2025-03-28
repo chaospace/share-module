@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap"
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
+  </head>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Nanum Gothic Coding', monospace;
+    }
+    html,
+    body {
+      margin: 0;
+      padding: 20px;
+    }
+
+    button {
+      --bgColor: transpaent;
+      position: relative;
+      overflow: hidden;
+      appearance: none;
+      text-align: left;
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid;
+      background-color: var(--bgColor);
+      width: 140px;
+      cursor: pointer;
+    }
+    /* 
+    button::after {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      content: '';
+      background-color: aliceblue;
+      transform: translate(100%, 0);
+      transition: transform 300ms ease-out;
+    }
+
+    button:hover::after {
+      transform: translate(0, 0);
+    } */
+  </style>
+  <body>
+    <button>CHAOSPACE</button>
+
+    <script>
+      // plugin등록
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('loaded-');
+        gsap.registerPlugin(TextPlugin);
+      });
+
+      const range = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
+      const button = document.querySelector('button');
+      const cover = button.querySelector('::after');
+      const ori = button.textContent;
+
+      /**
+       * scrambleText
+       */
+      // gsap을 이용해 텍스트를 구성해 보면 어떻게 될까.
+      const maxChar = ori.length;
+      //인덱스가 특정시간마다 증가하며 점차 텍스트가 나오면 된다.
+      //초기 텍스는 랜덤하게 나온다
+
+      const getRandomChar = (o = range, useGruopChar = true) => {
+        if (!useGruopChar) {
+          let m = '';
+          for (let i = 0; i < o.length; i++) {
+            m += o[~~(Math.random() * o.length)];
+          }
+          return m;
+        }
+        return o[~~(Math.random() * o.length)];
+      };
+
+      const getRandomText = to => {
+        let msg = '';
+        for (let i = 0; i < to; i++) {
+          msg += getRandomChar();
+        }
+        return msg;
+      };
+
+      const getNextText = (to, info) => {
+        let msg = ori.substring(0, to);
+        for (let i = to; i < maxChar; i++) {
+          msg += getRandomChar(info.chars);
+        }
+        return msg;
+      };
+
+      const getPrevText = (to, info) => {
+        let msg = info.ori.substring(0, to);
+        for (let i = to; i < maxChar; i++) {
+          msg += getRandomChar(info.chars);
+        }
+        return msg;
+      };
+
+      const setButtonText = text => {
+        button.textContent = text;
+      };
+
+      const preInitialize = () => {
+        setButtonText(getRandomText(maxChar, false));
+      };
+
+      preInitialize();
+
+      //특정 값까지 딜레이를 가지며 증가시킨다.
+      const counter = { index: 0, ori: ori, current: button.textContent, chars: 'OX' };
+      const onOver = () => {
+        gsap.to(counter, {
+          duration: 0.1 * maxChar,
+          stagger: 0.1,
+          index: maxChar,
+          onUpdate: () => {
+            const n = ~~counter.index;
+            setButtonText(getNextText(n, counter));
+          },
+          onComplete: () => {
+            setButtonText(ori);
+          }
+        });
+      };
+      const onOut = () => {
+        counter.index = maxChar;
+
+        gsap.to(counter, {
+          duration: 0.1 * maxChar,
+          stagger: 0.1,
+          index: 0,
+          onUpdate: () => {
+            const n = ~~counter.index;
+            setButtonText(getPrevText(n, counter));
+          },
+          onComplete: () => {
+            setButtonText(counter.current);
+          }
+        });
+      };
+      button.addEventListener('pointerover', onOver);
+      button.addEventListener('pointerout', onOut);
+    </script>
+  </body>
+</html>
